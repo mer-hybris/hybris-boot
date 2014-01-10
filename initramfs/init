@@ -1,0 +1,118 @@
+#! /bin/sh
+#
+# Hybris adaptation bootstrapping initramfs init script.
+#
+# Copyright (c) 2013 Tom Swindell <t.swindell@rubyx.co.uk>
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License version 2 as published by the
+# Free Software Foundation.
+#
+# Authors:
+#   - Tom Swindell <t.swindell@rubyx.co.uk>
+#
+get_opt() {
+  for param in $(cat /proc/cmdline); do
+    echo "$param" | grep "^$1=*" | cut -d'=' -f2
+  done
+}
+
+write() {
+  /bin/echo -n "$2" > "$1"
+}
+
+usb_net() {
+  LOCAL_IP=192.168.2.1
+  ANDROID_USB=/sys/class/android_usb/android0
+
+  case "$1" in
+    start)
+      write $ANDROID_USB/enable        0
+      write $ANDROID_USB/idVendor      18D1
+      write $ANDROID_USB/idProduct     D001
+      write $ANDROID_USB/iManufacturer "Mer"
+      write $ANDROID_USB/iProduct      "Boat Loader"
+      write $ANDROID_USB/iSerial       $(grep 'Serial' /proc/cpuinfo | awk '{print $3}')
+      write $ANDROID_USB/functions     rndis
+      write $ANDROID_USB/enable        1
+
+      sleep 2
+
+      /bin/ifconfig usb0   $LOCAL_IP && USB_IFACE=usb0
+      /bin/ifconfig rndis0 $LOCAL_IP && USB_IFACE=rndis0
+
+      /bin/echo "interface $USB_IFACE" >> /etc/udhcpd.conf
+
+      udhcpd
+      telnetd -p 23 -l /bin/sh -F
+      ;;
+
+    stop)
+      write $ANDROID_USB/enable 0
+      ;;
+  esac
+}
+
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+
+/bin/busybox --install -s
+
+mkdir /dev
+mount -t tmpfs tmpfs /dev
+
+mkdir /dev/pts
+mkdir /proc
+mkdir /sys
+
+mount -a
+ln -s /proc/mounts /etc/mtab
+
+echo /sbin/mdev > /proc/sys/kernel/hotplug
+mdev -s
+
+sleep 2
+
+zcat /bootsplash.gz > /dev/fb0
+
+write /proc/sys/fs/file-max                8192
+write /proc/sys/kernel/threads-max         256
+write /proc/sys/vm/swappiness              1
+write /proc/sys/vm/page-cluster            5
+write /proc/sys/vm/dirty_expire_centisecs  500
+write /proc/sys/vm/dirty_background_ratio  60
+write /proc/sys/net/core/rmem_default      65536
+write /proc/sys/net/core/wmem_default      16384
+
+BOARDNAME=$(grep 'Hardware' /proc/cpuinfo | awk '{print $3}')
+
+case "$BOARDNAME" in
+  grouper)
+    DATA_PARTITION=/dev/mmcblk0p9
+    ;;
+  tilapia)
+    DATA_PARTITION=/dev/mmcblk0p10
+    ;;
+esac
+
+if [ ! -z $DATA_PARTITION ]; then
+  mkdir /data
+  mkdir /target
+
+  mount $DATA_PARTITION /data
+  mount --bind /data/media/0/.stowaways/sffe /target
+fi
+
+# Check for special bootmode flags and process accordingly.
+case "$(get_opt bootmode)" in
+  debug)
+    usb_net start
+    ;;
+
+  *)
+    exec switch_root /target /init-debug &> /init-stderrout
+    usb_net start
+    ;;
+esac
+
+sleep 86400
+

@@ -1,0 +1,6 @@
+devpts  /dev/pts    devpts              defaults    0   0
+proc    /proc       proc                defaults    0   0
+sysfs   /sys        sysfs               defaults    0   0
+/proc/sys/debug /proc/sys/debug debugfs defaults    0   0
+none    /var/run    tmpfs               size=256k,mode=0755,nosuid,noatime  0   0
+

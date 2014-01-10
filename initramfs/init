@@ -109,7 +109,11 @@ case "$(get_opt bootmode)" in
     ;;
 
   *)
-    exec switch_root /target /init-debug &> /init-stderrout
+    if [ -f "/target/init-debug" ]; then
+      exec switch_root /target /init-debug &> /target/init-debug-stderrout
+    else
+      exec switch_root /target /sbin/init --log-level=debug --log-target=kmsg &> /target/init-stderrout
+    fi
     usb_net start
     ;;
 esac

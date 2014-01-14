@@ -74,15 +74,6 @@ sleep 2
 
 zcat /bootsplash.gz > /dev/fb0
 
-write /proc/sys/fs/file-max                8192
-write /proc/sys/kernel/threads-max         256
-write /proc/sys/vm/swappiness              1
-write /proc/sys/vm/page-cluster            5
-write /proc/sys/vm/dirty_expire_centisecs  500
-write /proc/sys/vm/dirty_background_ratio  60
-write /proc/sys/net/core/rmem_default      65536
-write /proc/sys/net/core/wmem_default      16384
-
 BOARDNAME=$(grep 'Hardware' /proc/cpuinfo | awk '{print $3}')
 
 case "$BOARDNAME" in

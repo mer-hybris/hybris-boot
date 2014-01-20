@@ -8,7 +8,7 @@ Building
 
     $ git clone https://github.com/tswindell/hybris-boot
     $ cd hybris-boot
-    $ make
+    $ make <device>
 
 Operating System Bootstrap
 ---------------------------
@@ -25,3 +25,4 @@ With your device booted to fastboot, boot the boot.img in debug mode:
 Wait for your host computer to pick up DHCP lease from usb network device:
 
     $ telnet 192.168.2.1
+

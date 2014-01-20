@@ -2,6 +2,7 @@
 #
 # Author: Tom Swindell <t.swindell@rubyx.co.uk>
 #
+DEVICE=$(MAKECMDGOALS)
 
 $(DEVICE): setup-$(DEVICE) boot.img-$(DEVICE)
 
@@ -38,5 +39,5 @@ clean:
 	rm ./zImage
 
 all:
-	$(error Usage: make DEVICE=device)
+	$(error Usage: make <device>)
 

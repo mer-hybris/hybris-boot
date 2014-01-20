@@ -90,7 +90,7 @@ if [ ! -z $DATA_PARTITION ]; then
   mkdir /target
 
   mount $DATA_PARTITION /data
-  mount --bind /data/media/0/.stowaways/sffe /target
+  mount --bind /data/.stowaways/sffe /target
 fi
 
 # Check for special bootmode flags and process accordingly.

@@ -2,7 +2,9 @@
 #
 # Author: Tom Swindell <t.swindell@rubyx.co.uk>
 #
+ifneq ($(MAKECMDGOALS),clean)
 DEVICE=$(MAKECMDGOALS)
+endif
 
 $(DEVICE): setup-$(DEVICE) boot.img-$(DEVICE)
 
@@ -14,13 +16,18 @@ setup-mako:
 
 setup-grouper:
 
+setup-tilapia:
+
 zImage-mako:
 	$(error Please provide the mako zImage)
 
 zImage-grouper:
-	(curl "http://repo.merproject.org/obs/home:/tswindell:/hw:/grouper/latest_armv7hl/armv7hl/kernel-asus-grouper-3.1.10+9.26-1.10.1.armv7hl.rpm" | rpm2cpio | cpio -idmv)
-	mv ./boot/zImage zImage-$(DEVICE)
+	(curl "http://repo.merproject.org/obs/home:/tswindell:/hw:/grouper/latest_armv7hl/armv7hl/kernel-asus-grouper-3.1.10+9.26-1.1.1.armv7hl.rpm" | rpm2cpio | cpio -idmv)
+	mv ./boot/zImage zImage-grouper
 	rm -rf ./boot ./lib
+
+zImage-tilapia: zImage-grouper
+	mv zImage-grouper zImage-tilapia
 
 boot.img-$(DEVICE): zImage-$(DEVICE) initramfs.gz-$(DEVICE)
 	mkbootimg --kernel ./zImage-$(DEVICE) --ramdisk ./initramfs.gz-$(DEVICE) $(MKBOOTIMG_PARAMS) --output ./boot.img-$(DEVICE)
@@ -30,13 +37,13 @@ initramfs.gz-$(DEVICE): initramfs/bin/busybox initramfs/init initramfs/bootsplas
 	(cd initramfs; find . | cpio -H newc -o | gzip -9 > ../initramfs.gz-$(DEVICE))
 
 initramfs/bin/busybox:
-	(cd initramfs; curl "http://repo.merproject.org/obs/home:/tswindell:/hw:/grouper/latest_armv7hl/armv7hl/busybox-1.21.0-1.1.1.armv7hl.rpm" | rpm2cpio | cpio -idmv)
+	(cd initramfs; curl "http://repo.merproject.org/obs/home:/tswindell:/hw:/common/latest_armv7hl/armv7hl/busybox-1.21.0-1.1.1.armv7hl.rpm" | rpm2cpio | cpio -idmv)
 
 clean:
 	rm ./initramfs/bin/busybox
-	rm ./initramfs.gz
-	rm ./boot.img
-	rm ./zImage
+	rm ./initramfs.gz-*
+	rm ./boot.img-*
+	rm ./zImage-*
 
 all:
 	$(error Usage: make <device>)

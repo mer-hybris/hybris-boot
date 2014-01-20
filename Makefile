@@ -3,19 +3,30 @@
 # Author: Tom Swindell <t.swindell@rubyx.co.uk>
 #
 
-all: boot.img
+$(DEVICE): setup-$(DEVICE) boot.img-$(DEVICE)
 
-boot.img: zImage initramfs.gz
-	mkbootimg --kernel ./zImage --ramdisk ./initramfs.gz --output ./boot.img
+setup-mako:
+	$(eval MKBOOTIMG_PARAMS=--cmdline 'console=ttyHSL0,115200,n8 androidboot.hardware=mako lpj=67677' \
+		--base 0x80200000 \
+		--ramdisk_offset 0x01600000 \
+	)
 
-zImage:
+setup-grouper:
+
+zImage-mako:
+	$(error Please provide the mako zImage)
+
+zImage-grouper:
 	(curl "http://repo.merproject.org/obs/home:/tswindell:/hw:/grouper/latest_armv7hl/armv7hl/kernel-asus-grouper-3.1.10+9.26-1.10.1.armv7hl.rpm" | rpm2cpio | cpio -idmv)
-	mv ./boot/zImage .
+	mv ./boot/zImage zImage-$(DEVICE)
 	rm -rf ./boot ./lib
 
-initramfs.gz: initramfs/bin/busybox initramfs/init initramfs/bootsplash.gz
+boot.img-$(DEVICE): zImage-$(DEVICE) initramfs.gz-$(DEVICE)
+	mkbootimg --kernel ./zImage-$(DEVICE) --ramdisk ./initramfs.gz-$(DEVICE) $(MKBOOTIMG_PARAMS) --output ./boot.img-$(DEVICE)
+
+initramfs.gz-$(DEVICE): initramfs/bin/busybox initramfs/init initramfs/bootsplash.gz
 	(cd initramfs; rm -rf ./usr/share)
-	(cd initramfs; find . | cpio -H newc -o | gzip -9 > ../initramfs.gz)
+	(cd initramfs; find . | cpio -H newc -o | gzip -9 > ../initramfs.gz-$(DEVICE))
 
 initramfs/bin/busybox:
 	(cd initramfs; curl "http://repo.merproject.org/obs/home:/tswindell:/hw:/grouper/latest_armv7hl/armv7hl/busybox-1.21.0-1.1.1.armv7hl.rpm" | rpm2cpio | cpio -idmv)
@@ -25,4 +36,7 @@ clean:
 	rm ./initramfs.gz
 	rm ./boot.img
 	rm ./zImage
+
+all:
+	$(error Usage: make DEVICE=device)
 

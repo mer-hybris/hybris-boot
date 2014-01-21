@@ -36,6 +36,7 @@ boot.img-$(DEVICE): zImage-$(DEVICE) initramfs.gz-$(DEVICE)
 
 initramfs/init: init-script
 	sed -e 's %DATA_PART% $(DATA_PART) g' init-script > initramfs/init
+	chmod +x initramfs/init
 
 initramfs.gz-$(DEVICE): initramfs/bin/busybox initramfs/init initramfs/bootsplash.gz
 	(cd initramfs; rm -rf ./usr/share)

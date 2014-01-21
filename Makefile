@@ -15,8 +15,10 @@ setup-mako:
 	)
 
 setup-grouper:
+	$(eval DATA_PART=/dev/mmcblk0p9)
 
 setup-tilapia:
+	$(eval DATA_PART=/dev/mmcblk0p10)
 
 zImage-mako:
 	$(error Please provide the mako zImage)
@@ -32,6 +34,9 @@ zImage-tilapia: zImage-grouper
 boot.img-$(DEVICE): zImage-$(DEVICE) initramfs.gz-$(DEVICE)
 	mkbootimg --kernel ./zImage-$(DEVICE) --ramdisk ./initramfs.gz-$(DEVICE) $(MKBOOTIMG_PARAMS) --output ./boot.img-$(DEVICE)
 
+initramfs/init: init-script
+	sed -e 's %DATA_PART% $(DATA_PART) g' init-script > initramfs/init
+
 initramfs.gz-$(DEVICE): initramfs/bin/busybox initramfs/init initramfs/bootsplash.gz
 	(cd initramfs; rm -rf ./usr/share)
 	(cd initramfs; find . | cpio -H newc -o | gzip -9 > ../initramfs.gz-$(DEVICE))
@@ -41,6 +46,7 @@ initramfs/bin/busybox:
 
 clean:
 	rm ./initramfs/bin/busybox
+	rm ./initramfs/init
 	rm ./initramfs.gz-*
 	rm ./boot.img-*
 	rm ./zImage-*

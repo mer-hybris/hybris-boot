@@ -74,16 +74,7 @@ sleep 2
 
 zcat /bootsplash.gz > /dev/fb0
 
-BOARDNAME=$(grep 'Hardware' /proc/cpuinfo | awk '{print $3}')
-
-case "$BOARDNAME" in
-  grouper)
-    DATA_PARTITION=/dev/mmcblk0p9
-    ;;
-  tilapia)
-    DATA_PARTITION=/dev/mmcblk0p10
-    ;;
-esac
+DATA_PARTITION=%DATA_PART%
 
 if [ ! -z $DATA_PARTITION ]; then
   mkdir /data

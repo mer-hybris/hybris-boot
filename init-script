@@ -11,6 +11,11 @@
 # Authors:
 #   - Tom Swindell <t.swindell@rubyx.co.uk>
 #
+CUSTOMPRODUCT="Boat Loader"
+BOOTLOGO=%BOOTLOGO%
+NEVERBOOT=%NEVERBOOT%
+ALWAYSDEBUG=%ALWAYSDEBUG%
+
 get_opt() {
   for param in $(cat /proc/cmdline); do
     echo "$param" | grep "^$1=*" | cut -d'=' -f2
@@ -31,15 +36,22 @@ usb_net() {
       write $ANDROID_USB/idVendor      18D1
       write $ANDROID_USB/idProduct     D001
       write $ANDROID_USB/iManufacturer "Mer"
-      write $ANDROID_USB/iProduct      "Boat Loader"
+      write $ANDROID_USB/iProduct      "$CUSTOMPRODUCT"
       write $ANDROID_USB/iSerial       $(grep 'Serial' /proc/cpuinfo | awk '{print $3}')
       write $ANDROID_USB/functions     rndis
       write $ANDROID_USB/enable        1
 
       sleep 2
 
+      USB_IFACE=notfound
+
       /bin/ifconfig usb0   $LOCAL_IP && USB_IFACE=usb0
       /bin/ifconfig rndis0 $LOCAL_IP && USB_IFACE=rndis0
+
+      # Unable to set up USB interface? Reboot. 
+      if [ x$USB_IFACE = xnotfound ]; then
+	reboot -f
+      fi 
 
       /bin/echo "interface $USB_IFACE" >> /etc/udhcpd.conf
 
@@ -72,7 +84,41 @@ mdev -s
 
 sleep 2
 
-zcat /bootsplash.gz > /dev/fb0
+if [ x$BOOTLOGO = x1 ]; then
+	zcat /bootsplash.gz > /dev/fb0
+fi
+
+if [ ! -e /proc/config.gz ]; then
+	echo "No /proc/config.gz" >> /diagnosis.log
+else
+	# Must be =y
+	for x in CONFIG_CGROUPS CONFIG_AUTOFS4_FS CONFIG_DEVTMPFS_MOUNT CONFIG_DEVTMPFS CONFIG_UNIX CONFIG_HOTPLUG CONFIG_INOTIFY_USER CONFIG_SYSVIPC CONFIG_NET CONFIG_PROC_FS CONFIG_SIGNALFD CONFIG_SYSFS CONFIG_TMPFS_POSIX_ACL CONFIG_VT; do
+		zcat /proc/config.gz | grep -E "^$x=y\$" || echo "$x=y not found in /proc/config.gz" >> /diagnosis.log
+ 	done
+	# Must not be =y
+	for x in CONFIG_ANDROID_LOW_MEMORY_KILLER CONFIG_ANDROID_PARANOID_NETWORK CONFIG_DUMMY CONFIG_SYSFS_DEPRECATED; do
+		zcat /proc/config.gz | grep -E "^$x=y\$" && echo "$x=y found in /proc/config.gz, must be disabled" >> /diagnosis.log
+	done
+fi
+
+if [ -e /diagnosis.log ]; then
+	CUSTOMPRODUCT="Refusing to boot. See_diagnosis.log"
+	usb_net start
+	sleep 900
+	reboot -f
+fi
+
+if [ x$NEVERBOOT = x1 ]; then
+	CUSTOMPRODUCT="Set to never boot"
+	usb_net start
+	sleep 3600
+	reboot -f
+fi
+
+if [ x$ALWAYSDEBUG = x1 ]; then
+	CUSTOMPRODUCT="Always debug"
+	usb_net start
+fi
 
 DATA_PARTITION=%DATA_PART%
 
@@ -94,11 +140,14 @@ case "$(get_opt bootmode)" in
     if [ -f "/target/init-debug" ]; then
       exec switch_root /target /init-debug &> /target/init-debug-stderrout
     else
-      exec switch_root /target /sbin/init --log-level=debug --log-target=kmsg &> /target/init-stderrout
+      if [ -e "/target/sbin/init" ]; then
+	      exec switch_root /target /sbin/init --log-level=debug --log-target=kmsg &> /target/init-stderrout
+      fi
     fi
+    CUSTOMPRODUCT="Failed to boot"
     usb_net start
     ;;
 esac
 
-sleep 86400
+sleep 3600
 

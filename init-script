@@ -89,7 +89,7 @@ if [ x$BOOTLOGO = x1 ]; then
 fi
 
 if [ ! -e /proc/config.gz ]; then
-	echo "No /proc/config.gz" >> /diagnosis.log
+	echo "No /proc/config.gz. Enable CONFIG_IKCONFIG and CONFIG_IKCONFIG_PROC" >> /diagnosis.log
 else
 	# Must be =y
 	for x in CONFIG_CGROUPS CONFIG_AUTOFS4_FS CONFIG_DEVTMPFS_MOUNT CONFIG_DEVTMPFS CONFIG_UNIX CONFIG_HOTPLUG CONFIG_INOTIFY_USER CONFIG_SYSVIPC CONFIG_NET CONFIG_PROC_FS CONFIG_SIGNALFD CONFIG_SYSFS CONFIG_TMPFS_POSIX_ACL CONFIG_VT; do

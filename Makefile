@@ -47,7 +47,7 @@ boot.img-$(DEVICE): zImage-$(DEVICE) initramfs.gz-$(DEVICE)
 	mkbootimg --kernel ./zImage-$(DEVICE) --ramdisk ./initramfs.gz-$(DEVICE) $(MKBOOTIMG_PARAMS) --output ./boot.img-$(DEVICE)
 
 initramfs/init: init-script
-	sed -e 's %DATA_PART% $(DATA_PART) g' init-script | sed -e 's %BOOTLOGO% $(BOOTLOGO) g' | sed -e 's %NEVERBOOT% $(NEVERBOOT) g' \
+	sed -e 's %DATA_PART% $(DATA_PART) g' init-script | sed -e 's %BOOTLOGO% $(BOOTLOGO) g' | sed -e 's %NEVERBOOT% $(NEVERBOOT) g' | \
 	sed -e 's %ALWAYSDEBUG% $(ALWAYSDEBUG) g' > initramfs/init
 	chmod +x initramfs/init
 

@@ -40,7 +40,7 @@ BB_STATIC := busybox
 # State it here for our minimal build
 BB_STATIC: libm 
 
-$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK)
+$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK) $(HYBRIS_IMG_COMMAND)
 	@echo "Making hybris-boot.img in $(dir $@) using $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK)"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
@@ -75,7 +75,7 @@ BB_STATIC := $(PRODUCT_OUT)/utilities/busybox
 # State it here for our minimal build
 BB_STATIC: libm
 
-$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(RECOVERY_RAMDISK)
+$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(RECOVERY_RAMDISK) $(HYBRIS_IMG_COMMAND)
 	@echo "Making hybris-recovery.img in $(dir $@) using $(INSTALLED_KERNEL_TARGET) $(RECOVERY_RAMDISK)"
 	@mkdir -p $(dir $@)
 	@rm -rf $@

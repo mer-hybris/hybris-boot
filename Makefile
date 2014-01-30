@@ -2,69 +2,63 @@
 #
 # Author: Tom Swindell <t.swindell@rubyx.co.uk>
 #
+
+include device/common/defaults.mk
+include device/common/busybox.mk
+
 ifneq ($(MAKECMDGOALS),clean)
-DEVICE=$(MAKECMDGOALS)
+  DEVICE := $(MAKECMDGOALS)
+
+  ifneq ($(DEVICE),)
+    # Device-specific configuration
+    include device/$(DEVICE).mk
+  endif
 endif
 
-BOOTLOGO ?= 1
-NEVERBOOT ?= 0
-ALWAYSDEBUG ?= 0
+MKBOOTIMG ?= mkbootimg
 
-$(DEVICE): setup-$(DEVICE) boot.img-$(DEVICE)
+help:
+	@echo ""
+	@echo "Usage: make <device>"
+	@echo ""
+	@echo "Supported devices:"
+	@echo ""
+	@echo "    $(patsubst device/%.mk,%,$(wildcard device/*.mk))"
+	@echo ""
 
-setup-mako:
-	$(eval MKBOOTIMG_PARAMS=--cmdline 'console=ttyHSL0,115200,n8 androidboot.hardware=mako lpj=67677' \
-		--base 0x80200000 \
-		--ramdisk_offset 0x01600000 \
-	)
+$(DEVICE): boot.img-$(DEVICE)
 
-setup-grouper:
-	$(eval DATA_PART=/dev/mmcblk0p9)
+boot.img-%: zImage-% initramfs.gz-%
+	$(MKBOOTIMG) --kernel $< \
+	    --ramdisk $(word 2,$^) \
+	    $(MKBOOTIMG_PARAMS) \
+	    --output $@
 
-setup-tilapia:
-	$(eval DATA_PART=/dev/mmcblk0p10)
+initramfs-%:
+	mkdir $@
+	cp -rpv initramfs/* $@
 
-setup-aries:
-	$(eval MKBOOTIMG_PARAMS=--cmdline 'console=null androidboot.hardware=qcom ehci-hcd.park=3' --base 0x00000000 --pagesize 2048 --kernel_offset 0x80208000 --ramdisk_offset 0x82200000 --second_offset 0x81100000 --tags_offset 0x80200100 --board '' )
-	$(eval DATA_PART=/dev/mmcblk0p26)
-	$(eval BOOTLOGO=0)
+initramfs-%/init: init-script device/%.mk initramfs-%
+	sed -e 's %DATA_PART% $(DATA_PART) g' \
+	    -e 's %BOOTLOGO% $(BOOTLOGO) g' \
+	    -e 's %NEVERBOOT% $(NEVERBOOT) g' \
+	    -e 's %ALWAYSDEBUG% $(ALWAYSDEBUG) g' \
+	    $< >$@
+	chmod +x $@
 
-zImage-mako:
-	$(error Please provide the mako zImage)
+initramfs.gz-%: initramfs-% initramfs-%/bin/busybox initramfs-%/init
+	(cd $<; find . | cpio -H newc -o | gzip -9) >$@
 
-zImage-aries:
-	$(error Please provide the aries zImage)
-
-zImage-grouper:
-	(curl "http://repo.merproject.org/obs/home:/tswindell:/hw:/grouper/latest_armv7hl/armv7hl/kernel-asus-grouper-3.1.10+9.26-1.1.1.armv7hl.rpm" | rpm2cpio | cpio -idmv)
-	mv ./boot/zImage zImage-grouper
-	rm -rf ./boot ./lib
-
-zImage-tilapia: zImage-grouper
-	mv zImage-grouper zImage-tilapia
-
-boot.img-$(DEVICE): zImage-$(DEVICE) initramfs.gz-$(DEVICE)
-	mkbootimg --kernel ./zImage-$(DEVICE) --ramdisk ./initramfs.gz-$(DEVICE) $(MKBOOTIMG_PARAMS) --output ./boot.img-$(DEVICE)
-
-initramfs/init: init-script
-	sed -e 's %DATA_PART% $(DATA_PART) g' init-script | sed -e 's %BOOTLOGO% $(BOOTLOGO) g' | sed -e 's %NEVERBOOT% $(NEVERBOOT) g' | \
-	sed -e 's %ALWAYSDEBUG% $(ALWAYSDEBUG) g' > initramfs/init
-	chmod +x initramfs/init
-
-initramfs.gz-$(DEVICE): initramfs/bin/busybox initramfs/init initramfs/bootsplash.gz
-	(cd initramfs; rm -rf ./usr/share)
-	(cd initramfs; find . | cpio -H newc -o | gzip -9 > ../initramfs.gz-$(DEVICE))
-
-initramfs/bin/busybox:
-	(cd initramfs; curl "http://repo.merproject.org/obs/home:/tswindell:/hw:/common/latest_armv7hl/armv7hl/busybox-1.21.0-1.1.2.armv7hl.rpm" | rpm2cpio | cpio -idmv)
+# Convenience rule to copy a kernel from the Android build
+zImage-$(DEVICE): ../out/target/product/$(DEVICE)/kernel
+	cp $< $@
 
 clean:
-	rm ./initramfs/bin/busybox
-	rm ./initramfs/init
-	rm ./initramfs.gz-*
-	rm ./boot.img-*
-	rm ./zImage-*
+	rm -rf initramfs-*
+	rm -f zImage-* initramfs.gz-*
 
-all:
-	$(error Usage: make <device>)
+distclean: clean
+	rm -f boot.img-*
 
+.PHONY: help clean distclean
+.PRECIOUS: initramfs-% initramfs-%/bin/busybox initramfs-%/init

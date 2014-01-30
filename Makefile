@@ -49,6 +49,10 @@ initramfs-%/init: init-script device/%.mk initramfs-%
 initramfs.gz-%: initramfs-% initramfs-%/bin/busybox initramfs-%/init
 	(cd $<; find . | cpio -H newc -o | gzip -9) >$@
 
+# Convenience rule to copy a kernel from the Android build
+zImage-$(DEVICE): ../out/target/product/$(DEVICE)/kernel
+	cp $< $@
+
 clean:
 	rm -rf initramfs-*
 	rm -f zImage-* initramfs.gz-*

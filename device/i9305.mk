@@ -1,1 +1,1 @@
-DATA_PART=/dev/block/mmcblk0p16
+DATA_PART=/dev/mmcblk0p16

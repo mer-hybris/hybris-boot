@@ -17,8 +17,50 @@
 LOCAL_PATH:= $(call my-dir)
 HYBRIS_PATH:=$(LOCAL_PATH)
 
-HYBRIS_IMG_COMMAND := mkbootimg
-HYBRIS_IMG_COMMAND_ARGS := --cmdline 'console=ttySAC2,115200 bootmode=recovery' --base 0x00000000 --pagesize 2048 --kernel_offset 0x40008000 --ramdisk_offset 0x41000000 --second_offset 0x40f00000 --tags_offset 0x40000100 --board '' 
+# We use the commandline and kernel configuration varables from
+# build/core/Makefile to be consistent. Support for boot/recovery
+# image specific kernel COMMANDLINE vars is provided but whether it
+# works or not is down to your bootloader.
+
+HYBRIS_BOOTIMG_COMMANDLINE :=
+HYBRIS_RECOVERYIMG_COMMANDLINE := bootmode=debug
+
+
+## All "config" should be done above this line
+
+# Command used to make the image
+MKBOOTIMG := mkbootimg
+
+BB_STATIC := $(PRODUCT_OUT)/utilities/busybox
+
+HYBRIS_BOOTIMAGE_ARGS := \
+	$(addprefix --second ,$(INSTALLED_2NDBOOTLOADER_TARGET)) \
+	--kernel $(INSTALLED_KERNEL_TARGET)
+
+ifdef BOARD_KERNEL_BASE
+  HYBRIS_BOOTIMAGE_ARGS += --base $(BOARD_KERNEL_BASE)
+endif
+
+ifdef BOARD_KERNEL_PAGESIZE
+  HYBRIS_BOOTIMAGE_ARGS += --pagesize $(BOARD_KERNEL_PAGESIZE)
+endif
+
+# Specify the BOOT/RECOVERY vars here as they're not impacted by
+# CLEAR_VARS and it makes it easier to keep them consistent.
+
+HYBRIS_RECOVERYIMAGE_ARGS := $(HYBRIS_BOOTIMAGE_ARGS)
+
+# Strip lead/trail " from broken BOARD_KERNEL_CMDLINEs :(
+HYBRIS_BOARD_KERNEL_CMDLINE := $(shell echo '$(BOARD_KERNEL_CMDLINE)' | sed -e 's/^"//' -e 's/"$$//')
+
+ifneq "" "$(strip $(HYBRIS_BOARD_KERNEL_CMDLINE) $(HYBRIS_BOOTIMG_COMMANDLINE))"
+  HYBRIS_BOOTIMAGE_ARGS += --cmdline "$(strip $(HYBRIS_BOARD_KERNEL_CMDLINE) $(HYBRIS_BOOTIMG_COMMANDLINE))"
+endif
+
+ifneq "" "$(strip $(HYBRIS_BOARD_KERNEL_CMDLINE) $(HYBRIS_RECOVERYIMG_COMMANDLINE))"
+  HYBRIS_RECOVERYIMAGE_ARGS += --cmdline "$(strip $(HYBRIS_BOARD_KERNEL_CMDLINE) $(HYBRIS_RECOVERYIMG_COMMANDLINE))"
+endif
+
 
 include $(CLEAR_VARS)
 LOCAL_MODULE:= hybris-boot
@@ -35,16 +77,11 @@ BOOT_RAMDISK := $(BOOT_INTERMEDIATE)/boot-initramfs.gz
 BOOT_RAMDISK_SRC := $(LOCAL_PATH)/initramfs
 BOOT_RAMDISK_FILES := $(shell find $(BOOT_RAMDISK_SRC) -type f)
 
-BB_STATIC := busybox
-# BB doesn't explicitly state a dependency on bionic's libm
-# State it here for our minimal build
-BB_STATIC: libm 
-
-$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK) $(HYBRIS_IMG_COMMAND)
+$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK) $(MKBOOTIMG)
 	@echo "Making hybris-boot.img in $(dir $@) using $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK)"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
-	$(hide) $(HYBRIS_IMG_COMMAND) --kernel $(INSTALLED_KERNEL_TARGET) --ramdisk $(BOOT_RAMDISK) --output $@ $(HYBRIS_IMG_COMMAND_ARGS)
+	$(hide)$(MKBOOTIMG) --ramdisk $(BOOT_RAMDISK) $(HYBRIS_BOOTIMAGE_ARGS) $(BOARD_MKBOOTIMG_ARGS) --output $@
 
 $(BOOT_RAMDISK): $(BOOT_RAMDISK_FILES) $(BB_STATIC)
 	@echo "Making initramfs : $@"
@@ -52,7 +89,6 @@ $(BOOT_RAMDISK): $(BOOT_RAMDISK_FILES) $(BB_STATIC)
 	@mkdir -p $(BOOT_INTERMEDIATE)/initramfs
 	@cp -a $(BOOT_RAMDISK_SRC)/*  $(BOOT_INTERMEDIATE)/initramfs
 	@cp $(BB_STATIC) $(BOOT_INTERMEDIATE)/initramfs/bin/
-	@for t in $(BUSYBOX_LINKS); do mkdir -p `dirname $$t`; ln -sf /bin/busybox $(BOOT_INTERMEDIATE)/initramfs$$t; done
 	@(cd $(BOOT_INTERMEDIATE)/initramfs && find . | cpio -H newc -o ) | gzip -9 > $@
 
 ################################################################
@@ -70,16 +106,11 @@ RECOVERY_RAMDISK := $(RECOVERY_INTERMEDIATE)/recovery-initramfs.gz
 RECOVERY_RAMDISK_SRC := $(LOCAL_PATH)/initramfs
 RECOVERY_RAMDISK_FILES := $(shell find $(RECOVERY_RAMDISK_SRC) -type f)
 
-BB_STATIC := $(PRODUCT_OUT)/utilities/busybox
-# BB doesn't explicitly state a dependency on bionic's libm
-# State it here for our minimal build
-BB_STATIC: libm
-
-$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(RECOVERY_RAMDISK) $(HYBRIS_IMG_COMMAND)
+$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(RECOVERY_RAMDISK) $(MKBOOTIMG)
 	@echo "Making hybris-recovery.img in $(dir $@) using $(INSTALLED_KERNEL_TARGET) $(RECOVERY_RAMDISK)"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
-	$(hide) $(HYBRIS_IMG_COMMAND) --kernel $(INSTALLED_KERNEL_TARGET) --ramdisk $(RECOVERY_RAMDISK) --output $@ $(HYBRIS_IMG_COMMAND_ARGS)
+	$(hide)$(MKBOOTIMG) --ramdisk $(RECOVERY_RAMDISK) $(HYBRIS_RECOVERYIMAGE_ARGS) $(BOARD_MKRECOVERYIMG_ARGS) --output $@
 
 $(RECOVERY_RAMDISK): $(RECOVERY_RAMDISK_FILES) $(BB_STATIC)
 	@echo "Making initramfs : $@"
@@ -87,6 +118,5 @@ $(RECOVERY_RAMDISK): $(RECOVERY_RAMDISK_FILES) $(BB_STATIC)
 	@mkdir -p $(RECOVERY_INTERMEDIATE)/initramfs
 	@cp -a $(RECOVERY_RAMDISK_SRC)/*  $(RECOVERY_INTERMEDIATE)/initramfs
 	@cp $(BB_STATIC) $(RECOVERY_INTERMEDIATE)/initramfs/bin/
-	@for t in $(BUSYBOX_LINKS); do mkdir -p `dirname $$t`; ln -sf /bin/busybox $(RECOVERY_INTERMEDIATE)/initramfs$$t; done
 	@(cd $(RECOVERY_INTERMEDIATE)/initramfs && find . | cpio -H newc -o ) | gzip -9 > $@
 

@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 #
 # Hybris adaptation bootstrapping initramfs init script.
 #
@@ -32,13 +32,16 @@ usb_net() {
 
   case "$1" in
     start)
+      # During debug we export mmc too
+      echo /dev/mmcblk0 > /sys/class/android_usb/f_mass_storage/lun0/file
+
       write $ANDROID_USB/enable        0
       write $ANDROID_USB/idVendor      18D1
       write $ANDROID_USB/idProduct     D001
       write $ANDROID_USB/iManufacturer "Mer"
       write $ANDROID_USB/iProduct      "$CUSTOMPRODUCT"
-      write $ANDROID_USB/iSerial       $(grep 'Serial' /proc/cpuinfo | awk '{print $3}')
-      write $ANDROID_USB/functions     rndis
+      write $ANDROID_USB/iSerial       "Mer Debug setting up"
+      write $ANDROID_USB/functions     rndis,mass_storage
       write $ANDROID_USB/enable        1
 
       sleep 2
@@ -50,13 +53,23 @@ usb_net() {
 
       # Unable to set up USB interface? Reboot. 
       if [ x$USB_IFACE = xnotfound ]; then
-	reboot -f
+	  write $ANDROID_USB/iSerial       "Mer Debug: ERROR: could not setup USB as usb0 or rndis0"
+	  sleep 900
+	  reboot -f
       fi 
+      write $ANDROID_USB/iSerial       "Mer Debug telnet on port 23 on $USB_IFACE $LOCAL_IP - also running udhcpd"
 
       /bin/echo "interface $USB_IFACE" >> /etc/udhcpd.conf
 
       udhcpd
       telnetd -p 23 -l /bin/sh -F
+      # User has been into debug and killed telnet, hoping for boot to continue
+      write $ANDROID_USB/enable        0
+      echo "" > /sys/class/android_usb/f_mass_storage/lun0/file
+      write $ANDROID_USB/functions     rndis
+      write $ANDROID_USB/iSerial       $(grep 'Serial' /proc/cpuinfo | awk '{print $3}')
+      write $ANDROID_USB/iProduct      "Post-debug boot"
+      write $ANDROID_USB/enable        1
       ;;
 
     stop)
@@ -150,4 +163,3 @@ case "$(get_opt bootmode)" in
 esac
 
 sleep 3600
-

@@ -1,12 +1,26 @@
 hybris-boot
 ===========
 
-This project enables the building of boot images for Google Android fastboot based devices, currently the Makefile is hard coded to download armv7hl kernel zImage and busybox-static binaries for Google Nexus 7 2012 devices from Mer OBS. In order to boot other devices it may be necessary to supply your own kernel and busybox binary URLs.
+This project enables the building of boot images for Google Android fastboot based devices.
 
-Building
---------
+It can be built either in the android build tree as part of the normal kernel/android pre-requisited build or in a Mer SDK as a standalone package
 
-    $ git clone https://github.com/tswindell/hybris-boot
+Android Build
+-------------
+
+We need to extend subdir_makefiles in build/core/main.mk to include hybris/Android.mk; that then includes any additional Android.mk files in subdirs
+
+Note the default boot.img is created by $(INSTALLED_BOOTIMAGE_TARGET) target in build/core/Makefile and that is used for inspiration.
+
+Add as a normal make/mka target:
+    $ mka hybris-boot hybris-recovery
+
+SDK Building
+------------
+
+In the SDK you'll need the kernel, module and static busybox packages available
+
+    $ git clone https://github.com/mer-hybris/hybris-boot
     $ cd hybris-boot
     $ make <device>
 

@@ -2,6 +2,13 @@
 #
 # Author: Tom Swindell <t.swindell@rubyx.co.uk>
 #
+$(warning ********************************************************************************)
+$(warning *  You are using the non-android-build approach)
+$(warning *  Please don't do this.)
+$(warning *  Setup an android build chroot and build your img files there.)
+$(warning *  Thank you :D )
+$(warning ********************************************************************************)
+
 ifneq ($(MAKECMDGOALS),clean)
 DEVICE=$(MAKECMDGOALS)
 endif

@@ -96,6 +96,10 @@ ln -s /proc/mounts /etc/mtab
 echo /sbin/mdev > /proc/sys/kernel/hotplug
 mdev -s
 
+# Support /dev/block/mmcXXX
+ln -s . /dev/block
+
+# There is no way to know when all hotplug events have been processed :(
 sleep 2
 
 if [ x$BOOTLOGO = x1 ]; then

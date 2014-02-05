@@ -31,7 +31,7 @@ HYBRIS_B_NEVERBOOT :=
 HYBRIS_B_ALWAYSDEBUG :=
 # RECOVERY
 HYBRIS_R_NEVERBOOT :=
-HYBRIS_R_ALWAYSDEBUG := q
+HYBRIS_R_ALWAYSDEBUG := 1
 
 ## All manual "config" should be done above this line
 

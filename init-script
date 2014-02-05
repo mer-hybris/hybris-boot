@@ -15,6 +15,7 @@ CUSTOMPRODUCT="Boat Loader"
 BOOTLOGO=%BOOTLOGO%
 NEVERBOOT=%NEVERBOOT%
 ALWAYSDEBUG=%ALWAYSDEBUG%
+DATA_PARTITION=%DATA_PART%
 
 get_opt() {
   for param in $(cat /proc/cmdline); do
@@ -132,8 +133,6 @@ if [ x$ALWAYSDEBUG = x1 ]; then
 	CUSTOMPRODUCT="Always debug"
 	usb_net start
 fi
-
-DATA_PARTITION=%DATA_PART%
 
 if [ ! -z $DATA_PARTITION ]; then
   mkdir /data

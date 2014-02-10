@@ -17,7 +17,6 @@
 # to the real rootfs. It can also be copied into rootfs and provide
 # monitoring of the boot process there too.
 
-CUSTOMPRODUCT="Boat Loader"
 BOOTLOGO=%BOOTLOGO%
 ALWAYSDEBUG=%ALWAYSDEBUG%
 DATA_PARTITION=%DATA_PART%
@@ -133,7 +132,7 @@ usb_setup() {
       write $ANDROID_USB/enable        0
       write $ANDROID_USB/idVendor      18D1
       write $ANDROID_USB/idProduct     D001
-      write $ANDROID_USB/iManufacturer "Mer"
+      write $ANDROID_USB/iManufacturer "Mer Boat Loader"
       write $ANDROID_USB/iProduct      "$CUSTOMPRODUCT"
       write $ANDROID_USB/iSerial       "$1"
       write $ANDROID_USB/functions     $USB_FUNCTIONS
@@ -146,6 +145,7 @@ usb_info() {
 
 
 run_debug_session() {
+    CUSTOMPRODUCT=$1
     # During debug we export mmc too
     echo /dev/mmcblk0 > /sys/class/android_usb/f_mass_storage/lun0/file
 
@@ -218,22 +218,19 @@ if [ "$DONE_SWITCH" = "no" ]; then
     mount_stowaways
 
     if [ -e /diagnosis.log ]; then
-	CUSTOMPRODUCT="Refusing to boot. See /diagnosis.log (in initrd only)"
-	run_debug_session
+	run_debug_session "Refusing to boot. See /diagnosis.log (in initrd only)"
 	sleep 900 # If things are really bad, at least hope the message appears on usb
 	reboot -f
     fi
 
     if [ x$ALWAYSDEBUG = x1 ]; then
-	CUSTOMPRODUCT="Always debug"
-	run_debug_session
+	run_debug_session "Always debug"
     fi
 
     # Check for special bootmode flags and process accordingly.
     case "$(get_opt bootmode)" in
 	debug)
-	    CUSTOMPRODUCT="bootmode=debug on kernel command line"
-	    run_debug_session
+	    run_debug_session "bootmode=debug on kernel command line"
 	    ;;
 
 	*)
@@ -244,8 +241,7 @@ if [ "$DONE_SWITCH" = "no" ]; then
 		    exec switch_root /target /sbin/init --log-level=debug --log-target=kmsg &> /target/init-stderrout
 		fi
 	    fi
-	    CUSTOMPRODUCT="Failed to boot init in real rootfs"
-	    run_debug_session
+	    run_debug_session "Failed to boot init in real rootfs"
 	    ;;
     esac
     sleep 3600
@@ -253,11 +249,9 @@ else
     # We're in the real rootfs running as init-debug
     EXPLICIT_BUSYBOX="/bin/busybox"
     do_mount_devprocsys
-    CUSTOMPRODUCT="init-debug in real rootfs"
-    run_debug_session
+    run_debug_session "init-debug in real rootfs"
 
     # Now try to boot
     exec /sbin/init --log-level=debug --log-target=kmsg &> /boot/systemd_stdouterr
-    CUSTOMPRODUCT="init in real rootfs failed"
-    run_debug_session
+    run_debug_session "init in real rootfs failed"
 fi

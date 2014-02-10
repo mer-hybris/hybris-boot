@@ -75,6 +75,17 @@ do_mount_devprocsys()
     mkdir /dev/pts
     mkdir /proc
     mkdir /sys
+
+    # Don't use mount -a as we run in both initrd and rootfs
+    mount -t sysfs sysfs /sys
+    mount -t proc proc /proc
+    # telnetd needs /dev/pts/ entries
+    mount -t devpts devpts /dev/pts
+
+    echo /sbin/mdev > /proc/sys/kernel/hotplug
+    mdev -s
+    # There is no way to know when all hotplug events have been processed :(
+    sleep 2
 }
 
 # Sugar for accessing usb config
@@ -177,17 +188,9 @@ if [ "$DONE_SWITCH" = "no" ]; then
 
     do_mount_devprocsys
 
-    mount -a
-    ln -s /proc/mounts /etc/mtab
-
-    echo /sbin/mdev > /proc/sys/kernel/hotplug
-    mdev -s
-
     # Support /dev/block/mmcXXX
     ln -s . /dev/block
-
-    # There is no way to know when all hotplug events have been processed :(
-    sleep 2
+    ln -s /proc/mounts /etc/mtab
 
     if [ x$BOOTLOGO = x1 ]; then
 	zcat /bootsplash.gz > /dev/fb0

@@ -23,6 +23,27 @@ NEVERBOOT=%NEVERBOOT%
 ALWAYSDEBUG=%ALWAYSDEBUG%
 DATA_PARTITION=%DATA_PART%
 
+set_welcome_msg(){
+cat <<EOF >> /etc/issue.net
+Welcome to the Mer/SailfishOS Boat loader debug init system.
+
+You may inject commands into init shell process (PID 1):
+
+To see output of commands:
+  tail -f /init-ctl/stdout &
+To run a command:
+  echo "ls -l /" >/init-ctl/stdin
+To specify an exec to boot into the system:
+  echo "exec switch_root /target /init-debug" >/init-ctl/stdin
+To allow init to continue:
+  echo "continue" >/init-ctl/stdin
+
+The init script also functions as a post-switch_root debug too:
+  cp /init /target/init-debug
+
+EOF
+}
+
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 
 # Default setting is rndis - add mass_storage for a debug boot
@@ -34,7 +55,7 @@ LOCAL_IP=192.168.2.1
 
 DONE_SWITCH=no
 # Are we running in real rootfs
-if [ "$0" = "init-debug" ]; then
+if [ "$0" = "/init-debug" ]; then
     DONE_SWITCH=yes
 fi
 
@@ -62,15 +83,7 @@ write() {
 }
 
 inject_loop() {
-    # Inject commands into init process
-    # To see output of commands:
-    #   tail -f /init-debug/stdout &
-    # To run a command:
-    #   echo "ls -l /" >/init-debug/stdin
-    # To boot into the system:
-    #   echo "exec switch_root /target /init-debug" >/init-debug/stdin
-
-    INJ_DIR=/init-debug
+    INJ_DIR=/init-ctl
     INJ_STDIN=$INJ_DIR/stdin
     INJ_STDOUT=$INJ_DIR/stdout
 
@@ -121,13 +134,15 @@ run_debug_session() {
 	reboot -f
     fi 
 
-    usb_info "Mer Debug telnet on port 23 on $USB_IFACE $LOCAL_IP - also running udhcpd"
-
     /bin/echo "interface $USB_IFACE" >> /etc/udhcpd.conf
-    udhcpd
+    # Be explicit about busybox so this works in a rootfs too
+    $EXPLICIT_BUSYBOX udhcpd
 
+    set_welcome_msg
     # Non-blocking telnetd
-    telnetd -p 23 -l /bin/sh
+    $EXPLICIT_BUSYBOX telnetd -p 23 -l /bin/sh
+
+    usb_info "Mer Debug telnet on port 23 on $USB_IFACE $LOCAL_IP - also running udhcpd"
 
     # Run command injection loop
     inject_loop
@@ -157,6 +172,7 @@ check_kernel_config() {
 # Now either initrd or rootfs sequence
 
 if [ "$DONE_SWITCH" = "no" ]; then
+    EXPLICIT_BUSYBOX=""
     /bin/busybox --install -s
 
     do_mount_devprocsys
@@ -230,6 +246,7 @@ if [ "$DONE_SWITCH" = "no" ]; then
     sleep 3600
 else
     # We're in the real rootfs running as init-debug
+    EXPLICIT_BUSYBOX="/bin/busybox"
     do_mount_devprocsys
     CUSTOMPRODUCT="init-debug in real rootfs"
     run_debug_session

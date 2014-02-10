@@ -60,6 +60,31 @@ do_mount_devprocsys()
 write() {
   /bin/echo -n "$2" > "$1"
 }
+
+inject_loop() {
+    # Inject commands into init process
+    # To see output of commands:
+    #   tail -f /init-debug/stdout &
+    # To run a command:
+    #   echo "ls -l /" >/init-debug/stdin
+    # To boot into the system:
+    #   echo "exec switch_root /target /init-debug" >/init-debug/stdin
+
+    INJ_DIR=/init-debug
+    INJ_STDIN=$INJ_DIR/stdin
+    INJ_STDOUT=$INJ_DIR/stdout
+
+    mkdir $INJ_DIR
+    mkfifo $INJ_STDIN
+    mkfifo $INJ_STDOUT
+
+    while : ; do
+        while read IN; do
+            $IN >$INJ_STDOUT 2>&1
+        done <$INJ_STDIN
+    done
+}
+
 # This sets up the USB with whatever USB_FUNCTIONS are set to
 usb_setup() {
       write $ANDROID_USB/enable        0
@@ -101,8 +126,11 @@ run_debug_session() {
     /bin/echo "interface $USB_IFACE" >> /etc/udhcpd.conf
     udhcpd
 
-    # Blocking telnetd
-    telnetd -p 23 -l /bin/sh -F
+    # Non-blocking telnetd
+    telnetd -p 23 -l /bin/sh
+
+    # Run command injection loop
+    inject_loop
 
     # User has been into debug and killed telnet, hoping for boot to continue
     USB_FUNCTIONS=rndis

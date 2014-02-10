@@ -10,105 +10,111 @@
 #
 # Authors:
 #   - Tom Swindell <t.swindell@rubyx.co.uk>
+#   - David Greaves <david@dgreaves.com>
 #
+
+# This init script runs in early boot in initrd and does a switch_root
+# to the real rootfs. It can also be copied into rootfs and provide
+# monitoring of the boot process there too.
+
 CUSTOMPRODUCT="Boat Loader"
 BOOTLOGO=%BOOTLOGO%
 NEVERBOOT=%NEVERBOOT%
 ALWAYSDEBUG=%ALWAYSDEBUG%
 DATA_PARTITION=%DATA_PART%
 
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+
+# Default setting is rndis - add mass_storage for a debug boot
+# enable using usb_setup
+USB_FUNCTIONS=rndis
+
+ANDROID_USB=/sys/class/android_usb/android0
+LOCAL_IP=192.168.2.1
+
+DONE_SWITCH=no
+# Are we running in real rootfs
+if [ "$0" = "init-debug" ]; then
+    DONE_SWITCH=yes
+fi
+
+# Get options from kernel command line
 get_opt() {
   for param in $(cat /proc/cmdline); do
     echo "$param" | grep "^$1=*" | cut -d'=' -f2
   done
 }
 
+# Minimal mounts for initrd or pre-init debug session
+do_mount_devprocsys()
+{
+    mkdir /dev
+    mount -t tmpfs tmpfs /dev
+
+    mkdir /dev/pts
+    mkdir /proc
+    mkdir /sys
+}
+
+# Sugar for accessing usb config
 write() {
   /bin/echo -n "$2" > "$1"
 }
-
-usb_net() {
-  LOCAL_IP=192.168.2.1
-  ANDROID_USB=/sys/class/android_usb/android0
-
-  case "$1" in
-    start)
-      # During debug we export mmc too
-      echo /dev/mmcblk0 > /sys/class/android_usb/f_mass_storage/lun0/file
-
+# This sets up the USB with whatever USB_FUNCTIONS are set to
+usb_setup() {
       write $ANDROID_USB/enable        0
       write $ANDROID_USB/idVendor      18D1
       write $ANDROID_USB/idProduct     D001
       write $ANDROID_USB/iManufacturer "Mer"
       write $ANDROID_USB/iProduct      "$CUSTOMPRODUCT"
-      write $ANDROID_USB/iSerial       "Mer Debug setting up"
-      write $ANDROID_USB/functions     rndis,mass_storage
+      write $ANDROID_USB/iSerial       "$1"
+      write $ANDROID_USB/functions     $USB_FUNCTIONS
       write $ANDROID_USB/enable        1
-
-      sleep 2
-
-      USB_IFACE=notfound
-
-      /bin/ifconfig usb0   $LOCAL_IP && USB_IFACE=usb0
-      /bin/ifconfig rndis0 $LOCAL_IP && USB_IFACE=rndis0
-
-      # Unable to set up USB interface? Reboot. 
-      if [ x$USB_IFACE = xnotfound ]; then
-	  write $ANDROID_USB/iSerial       "Mer Debug: ERROR: could not setup USB as usb0 or rndis0"
-	  sleep 900
-	  reboot -f
-      fi 
-      write $ANDROID_USB/iSerial       "Mer Debug telnet on port 23 on $USB_IFACE $LOCAL_IP - also running udhcpd"
-
-      /bin/echo "interface $USB_IFACE" >> /etc/udhcpd.conf
-
-      udhcpd
-      telnetd -p 23 -l /bin/sh -F
-      # User has been into debug and killed telnet, hoping for boot to continue
-      write $ANDROID_USB/enable        0
-      echo "" > /sys/class/android_usb/f_mass_storage/lun0/file
-      write $ANDROID_USB/functions     rndis
-      write $ANDROID_USB/iSerial       $(grep 'Serial' /proc/cpuinfo | awk '{print $3}')
-      write $ANDROID_USB/iProduct      "Post-debug boot"
-      write $ANDROID_USB/enable        1
-      ;;
-
-    stop)
-      write $ANDROID_USB/enable 0
-      ;;
-  esac
+}
+# This lets us communicate errors to host (if it needs disable/enable then that's a problem)
+usb_info() {
+      write $ANDROID_USB/iSerial       $@
 }
 
-export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 
-/bin/busybox --install -s
+run_debug_session() {
+    # During debug we export mmc too
+    echo /dev/mmcblk0 > /sys/class/android_usb/f_mass_storage/lun0/file
 
-mkdir /dev
-mount -t tmpfs tmpfs /dev
+    USB_FUNCTIONS=rndis,mass_storage
+    usb_setup "Mer Debug setting up"
+    sleep 1
 
-mkdir /dev/pts
-mkdir /proc
-mkdir /sys
+    USB_IFACE=notfound
+    /bin/ifconfig usb0   $LOCAL_IP && USB_IFACE=usb0
+    /bin/ifconfig rndis0 $LOCAL_IP && USB_IFACE=rndis0
 
-mount -a
-ln -s /proc/mounts /etc/mtab
+    # Unable to set up USB interface? Reboot. 
+    if [ x$USB_IFACE = xnotfound ]; then
+	usb_info "Mer Debug: ERROR: could not setup USB as usb0 or rndis0"
+	sleep 900
+	reboot -f
+    fi 
 
-echo /sbin/mdev > /proc/sys/kernel/hotplug
-mdev -s
+    usb_info "Mer Debug telnet on port 23 on $USB_IFACE $LOCAL_IP - also running udhcpd"
 
-# Support /dev/block/mmcXXX
-ln -s . /dev/block
+    /bin/echo "interface $USB_IFACE" >> /etc/udhcpd.conf
+    udhcpd
 
-# There is no way to know when all hotplug events have been processed :(
-sleep 2
+    # Blocking telnetd
+    telnetd -p 23 -l /bin/sh -F
 
-if [ x$BOOTLOGO = x1 ]; then
-	zcat /bootsplash.gz > /dev/fb0
-fi
+    # User has been into debug and killed telnet, hoping for boot to continue
+    USB_FUNCTIONS=rndis
+    echo "" > /sys/class/android_usb/f_mass_storage/lun0/file
+    usb_setup "Post-debug boot"
+}
 
-if [ ! -e /proc/config.gz ]; then
+# writes to /diagnosis.log if there's a problem
+check_kernel_config() {
+    if [ ! -e /proc/config.gz ]; then
 	echo "No /proc/config.gz. Enable CONFIG_IKCONFIG and CONFIG_IKCONFIG_PROC" >> /diagnosis.log
-else
+    else
 	# Must be =y
 	for x in CONFIG_CGROUPS CONFIG_AUTOFS4_FS CONFIG_DEVTMPFS_MOUNT CONFIG_DEVTMPFS CONFIG_UNIX CONFIG_HOTPLUG CONFIG_INOTIFY_USER CONFIG_SYSVIPC CONFIG_NET CONFIG_PROC_FS CONFIG_SIGNALFD CONFIG_SYSFS CONFIG_TMPFS_POSIX_ACL CONFIG_VT; do
 		zcat /proc/config.gz | grep -E "^$x=y\$" || echo "$x=y not found in /proc/config.gz" >> /diagnosis.log
@@ -117,52 +123,91 @@ else
 	for x in CONFIG_ANDROID_LOW_MEMORY_KILLER CONFIG_ANDROID_PARANOID_NETWORK CONFIG_DUMMY CONFIG_SYSFS_DEPRECATED; do
 		zcat /proc/config.gz | grep -E "^$x=y\$" && echo "$x=y found in /proc/config.gz, must be disabled" >> /diagnosis.log
 	done
-fi
+    fi
+}
 
-if [ -e /diagnosis.log ]; then
-	CUSTOMPRODUCT="Refusing to boot. See_diagnosis.log"
-	usb_net start
+# Now either initrd or rootfs sequence
+
+if [ "$DONE_SWITCH" = "no" ]; then
+    /bin/busybox --install -s
+
+    do_mount_devprocsys
+
+    mount -a
+    ln -s /proc/mounts /etc/mtab
+
+    echo /sbin/mdev > /proc/sys/kernel/hotplug
+    mdev -s
+
+    # Support /dev/block/mmcXXX
+    ln -s . /dev/block
+
+    # There is no way to know when all hotplug events have been processed :(
+    sleep 2
+
+    if [ x$BOOTLOGO = x1 ]; then
+	zcat /bootsplash.gz > /dev/fb0
+    fi
+
+    check_kernel_config
+
+    if [ -e /diagnosis.log ]; then
+	CUSTOMPRODUCT="Refusing to boot. See /diagnosis.log (in initrd only)"
+	run_debug_session
 	sleep 900
 	reboot -f
-fi
+    fi
 
-if [ x$NEVERBOOT = x1 ]; then
+    if [ x$NEVERBOOT = x1 ]; then
 	CUSTOMPRODUCT="Set to never boot"
-	usb_net start
+	run_debug_session
 	sleep 3600
 	reboot -f
-fi
-
-if [ x$ALWAYSDEBUG = x1 ]; then
-	CUSTOMPRODUCT="Always debug"
-	usb_net start
-fi
-
-if [ ! -z $DATA_PARTITION ]; then
-  mkdir /data
-  mkdir /target
-
-  mount $DATA_PARTITION /data
-  mount --bind /data/.stowaways/sffe /target
-fi
-
-# Check for special bootmode flags and process accordingly.
-case "$(get_opt bootmode)" in
-  debug)
-    usb_net start
-    ;;
-
-  *)
-    if [ -f "/target/init-debug" ]; then
-      exec switch_root /target /init-debug &> /target/init-debug-stderrout
-    else
-      if [ -e "/target/sbin/init" ]; then
-	      exec switch_root /target /sbin/init --log-level=debug --log-target=kmsg &> /target/init-stderrout
-      fi
     fi
-    CUSTOMPRODUCT="Failed to boot"
-    usb_net start
-    ;;
-esac
 
-sleep 3600
+    if [ x$ALWAYSDEBUG = x1 ]; then
+	CUSTOMPRODUCT="Always debug"
+	run_debug_session
+    fi
+
+    if [ ! -z $DATA_PARTITION ]; then
+	mkdir /data
+	mkdir /target
+
+	mount $DATA_PARTITION /data
+	mount --bind /data/.stowaways/sffe /target
+	mkdir /target/data # in new fs
+	mount --bind /data /target/data
+    fi
+
+    # Check for special bootmode flags and process accordingly.
+    case "$(get_opt bootmode)" in
+	debug)
+	    CUSTOMPRODUCT="bootmode=debug on kernel command line"
+	    run_debug_session
+	    ;;
+
+	*)
+	    if [ -f "/target/init-debug" ]; then
+		exec switch_root /target /init-debug &> /target/init-debug-stderrout
+	    else
+		if [ -e "/target/sbin/init" ]; then
+		    exec switch_root /target /sbin/init --log-level=debug --log-target=kmsg &> /target/init-stderrout
+		fi
+	    fi
+	    CUSTOMPRODUCT="Failed to boot init in real rootfs"
+	    run_debug_session
+	    ;;
+    esac
+    sleep 3600
+else
+    # We're in the real rootfs running as init-debug
+    do_mount_devprocsys
+    CUSTOMPRODUCT="init-debug in real rootfs"
+    run_debug_session
+
+    # Now try to boot
+    exec /sbin/init --log-level=debug --log-target=kmsg &> /boot/systemd_stdouterr
+    CUSTOMPRODUCT="init in real rootfs failed"
+    run_debug_session
+fi

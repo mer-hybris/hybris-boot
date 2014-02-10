@@ -19,7 +19,6 @@
 
 CUSTOMPRODUCT="Boat Loader"
 BOOTLOGO=%BOOTLOGO%
-NEVERBOOT=%NEVERBOOT%
 ALWAYSDEBUG=%ALWAYSDEBUG%
 DATA_PARTITION=%DATA_PART%
 
@@ -86,6 +85,25 @@ do_mount_devprocsys()
     mdev -s
     # There is no way to know when all hotplug events have been processed :(
     sleep 2
+}
+
+bootsplash() {
+    if [ x$BOOTLOGO = x1 ]; then
+	zcat /bootsplash.gz > /dev/fb0
+    fi
+}
+
+
+mount_stowaways() {
+    if [ ! -z $DATA_PARTITION ]; then
+	mkdir /data
+	mkdir /target
+
+	mount $DATA_PARTITION /data
+	mount --bind /data/.stowaways/sailfishos /target
+	mkdir /target/data # in new fs
+	mount --bind /data /target/data
+    fi
 }
 
 # Sugar for accessing usb config
@@ -189,43 +207,26 @@ if [ "$DONE_SWITCH" = "no" ]; then
 
     do_mount_devprocsys
 
-    # Support /dev/block/mmcXXX
+    # Support /dev/block/mmcXXX only in initrd phase
     ln -s . /dev/block
     ln -s /proc/mounts /etc/mtab
 
-    if [ x$BOOTLOGO = x1 ]; then
-	zcat /bootsplash.gz > /dev/fb0
-    fi
-
     check_kernel_config
+
+    bootsplash
+
+    mount_stowaways
 
     if [ -e /diagnosis.log ]; then
 	CUSTOMPRODUCT="Refusing to boot. See /diagnosis.log (in initrd only)"
 	run_debug_session
-	sleep 900
-	reboot -f
-    fi
-
-    if [ x$NEVERBOOT = x1 ]; then
-	CUSTOMPRODUCT="Set to never boot"
-	run_debug_session
-	sleep 3600
+	sleep 900 # If things are really bad, at least hope the message appears on usb
 	reboot -f
     fi
 
     if [ x$ALWAYSDEBUG = x1 ]; then
 	CUSTOMPRODUCT="Always debug"
 	run_debug_session
-    fi
-
-    if [ ! -z $DATA_PARTITION ]; then
-	mkdir /data
-	mkdir /target
-
-	mount $DATA_PARTITION /data
-	mount --bind /data/.stowaways/sailfishos /target
-	mkdir /target/data # in new fs
-	mount --bind /data /target/data
     fi
 
     # Check for special bootmode flags and process accordingly.

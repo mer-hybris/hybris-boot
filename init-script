@@ -104,6 +104,7 @@ inject_loop() {
 
     while : ; do
         while read IN; do
+	    if [ "$IN" = "continue" ]; then break 2;fi
             $IN >$INJ_STDOUT 2>&1
         done <$INJ_STDIN
     done
@@ -122,7 +123,7 @@ usb_setup() {
 }
 # This lets us communicate errors to host (if it needs disable/enable then that's a problem)
 usb_info() {
-      write $ANDROID_USB/iSerial       $@
+      write $ANDROID_USB/iSerial       "$1"
 }
 
 

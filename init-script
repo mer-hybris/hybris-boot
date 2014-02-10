@@ -222,7 +222,7 @@ if [ "$DONE_SWITCH" = "no" ]; then
 	mkdir /target
 
 	mount $DATA_PARTITION /data
-	mount --bind /data/.stowaways/sffe /target
+	mount --bind /data/.stowaways/sailfishos /target
 	mkdir /target/data # in new fs
 	mount --bind /data /target/data
     fi

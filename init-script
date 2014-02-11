@@ -2,7 +2,7 @@
 #
 # Hybris adaptation bootstrapping initramfs init script.
 #
-# Copyright (c) 2013 Tom Swindell <t.swindell@rubyx.co.uk>
+# Copyright (c) 2014 Jolla Oy
 #
 # This program is free software; you can redistribute it and/or modify it under
 # the terms of the GNU General Public License version 2 as published by the
@@ -17,9 +17,16 @@
 # to the real rootfs. It can also be copied into rootfs and provide
 # monitoring of the boot process there too.
 
+# General logging
+set -x
+exec > /init.log 2>&1
+echo "Running Mer Boat Loader"
+date
+
 BOOTLOGO=%BOOTLOGO%
 ALWAYSDEBUG=%ALWAYSDEBUG%
 DATA_PARTITION=%DATA_PART%
+DEFAULT_OS=%DEFAULT_OS%
 
 set_welcome_msg(){
 cat <<EOF >> /etc/issue.net
@@ -33,6 +40,7 @@ To run a command:
   echo "ls -l /" >/init-ctl/stdin
 To specify an exec to boot into the system:
   echo "exec switch_root /target /init-debug" >/init-ctl/stdin
+
 To allow init to continue:
   echo "continue" >/init-ctl/stdin
 
@@ -67,6 +75,7 @@ get_opt() {
 # Minimal mounts for initrd or pre-init debug session
 do_mount_devprocsys()
 {
+    echo "########################## mounting devprocsys"
     mkdir /dev
     mount -t tmpfs tmpfs /dev
 
@@ -84,6 +93,7 @@ do_mount_devprocsys()
     mdev -s
     # There is no way to know when all hotplug events have been processed :(
     sleep 2
+    mount
 }
 
 bootsplash() {
@@ -94,6 +104,7 @@ bootsplash() {
 
 
 mount_stowaways() {
+    echo "########################## mounting stowaways"
     if [ ! -z $DATA_PARTITION ]; then
 	mkdir /data
 	mkdir /target
@@ -103,11 +114,12 @@ mount_stowaways() {
 	mkdir /target/data # in new fs
 	mount --bind /data /target/data
     fi
+    mount
 }
 
 # Sugar for accessing usb config
 write() {
-  /bin/echo -n "$2" > "$1"
+  echo -n "$2" > "$1"
 }
 
 inject_loop() {
@@ -118,17 +130,25 @@ inject_loop() {
     mkdir $INJ_DIR
     mkfifo $INJ_STDIN
     mkfifo $INJ_STDOUT
+    echo "This entire directory is for debugging init - it can safely be removed" > $INJ_DIR/README
 
+    echo "########################## Beginning inject loop"
     while : ; do
         while read IN; do
 	    if [ "$IN" = "continue" ]; then break 2;fi
             $IN >$INJ_STDOUT 2>&1
         done <$INJ_STDIN
     done
+    rm -rf $INJ_DIR # Clean up if we exited nicely
+    echo "########################## inject loop done"
 }
 
 # This sets up the USB with whatever USB_FUNCTIONS are set to
 usb_setup() {
+      write $ANDROID_USB/enable        0
+      write $ANDROID_USB/functions     ""
+      write $ANDROID_USB/enable        1
+      usleep 500000 # 0.5 delay to attempt to remove rndis function
       write $ANDROID_USB/enable        0
       write $ANDROID_USB/idVendor      18D1
       write $ANDROID_USB/idProduct     D001
@@ -140,51 +160,61 @@ usb_setup() {
 }
 # This lets us communicate errors to host (if it needs disable/enable then that's a problem)
 usb_info() {
-      write $ANDROID_USB/iSerial       "$1"
+    # make sure USB is settled
+    echo "########################## usb_info: $1"
+    sleep 1
+    write $ANDROID_USB/iSerial       "$1"
 }
 
 
 run_debug_session() {
     CUSTOMPRODUCT=$1
-    # During debug we export mmc too
-    echo /dev/mmcblk0 > /sys/class/android_usb/f_mass_storage/lun0/file
-
-    USB_FUNCTIONS=rndis,mass_storage
-    usb_setup "Mer Debug setting up"
-    sleep 1
+    echo "########################## Debug session : $1"
+    usb_setup "Mer Debug setting up (DONE_SWITCH=$DONE_SWITCH)"
 
     USB_IFACE=notfound
-    /bin/ifconfig usb0   $LOCAL_IP && USB_IFACE=usb0
-    /bin/ifconfig rndis0 $LOCAL_IP && USB_IFACE=rndis0
+    /sbin/ifconfig usb0   $LOCAL_IP && USB_IFACE=usb0
+    /sbin/ifconfig rndis0 $LOCAL_IP && USB_IFACE=rndis0
+    # Report for the logs
+    /sbin/ifconfig
 
-    # Unable to set up USB interface? Reboot. 
+    # Unable to set up USB interface? Reboot.
     if [ x$USB_IFACE = xnotfound ]; then
 	usb_info "Mer Debug: ERROR: could not setup USB as usb0 or rndis0"
-	sleep 900
+	dmesg
+	sleep 60 # plenty long enough to check usb on host
 	reboot -f
-    fi 
+    fi
 
-    /bin/echo "interface $USB_IFACE" >> /etc/udhcpd.conf
+    echo "interface $USB_IFACE" >> /etc/udhcpd.conf
     # Be explicit about busybox so this works in a rootfs too
+    echo "########################## starting dhcpd"
     $EXPLICIT_BUSYBOX udhcpd
 
     set_welcome_msg
     # Non-blocking telnetd
-    $EXPLICIT_BUSYBOX telnetd -p 23 -l /bin/sh
+    echo "########################## starting telnetd"
+    # We run telnetd on different ports pre/post-switch_root This
+    # avoids problems with an unterminated pre-switch_root telnetd
+    # hogging the port
+    $EXPLICIT_BUSYBOX telnetd -p $TELNET_DEBUG_PORT -l /bin/sh
 
-    usb_info "Mer Debug telnet on port 23 on $USB_IFACE $LOCAL_IP - also running udhcpd"
+    # For some reason this does not work in rootfs
+    usb_info "Mer Debug telnet on port $TELNET_DEBUG_PORT on $USB_IFACE $LOCAL_IP - also running udhcpd"
 
-    # Run command injection loop
+    # Some logging output
+    ps -wlT
+    ps -ef
+    netstat -lnp
+    sync
+
+    # Run command injection loop = can be exited via 'continue'
     inject_loop
-
-    # User has been into debug and killed telnet, hoping for boot to continue
-    USB_FUNCTIONS=rndis
-    echo "" > /sys/class/android_usb/f_mass_storage/lun0/file
-    usb_setup "Post-debug boot"
 }
 
 # writes to /diagnosis.log if there's a problem
 check_kernel_config() {
+    echo "Checking kernel config"
     if [ ! -e /proc/config.gz ]; then
 	echo "No /proc/config.gz. Enable CONFIG_IKCONFIG and CONFIG_IKCONFIG_PROC" >> /diagnosis.log
     else
@@ -203,6 +233,7 @@ check_kernel_config() {
 
 if [ "$DONE_SWITCH" = "no" ]; then
     EXPLICIT_BUSYBOX=""
+    TELNET_DEBUG_PORT=23
     /bin/busybox --install -s
 
     do_mount_devprocsys
@@ -217,41 +248,47 @@ if [ "$DONE_SWITCH" = "no" ]; then
 
     mount_stowaways
 
-    if [ -e /diagnosis.log ]; then
-	run_debug_session "Refusing to boot. See /diagnosis.log (in initrd only)"
-	sleep 900 # If things are really bad, at least hope the message appears on usb
-	reboot -f
+    # No target debug unless we debug here too (for now)
+
+    if [ x$ALWAYSDEBUG = x1 ] || [ "$(get_opt bootmode)" = "debug" ] || [ -e /diagnosis.log ]; then
+	# During debug we export mmc too
+	echo /dev/mmcblk0 > /sys/class/android_usb/f_mass_storage/lun0/file
+	USB_FUNCTIONS=rndis,mass_storage
+
+	MSG="Always debug: rndis + mass_storage"
+	[ -e /diagnosis.log ] && MSG="Refusing to boot. See /diagnosis.log (in initrd only) rndis and mass_storage"
+	[ "$(get_opt bootmode)" = "debug" ] && MSG="bootmode=debug on kernel command line"
+
+	run_debug_session $MSG
+
+	# Tidy up before we switch_root (rootfs init-debug leaves these running during bootup)
+	killall telnetd
+	killall udhcpd
+
+	USB_FUNCTIONS=rndis
+	usb_setup "Mer Debug: done debug, disabling storage"
     fi
 
-    if [ x$ALWAYSDEBUG = x1 ]; then
-	run_debug_session "Always debug"
+    if [ -f "/target/init-debug" ]; then
+	exec switch_root /target /init-debug &> /target/init-debug-stderrout
+    else
+	if [ -e "/target/sbin/init" ]; then
+	    exec switch_root /target /sbin/init --log-level=debug --log-target=kmsg &> /target/init-stderrout
+	fi
     fi
+    run_debug_session "Failed to boot init in real rootfs"
 
-    # Check for special bootmode flags and process accordingly.
-    case "$(get_opt bootmode)" in
-	debug)
-	    run_debug_session "bootmode=debug on kernel command line"
-	    ;;
-
-	*)
-	    if [ -f "/target/init-debug" ]; then
-		exec switch_root /target /init-debug &> /target/init-debug-stderrout
-	    else
-		if [ -e "/target/sbin/init" ]; then
-		    exec switch_root /target /sbin/init --log-level=debug --log-target=kmsg &> /target/init-stderrout
-		fi
-	    fi
-	    run_debug_session "Failed to boot init in real rootfs"
-	    ;;
-    esac
-    sleep 3600
 else
     # We're in the real rootfs running as init-debug
-    EXPLICIT_BUSYBOX="/bin/busybox"
+    EXPLICIT_BUSYBOX="/bin/busybox-static"
+    TELNET_DEBUG_PORT=22
+
+    # We need this to support hotplug in v. early boot. It will be replaced later
+    [ -f /sbin/mdev ] || ln -s $EXPLICIT_BUSYBOX /sbin/mdev
     do_mount_devprocsys
     run_debug_session "init-debug in real rootfs"
 
-    # Now try to boot
+    # Now try to boot the real init
     exec /sbin/init --log-level=debug --log-target=kmsg &> /boot/systemd_stdouterr
     run_debug_session "init in real rootfs failed"
 fi

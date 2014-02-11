@@ -100,7 +100,7 @@ LOCAL_MODULE:= hybris-boot
 # but nothing seems suitable for making an img like this
 LOCAL_MODULE_CLASS := ROOT
 LOCAL_MODULE_SUFFIX := .img
-LOCAL_MODULE_PATH := $(PRODUCT_OUT)/hybris
+LOCAL_MODULE_PATH := $(PRODUCT_OUT)
 
 include $(BUILD_SYSTEM)/base_rules.mk
 BOOT_INTERMEDIATE := $(call intermediates-dir-for,ROOT,$(LOCAL_MODULE),)
@@ -142,7 +142,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE:= hybris-recovery
 LOCAL_MODULE_CLASS := ROOT
 LOCAL_MODULE_SUFFIX := .img
-LOCAL_MODULE_PATH := $(PRODUCT_OUT)/hybris
+LOCAL_MODULE_PATH := $(PRODUCT_OUT)
 
 include $(BUILD_SYSTEM)/base_rules.mk
 RECOVERY_INTERMEDIATE := $(call intermediates-dir-for,ROOT,$(LOCAL_MODULE),)

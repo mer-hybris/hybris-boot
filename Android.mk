@@ -45,18 +45,17 @@ HYBRIS_R_ALWAYSDEBUG := 1
 # First find one/more fstabs (we check the _dest in case some sick hw
 # developer puppy decides to use a _src which is not called *fstab* :) )
 # and then use the _src since _dest is not installed.
-HYBRIS_FSTAB :=	$(strip $(foreach cf,$(PRODUCT_COPY_FILES), \
-	  $(eval _src := $(call word-colon,1,$(cf))) \
-          $(eval _dest := $(call word-colon,2,$(cf))) \
-          $(if $(findstring fstab,$(_dest)), \
-            $(_src))))
+#HYBRIS_FSTAB :=	$(strip $(foreach cf,$(PRODUCT_COPY_FILES),
+#	  $(eval _src := $(call word-colon,1,$(cf))) \
+#          $(eval _dest := $(call word-colon,2,$(cf))) \
+#          $(if $(findstring fstab,$(_dest)), \
+#            $(_src))))
+HYBRIS_FSTAB := device/*/$(TARGET_DEVICE)/recovery.fstab
 
-ifeq (,HYBRIS_FSTAB)
-   $(error ********************* No fstab found for this device)
-endif
-# Now we have a number of fstab files - hopefully one has a /data in it
-$(warning ********************* fstabs found for this device is/are $(HYBRIS_FSTAB))
-HYBRIS_DATA_PART := $(strip $(shell cat $(HYBRIS_FSTAB) | grep /data | cut -f1 -d" "))
+HYBRIS_BOOT_PART := $(strip $(shell cat $(HYBRIS_FSTAB) | sed -e 's/\t/ /g' | sed -e 's/  */ /g' | grep /boot | cut -f3 -d' '))
+HYBRIS_DATA_PART := $(strip $(shell cat $(HYBRIS_FSTAB) | sed -e 's/\t/ /g' | sed -e 's/  */ /g' | grep /data | cut -f3 -d' '))
+
+$(warning ********************* /boot should live on $(HYBRIS_BOOT_PART))
 $(warning ********************* /data should live on $(HYBRIS_DATA_PART))
 
 ## FIXME - count the number of words in HYBRIS_DATA_PART and bitch if >1
@@ -175,3 +174,46 @@ $(RECOVERY_RAMDISK_INIT): $(RECOVERY_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
 	  sed -e 's %DEFAULT_OS% $(HYBRIS_R_DEFAULT_OS) g' | \
 	  sed -e 's %ALWAYSDEBUG% $(HYBRIS_R_ALWAYSDEBUG) g' > $@
 	@chmod +x $@
+
+
+################################################################
+include $(CLEAR_VARS)
+LOCAL_MODULE := hybris-updater-script
+LOCAL_MODULE_CLASS := ROOT
+LOCAL_MODULE_PATH := $(PRODUCT_OUT)
+
+include $(BUILD_SYSTEM)/base_rules.mk
+UPDATER_INTERMEDIATE := $(call intermediates-dir-for,ROOT,$(LOCAL_MODULE),)
+
+UPDATER_SCRIPT_SRC := $(LOCAL_PATH)/updater-script
+
+$(LOCAL_BUILT_MODULE): $(UPDATER_SCRIPT_SRC)
+	@echo "Installing updater .zip script resources."
+	mkdir -p $(dir $@)
+	rm -rf $@
+	@sed -e 's %DEVICE% $(TARGET_DEVICE) g' $(UPDATER_SCRIPT_SRC) > $@
+
+HYBRIS_UPDATER_SCRIPT := $(LOCAL_BUILD_MODULE)
+
+#---------------------------------------------------------------
+include $(CLEAR_VARS)
+LOCAL_MODULE := hybris-updater-unpack
+LOCAL_MODULE_CLASS := ROOT
+LOCAL_MODULE_SUFFIX := .sh
+LOCAL_MODULE_PATH := $(PRODUCT_OUT)
+
+include $(BUILD_SYSTEM)/base_rules.mk
+UPDATER_INTERMEDIATE := $(call intermediates-dir-for,ROOT,$(LOCAL_MODULE),)
+
+UPDATER_UNPACK_SRC := $(LOCAL_PATH)/updater-unpack.sh
+
+$(LOCAL_BUILT_MODULE): $(UPDATER_UNPACK_SRC)
+	@echo "Installing updater .zip script resources."
+	mkdir -p $(dir $@)
+	rm -rf $@
+	@sed -e 's %DEVICE% $(TARGET_DEVICET) g' $(UPDATER_UNPACK_SRC) | \
+	  sed -e 's %BOOT_PART% $(HYBRIS_BOOT_PART) g' | \
+	  sed -e 's %DATA_PART% $(HYBRIS_DATA_PART) g' > $@
+
+HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)
+

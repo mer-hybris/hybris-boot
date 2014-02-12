@@ -114,7 +114,7 @@ mount_stowaways() {
 	mkdir /target
 
 	mount $DATA_PARTITION /data
-	mount --bind /data/.stowaways/sailfishos /target
+	mount --bind /data/.stowaways/${DEFAULT_OS} /target
 	mkdir /target/data # in new fs
 	mount --bind /data /target/data
     fi

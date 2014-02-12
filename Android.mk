@@ -27,10 +27,10 @@ HYBRIS_BOOTIMG_COMMANDLINE :=
 HYBRIS_RECOVERYIMG_COMMANDLINE := bootmode=debug
 HYBRIS_BOOTLOGO :=
 # BOOT
-HYBRIS_B_NEVERBOOT :=
+HYBRIS_B_DEFAULT_OS := sailfishos
 HYBRIS_B_ALWAYSDEBUG :=
 # RECOVERY
-HYBRIS_R_NEVERBOOT :=
+HYBRIS_R_DEFAULT_OS := sailfishos
 HYBRIS_R_ALWAYSDEBUG := 1
 
 ## All manual "config" should be done above this line
@@ -132,7 +132,7 @@ $(BOOT_RAMDISK_INIT): $(BOOT_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
 	@mkdir -p $(dir $@)
 	@sed -e 's %DATA_PART% $(HYBRIS_DATA_PART) g' $(BOOT_RAMDISK_INIT_SRC) | \
 	  sed -e 's %BOOTLOGO% $(HYBRIS_BOOTLOGO) g' | \
-	  sed -e 's %NEVERBOOT% $(HYBRIS_B_NEVERBOOT) g' | \
+	  sed -e 's %DEFAULT_OS% $(HYBRIS_B_DEFAULT_OS) g' | \
 	  sed -e 's %ALWAYSDEBUG% $(HYBRIS_B_ALWAYSDEBUG) g' > $@
 	@chmod +x $@
 
@@ -172,6 +172,6 @@ $(RECOVERY_RAMDISK_INIT): $(RECOVERY_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
 	@mkdir -p $(dir $@)
 	@sed -e 's %DATA_PART% $(HYBRIS_DATA_PART) g' $(RECOVERY_RAMDISK_INIT_SRC) | \
 	  sed -e 's %BOOTLOGO% $(HYBRIS_BOOTLOGO) g' | \
-	  sed -e 's %NEVERBOOT% $(HYBRIS_R_NEVERBOOT) g' | \
+	  sed -e 's %DEFAULT_OS% $(HYBRIS_R_DEFAULT_OS) g' | \
 	  sed -e 's %ALWAYSDEBUG% $(HYBRIS_R_ALWAYSDEBUG) g' > $@
 	@chmod +x $@

@@ -88,7 +88,10 @@ do_mount_devprocsys()
     mount -t proc proc /proc
     # telnetd needs /dev/pts/ entries
     mount -t devpts devpts /dev/pts
+}
 
+do_hotplug_scan()
+{
     echo /sbin/mdev > /proc/sys/kernel/hotplug
     mdev -s
     # There is no way to know when all hotplug events have been processed :(
@@ -238,6 +241,8 @@ if [ "$DONE_SWITCH" = "no" ]; then
 
     do_mount_devprocsys
 
+    do_hotplug_scan
+
     # Support /dev/block/mmcXXX only in initrd phase
     ln -s . /dev/block
     ln -s /proc/mounts /etc/mtab
@@ -269,6 +274,9 @@ if [ "$DONE_SWITCH" = "no" ]; then
 	usb_setup "Mer Debug: done debug, disabling storage"
     fi
 
+    # Disable mdev hotplug now - let udev handle it now
+    echo "" > /proc/sys/kernel/hotplug
+
     if [ -f "/target/init-debug" ]; then
 	exec switch_root /target /init-debug &> /target/init-debug-stderrout
     else
@@ -283,9 +291,8 @@ else
     EXPLICIT_BUSYBOX="/bin/busybox-static"
     TELNET_DEBUG_PORT=22
 
-    # We need this to support hotplug in v. early boot. It will be replaced later
-    [ -f /sbin/mdev ] || ln -s $EXPLICIT_BUSYBOX /sbin/mdev
     do_mount_devprocsys
+
     run_debug_session "init-debug in real rootfs"
 
     # Now try to boot the real init

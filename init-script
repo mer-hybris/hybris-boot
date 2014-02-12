@@ -40,11 +40,12 @@ To run a command:
   echo "ls -l /" >/init-ctl/stdin
 To specify an exec to boot into the system:
   echo "exec switch_root /target /init-debug" >/init-ctl/stdin
+(careful, this won't terminate daemons or disable busybox hotplug handling)
 
 To allow init to continue:
   echo "continue" >/init-ctl/stdin
 
-The init script also functions as a post-switch_root debug too:
+The init script also functions as a post-switch_root debugger too:
   cp /init /target/init-debug
 
 EOF

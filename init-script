@@ -78,17 +78,15 @@ do_mount_devprocsys()
 {
     echo "########################## mounting devprocsys"
     mkdir /dev
-    mount -t tmpfs tmpfs /dev
-
+    mount -t devtmpfs devtmpfs /dev
+    # telnetd needs /dev/pts/ entries
     mkdir /dev/pts
+    mount -t devpts devpts /dev/pts
+
     mkdir /proc
     mkdir /sys
-
-    # Don't use mount -a as we run in both initrd and rootfs
     mount -t sysfs sysfs /sys
     mount -t proc proc /proc
-    # telnetd needs /dev/pts/ entries
-    mount -t devpts devpts /dev/pts
 }
 
 do_hotplug_scan()
@@ -97,7 +95,6 @@ do_hotplug_scan()
     mdev -s
     # There is no way to know when all hotplug events have been processed :(
     sleep 2
-    mount
 }
 
 bootsplash() {
@@ -210,6 +207,7 @@ run_debug_session() {
     ps -wlT
     ps -ef
     netstat -lnp
+    cat /proc/mounts
     sync
 
     # Run command injection loop = can be exited via 'continue'
@@ -275,7 +273,7 @@ if [ "$DONE_SWITCH" = "no" ]; then
 	usb_setup "Mer Debug: done debug, disabling storage"
     fi
 
-    # Disable mdev hotplug now - let udev handle it now
+    # Disable mdev hotplug now - let udev handle it in main boot
     echo "" > /proc/sys/kernel/hotplug
 
     if [ -f "/target/init-debug" ]; then
@@ -295,6 +293,9 @@ else
     do_mount_devprocsys
 
     run_debug_session "init-debug in real rootfs"
+
+    # If we don't do this then udev will not be able to create /dev/block/*
+    rm /dev/block
 
     # Now try to boot the real init
     exec /sbin/init --log-level=debug --log-target=kmsg &> /boot/systemd_stdouterr

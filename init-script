@@ -118,6 +118,13 @@ mount_stowaways() {
     mount
 }
 
+umount_stowaways()
+    if [ ! -z $DATA_PARTITION ]; then
+	umount /target/data
+	umount /target
+	umount /data
+    fi
+
 # Sugar for accessing usb config
 write() {
   echo -n "$2" > "$1"

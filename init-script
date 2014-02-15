@@ -32,10 +32,12 @@ set_welcome_msg(){
 cat <<EOF >> /etc/issue.net
 Welcome to the Mer/SailfishOS Boat loader debug init system.
 
+Log so far is in /init.log
+
 You may inject commands into init shell process (PID 1):
 
-To see output of commands:
-  tail -f /init-ctl/stdout &
+To see output of commands as they're injected:
+  tail -f /init.log &
 To run a command:
   echo "ls -l /" >/init-ctl/stdin
 To specify an exec to boot into the system:
@@ -47,6 +49,7 @@ To allow init to continue:
 
 The init script also functions as a post-switch_root debugger too:
   cp /init /target/init-debug
+(When run post-switch_root, telnet is on port 22, not 23)
 
 EOF
 }
@@ -133,18 +136,16 @@ write() {
 inject_loop() {
     INJ_DIR=/init-ctl
     INJ_STDIN=$INJ_DIR/stdin
-    INJ_STDOUT=$INJ_DIR/stdout
 
     mkdir $INJ_DIR
     mkfifo $INJ_STDIN
-    mkfifo $INJ_STDOUT
     echo "This entire directory is for debugging init - it can safely be removed" > $INJ_DIR/README
 
     echo "########################## Beginning inject loop"
     while : ; do
         while read IN; do
 	    if [ "$IN" = "continue" ]; then break 2;fi
-            $IN >$INJ_STDOUT 2>&1
+            $IN
         done <$INJ_STDIN
     done
     rm -rf $INJ_DIR # Clean up if we exited nicely

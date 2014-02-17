@@ -179,7 +179,10 @@ $(LOCAL_BUILT_MODULE): $(UPDATER_SCRIPT_SRC)
 	@echo "Installing updater .zip script resources."
 	mkdir -p $(dir $@)
 	rm -rf $@
-	@sed -e 's %DEVICE% $(TARGET_DEVICE) g' $(UPDATER_SCRIPT_SRC) > $@
+	@sed -e 's %DEVICE% $(TARGET_DEVICE) g' \
+             -e 's %BOOT_PART% $(HYBRIS_BOOT_PART) g' \
+             -e 's %DATA_PART% $(HYBRIS_DATA_PART) g' \
+	      $(UPDATER_SCRIPT_SRC) > $@
 
 HYBRIS_UPDATER_SCRIPT := $(LOCAL_BUILD_MODULE)
 
@@ -200,12 +203,11 @@ $(LOCAL_BUILT_MODULE): $(UPDATER_UNPACK_SRC)
 	mkdir -p $(dir $@)
 	rm -rf $@
 	@sed -e 's %DEVICE% $(TARGET_DEVICET) g' \
-	     -e 's %BOOT_PART% $(HYBRIS_BOOT_PART) g' \
-	     -e 's %DATA_PART% $(HYBRIS_DATA_PART) g' $(UPDATER_UNPACK_SRC) > $@
+	     $(UPDATER_UNPACK_SRC) > $@
 
 HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)
 
 
 .PHONY: hybris-hal
-hybris-hal: hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot linker init libc adb adbd libEGL libGLESv2 bootimage servicemanager logcat
+hybris-hal: hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot linker init libc adb adbd libEGL libGLESv2 bootimage servicemanager logcat updater
 

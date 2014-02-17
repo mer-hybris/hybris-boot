@@ -49,7 +49,14 @@ To allow init to continue:
 
 The init script also functions as a post-switch_root debugger too:
   cp /init /target/init-debug
-(When run post-switch_root, telnet is on port 22, not 23)
+(When run post-switch_root, telnet is on port 2323, not 23)
+
+In order to work safely with the device's mmc you should
+  echo "umount_stowaways" >/init-ctl/stdin
+
+Then you can mount and modify exported mass storage on host. When done
+  echo "mount_stowaways" >/init-ctl/stdin
+
 
 EOF
 }
@@ -296,7 +303,7 @@ if [ "$DONE_SWITCH" = "no" ]; then
 else
     # We're in the real rootfs running as init-debug
     EXPLICIT_BUSYBOX="/bin/busybox-static"
-    TELNET_DEBUG_PORT=22
+    TELNET_DEBUG_PORT=2323
 
     do_mount_devprocsys
 

@@ -1,6 +1,6 @@
 #! /sbin/sh
 
-FS_ARC="/data/sffe-%DEVICE%-%VERSION%.tar.bz2"
+FS_ARC="/data/sailfishos-rootfs.tar.bz2"
 FS_DST="/data/.stowaways/sailfishos"
 
 rm -rf $FS_DST

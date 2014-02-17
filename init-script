@@ -124,6 +124,8 @@ mount_stowaways() {
 	mount --bind /data/.stowaways/${DEFAULT_OS} /target
 	mkdir /target/data # in new fs
 	mount --bind /data /target/data
+    else
+        echo "Failed to mount /target, device node '$DATA_PARTITION' not found!" >> /diagnosis.log
     fi
     mount
 }

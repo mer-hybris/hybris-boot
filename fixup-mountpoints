@@ -39,6 +39,12 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "i9305")
+	sed -i \
+	    -e 's /block/ / ' \
+	    "$@"
+	;;
+
      *)
         exit 1
         ;;

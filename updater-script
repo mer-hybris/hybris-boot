@@ -4,6 +4,7 @@ ui_print("Hybris Installer");
 ui_print("========================================");
 ui_print("      Device: %DEVICE%");
 ui_print("     Version: %VERSION%");
+ui_print("       Image: %IMAGE_FILE%");
 ui_print("        Size: %IMAGE_SIZE%");
 ui_print("  Partitions:");
 ui_print("    /boot -> %BOOT_PART%");
@@ -13,21 +14,22 @@ ui_print("");
 
 assert(getprop("ro.product.device") == "%DEVICE%" || getprop("ro.build.product") == "%DEVICE%" || getprop("ro.cm.device") == "%DEVICE%");
 
-ui_print("Device check succeeded, mounting filesystems...");
+ui_print("Device check succeeded, mounting filesystems ...");
 mount("ext4", "EMMC", "%DATA_PART%", "/data");
 
-ui_print("Copying filesystem archive and installation system...");
-package_extract_file("sailfishos-rootfs.tar.bz2", "/data/sailfishos-rootfs.tar.bz2");
+ui_print("Copying filesystem archive ...");
+package_extract_file("%IMAGE_FILE%", "/data/sailfishos-rootfs.tar.bz2");
+ui_print("Copying installation script ...");
 package_extract_file("updater-unpack.sh", "/tmp/updater-unpack.sh");
 
-ui_print("Running installation system...");
+ui_print("Running installation script ...");
 set_perm(0, 0, 755, "/tmp/updater-unpack.sh");
 run_program("/tmp/updater-unpack.sh");
 
 ui_print("Flashing hybris-boot.img ...");
 package_extract_file("hybris-boot.img", "%BOOT_PART%");
 
-ui_print("Unmounting filesystems.");
+ui_print("Unmounting filesystems ...");
 unmount("/data");
 
 ui_print("Done!");

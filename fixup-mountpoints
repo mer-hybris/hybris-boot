@@ -1,0 +1,52 @@
+#!/bin/sh
+# Fix up mount points device node names.
+# This is broken pending systemd > 191-2 so hack the generated unit files :(
+# See: https://bugzilla.redhat.com/show_bug.cgi?id=859297
+
+DEVICE=$1
+shift
+
+echo "Fixing mount-points for device $DEVICE"
+
+case "$DEVICE" in
+    "mako")
+        sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p20 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p21 ' \
+            "$@"
+        ;;
+
+    "grouper")
+        sed -i \
+            -e 's block/platform/sdhci-tegra.3/by-name/APP mmcblk0p3 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/CAC mmcblk0p4 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/UDA mmcblk0p9 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/MSC mmcblk0p5 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/LNX mmcblk0p2 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/SOS mmcblk0p1 ' \
+            "$@"
+        ;;
+
+    "tilapia")
+        sed -i \
+            -e 's block/platform/sdhci-tegra.3/by-name/APP mmcblk0p3 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/CAC mmcblk0p5 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/UDA mmcblk0p10 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/MSC mmcblk0p6 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/LNX mmcblk0p2 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/SOS mmcblk0p1 ' \
+            "$@"
+        ;;
+
+    "i9305")
+	sed -i \
+	    -e 's /block/ / ' \
+	    "$@"
+	;;
+
+     *)
+        exit 1
+        ;;
+esac
+

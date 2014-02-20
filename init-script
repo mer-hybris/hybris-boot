@@ -273,16 +273,18 @@ if [ "$DONE_SWITCH" = "no" ]; then
 
     # No target debug unless we debug here too (for now)
 
-    if [ x$ALWAYSDEBUG = x1 ] || [ "$(get_opt bootmode)" = "debug" ] || [ -e /diagnosis.log ]; then
+    DBG_REASON=""
+    [ -e /diagnosis.log ] && DBG_REASON="Refusing to boot. See /diagnosis.log (in initrd only)"
+    [ "$(get_opt bootmode)" = "debug" ] && DBG_REASON="bootmode=debug on kernel command line"
+    [ x$ALWAYSDEBUG = x1 ] && DBG_REASON="Always debug: rndis + mass_storage"
+    [ -f /target/init_enter_debug ] && DBG_REASON="/init_enter_debug exists"
+
+    if ! [ "$DBG_REASON" = "" ]
 	# During debug we export mmc too
 	echo /dev/mmcblk0 > /sys/class/android_usb/f_mass_storage/lun0/file
 	USB_FUNCTIONS=rndis,mass_storage
 
-	MSG="Always debug: rndis + mass_storage"
-	[ -e /diagnosis.log ] && MSG="Refusing to boot. See /diagnosis.log (in initrd only) rndis and mass_storage"
-	[ "$(get_opt bootmode)" = "debug" ] && MSG="bootmode=debug on kernel command line"
-
-	run_debug_session $MSG
+	run_debug_session $DBG_REASON
 
 	# Tidy up before we switch_root (rootfs init-debug leaves these running during bootup)
 	killall telnetd

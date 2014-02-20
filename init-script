@@ -17,11 +17,12 @@
 # to the real rootfs. It can also be copied into rootfs and provide
 # monitoring of the boot process there too.
 
+# Be careful - you can't run any external commands until busybox has installed.
+
 # General logging
 set -x
 exec > /init.log 2>&1
 echo "Running Mer Boat Loader"
-date
 
 BOOTLOGO=%BOOTLOGO%
 ALWAYSDEBUG=%ALWAYSDEBUG%
@@ -40,9 +41,9 @@ To see output of commands as they're injected:
   tail -f /init.log &
 To run a command:
   echo "ls -l /" >/init-ctl/stdin
-To specify an exec to boot into the system:
-  echo "exec switch_root /target /init-debug" >/init-ctl/stdin
-(careful, this won't terminate daemons or disable busybox hotplug handling)
+
+(Be careful if you experiment with exec as you need to terminate
+daemons and disable busybox hotplug handling)
 
 To allow init to continue:
   echo "continue" >/init-ctl/stdin
@@ -254,6 +255,7 @@ if [ "$DONE_SWITCH" = "no" ]; then
     EXPLICIT_BUSYBOX=""
     TELNET_DEBUG_PORT=23
     /bin/busybox --install -s
+    date
 
     do_mount_devprocsys
 

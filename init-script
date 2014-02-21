@@ -279,7 +279,7 @@ if [ "$DONE_SWITCH" = "no" ]; then
     [ x$ALWAYSDEBUG = x1 ] && DBG_REASON="Always debug: rndis + mass_storage"
     [ -f /target/init_enter_debug ] && DBG_REASON="/init_enter_debug exists"
 
-    if ! [ "$DBG_REASON" = "" ]
+    if ! [ "$DBG_REASON" = "" ] ; then
 	# During debug we export mmc too
 	echo /dev/mmcblk0 > /sys/class/android_usb/f_mass_storage/lun0/file
 	USB_FUNCTIONS=rndis,mass_storage

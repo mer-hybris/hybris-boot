@@ -37,6 +37,8 @@ HYBRIS_R_ALWAYSDEBUG := 1
 
 # Force deferred assignment
 
+HYBRIS_FIXUP_MOUNTS := $(LOCAL_PATH)/fixup-mountpoints
+
 # Process CyanogenMod recovery.fstab file for required partition information.
 HYBRIS_FSTAB := device/*/$(TARGET_DEVICE)/recovery.fstab
 
@@ -121,7 +123,7 @@ $(BOOT_RAMDISK_INIT): $(BOOT_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
 	  -e 's %BOOTLOGO% $(HYBRIS_BOOTLOGO) g' \
 	  -e 's %DEFAULT_OS% $(HYBRIS_B_DEFAULT_OS) g' \
 	  -e 's %ALWAYSDEBUG% $(HYBRIS_B_ALWAYSDEBUG) g' $(BOOT_RAMDISK_INIT_SRC) > $@
-	$(RECOVERY_FIXUP_MOUNTS) "$(TARGET_DEVICE)" "$@"
+	$(HYBRIS_FIXUP_MOUNTS) "$(TARGET_DEVICE)" "$@"
 	@chmod +x $@
 
 ################################################################
@@ -137,7 +139,6 @@ RECOVERY_INTERMEDIATE := $(call intermediates-dir-for,ROOT,$(LOCAL_MODULE),)
 
 RECOVERY_RAMDISK := $(RECOVERY_INTERMEDIATE)/recovery-initramfs.gz
 RECOVERY_RAMDISK_SRC := $(LOCAL_PATH)/initramfs
-RECOVERY_FIXUP_MOUNTS := $(LOCAL_PATH)/fixup-mountpoints
 RECOVERY_RAMDISK_INIT_SRC := $(LOCAL_PATH)/init-script
 RECOVERY_RAMDISK_INIT := $(RECOVERY_INTERMEDIATE)/init
 RECOVERY_RAMDISK_FILES := $(shell find $(RECOVERY_RAMDISK_SRC) -type f) $(RECOVERY_RAMDISK_INIT)
@@ -163,7 +164,7 @@ $(RECOVERY_RAMDISK_INIT): $(RECOVERY_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
 	  -e 's %BOOTLOGO% $(HYBRIS_BOOTLOGO) g' \
 	  -e 's %DEFAULT_OS% $(HYBRIS_R_DEFAULT_OS) g' \
 	  -e 's %ALWAYSDEBUG% $(HYBRIS_R_ALWAYSDEBUG) g' $(RECOVERY_RAMDISK_INIT_SRC) > $@
-	$(RECOVERY_FIXUP_MOUNTS) "$(TARGET_DEVICE)" "$@"
+	$(HYBRIS_FIXUP_MOUNTS) "$(TARGET_DEVICE)" "$@"
 	@chmod +x $@
 
 

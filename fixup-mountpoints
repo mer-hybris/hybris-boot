@@ -46,6 +46,10 @@ case "$DEVICE" in
 	;;
 
      *)
+        echo
+        echo "!!! You must configure board in hybris/hybris-boot/fixup-mountpoints"
+        echo
+        echo
         exit 1
         ;;
 esac

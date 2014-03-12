@@ -14,6 +14,7 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
             -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p20 ' \
             -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p21 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p23 ' \
             "$@"
         ;;
 

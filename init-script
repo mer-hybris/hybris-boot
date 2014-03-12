@@ -30,7 +30,7 @@ DATA_PARTITION=%DATA_PART%
 DEFAULT_OS=%DEFAULT_OS%
 
 set_welcome_msg(){
-cat <<EOF >> /etc/issue.net
+cat <<EOF > /etc/issue.net
 Welcome to the Mer/SailfishOS Boat loader debug init system.
 
 Log so far is in /init.log
@@ -131,12 +131,13 @@ mount_stowaways() {
     mount
 }
 
-umount_stowaways()
+umount_stowaways() {
     if [ ! -z $DATA_PARTITION ]; then
 	umount /target/data
 	umount /target
 	umount /data
     fi
+}
 
 # Sugar for accessing usb config
 write() {

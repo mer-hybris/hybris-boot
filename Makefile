@@ -25,6 +25,13 @@ setup-mako:
 		--ramdisk_offset 0x01600000 \
 	)
 
+setup-hammerhead:
+	$(eval MKBOOTIMG_PARAMS=--cmdline 'console=ttyHSL0,115200,n8 androidboot.hardware=hammerhead user_debug=31 maxcpus=2 msm_watchdog_v2.enable=1' \
+		--base 0x00000000 \
+		--ramdisk_offset 0x02900000 \
+ 		--tags_offset 0x02700000 \
+	)
+
 setup-grouper:
 	$(eval DATA_PART=/dev/mmcblk0p9)
 

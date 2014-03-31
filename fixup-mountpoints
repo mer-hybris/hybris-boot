@@ -40,7 +40,7 @@ case "$DEVICE" in
             "$@"
         ;;
 
-    "i9305")
+    "i9305" | "encore")
 	sed -i \
 	    -e 's /block/ / ' \
 	    "$@"

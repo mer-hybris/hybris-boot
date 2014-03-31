@@ -281,8 +281,11 @@ if [ "$DONE_SWITCH" = "no" ]; then
     [ -f /target/init_enter_debug ] && DBG_REASON="/init_enter_debug exists"
 
     if ! [ "$DBG_REASON" = "" ] ; then
-	# During debug we export mmc too
-	echo /dev/mmcblk0 > /sys/class/android_usb/f_mass_storage/lun0/file
+	# During debug we export mmc too (some variations in location here)
+	lun=/sys/class/android_usb/f_mass_storage/lun/file
+	if [ -f $lun ]; then echo /dev/mmcblk0 > $lun; fi
+	lun=/sys/class/android_usb/f_mass_storage/lun0/file
+	if [ -f $lun ]; then echo /dev/mmcblk0 > $lun; fi
 	USB_FUNCTIONS=rndis,mass_storage
 
 	run_debug_session $DBG_REASON

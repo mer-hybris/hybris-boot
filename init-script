@@ -122,7 +122,7 @@ mount_stowaways() {
 	mkdir /target
 
 	mount $DATA_PARTITION /data
-	mount --bind /data/.stowaways/${DEFAULT_OS} /target
+	mount --bind /data/.stowaways/sailfishos /target
 	mkdir /target/data # in new fs
 	mount --bind /data /target/data
     else
@@ -317,10 +317,11 @@ else
 
     do_mount_devprocsys
 
-    run_debug_session "init-debug in real rootfs"
+    # run_debug_session "init-debug in real rootfs"
 
     # If we don't do this then udev will not be able to create /dev/block/*
     rm /dev/block
+    echo "STARTING INIT" > /boot/systemd_stdouterr
 
     # Now try to boot the real init
     exec /sbin/init --log-level=debug --log-target=kmsg &> /boot/systemd_stdouterr

@@ -16,6 +16,7 @@ endif
 BOOTLOGO ?= 1
 NEVERBOOT ?= 0
 ALWAYSDEBUG ?= 0
+DEFAULT_OS ?= sailfishos
 
 $(DEVICE): setup-$(DEVICE) boot.img-$(DEVICE)
 
@@ -31,6 +32,7 @@ setup-hammerhead:
 		--ramdisk_offset 0x02900000 \
  		--tags_offset 0x02700000 \
 	)
+	$(eval DATA_PART=/dev/mmcblk0p28)
 
 setup-grouper:
 	$(eval DATA_PART=/dev/mmcblk0p9)
@@ -77,7 +79,7 @@ clean:
 	rm ./initramfs/init
 	rm ./initramfs.gz-*
 	rm ./boot.img-*
-	rm ./zImage-*
+	#rm ./zImage-*
 
 all:
 	$(error Usage: make <device>)

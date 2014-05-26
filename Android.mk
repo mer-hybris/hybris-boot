@@ -39,16 +39,24 @@ HYBRIS_R_ALWAYSDEBUG := 1
 
 HYBRIS_FIXUP_MOUNTS := $(LOCAL_PATH)/fixup-mountpoints
 
-# Process CyanogenMod recovery.fstab file for required partition information.
-HYBRIS_FSTAB := device/*/$(TARGET_DEVICE)/recovery.fstab
 
-HYBRIS_BOOT_PART := $(strip $(shell cat $(HYBRIS_FSTAB) | sed -e 's/\t/ /g' | sed -e 's/  */ /g' | grep /boot | cut -f3 -d' '))
-HYBRIS_DATA_PART := $(strip $(shell cat $(HYBRIS_FSTAB) | sed -e 's/\t/ /g' | sed -e 's/  */ /g' | grep /data | cut -f3 -d' '))
+# Find any fstab files for required partition information.
+# in AOSP we could use TARGET_VENDOR
+# TARGET_VENDOR := $(shell echo $(PRODUCT_MANUFACTURER) | tr '[:upper:]' '[:lower:]')
+# but Cyanogenmod seems to use device/*/$(TARGET_DEVICE) in config.mk so we will too.
+HYBRIS_FSTABS := $(shell find device/*/$(TARGET_DEVICE) -name *fstab* | grep -v goldfish)
 
-$(warning ********************* /boot should live on $(HYBRIS_BOOT_PART))
-$(warning ********************* /data should live on $(HYBRIS_DATA_PART))
+# Get the unique /dev field(s) from the line(s) containing the fs mount point
+# Note the perl one-liner uses double-$ as per Makefile syntax
+HYBRIS_BOOT_PART := $(shell /usr/bin/perl -w -e '$$fs=shift; while (<>) { next unless /^$$fs\s|\s$$fs\s/;for (split) {next unless m(^/dev); print "$$_\n"; }}' /boot $(HYBRIS_FSTABS) | sort -u)
+HYBRIS_DATA_PART := $(shell /usr/bin/perl -w -e '$$fs=shift; while (<>) { next unless /^$$fs\s|\s$$fs\s/;for (split) {next unless m(^/dev); print "$$_\n"; }}' /data $(HYBRIS_FSTABS) | sort -u)
 
-## FIXME - count the number of words in HYBRIS_DATA_PART and bitch if >1
+$(warning ********************* /boot appears to live on $(HYBRIS_BOOT_PART))
+$(warning ********************* /data appears to live on $(HYBRIS_DATA_PART))
+
+ifneq ($(words $(HYBRIS_BOOT_PART))$(words $(HYBRIS_DATA_PART)),11)
+$(error There should be a one and only one device entry for HYBRIS_BOOT_PART and HYBRIS_DATA_PART)
+endif
 
 # Command used to make the image
 MKBOOTIMG := mkbootimg

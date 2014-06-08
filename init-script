@@ -200,13 +200,18 @@ run_debug_session() {
 
     # Unable to set up USB interface? Reboot.
     if [ x$USB_IFACE = xnotfound ]; then
-	usb_info "Mer Debug: ERROR: could not setup USB as usb0 or rndis0"
-	dmesg
-	sleep 60 # plenty long enough to check usb on host
-	reboot -f
+	    usb_info "Mer Debug: ERROR: could not setup USB as usb0 or rndis0"
+	    dmesg
+	    sleep 60 # plenty long enough to check usb on host
+	    reboot -f
     fi
 
+    # Create /etc/udhcpd.conf file.
+    echo "start 192.168.2.20" > /etc/udhcpd.conf
+    echo "end 192.168.2.90" >> /etc/udhcpd.conf
+    echo "lease_file /var/udhcpd.leases" >> /etc/udhcpd.conf
     echo "interface $USB_IFACE" >> /etc/udhcpd.conf
+
     # Be explicit about busybox so this works in a rootfs too
     echo "########################## starting dhcpd"
     $EXPLICIT_BUSYBOX udhcpd

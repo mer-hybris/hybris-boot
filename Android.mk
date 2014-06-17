@@ -45,6 +45,13 @@ HYBRIS_FSTAB := device/*/$(TARGET_DEVICE)/recovery.fstab
 HYBRIS_BOOT_PART := $(strip $(shell cat $(HYBRIS_FSTAB) | sed -e 's/\t/ /g' | sed -e 's/  */ /g' | grep /boot | cut -f3 -d' '))
 HYBRIS_DATA_PART := $(strip $(shell cat $(HYBRIS_FSTAB) | sed -e 's/\t/ /g' | sed -e 's/  */ /g' | grep /data | cut -f3 -d' '))
 
+# If it wasn't found in recovery.fstab, try from the first column in fstab.$DEVICE:
+ifeq "" "$(HYBRIS_BOOT_PART)"
+HYBRIS_FSTAB := device/*/$(TARGET_DEVICE)/fstab.$(TARGET_DEVICE)
+HYBRIS_BOOT_PART := $(strip $(shell cat $(HYBRIS_FSTAB) | sed -e 's/\t/ /g' | sed -e 's/  */ /g' | grep /boot | cut -f1 -d' '))
+HYBRIS_DATA_PART := $(strip $(shell cat $(HYBRIS_FSTAB) | sed -e 's/\t/ /g' | sed -e 's/  */ /g' | grep /data | cut -f1 -d' '))
+endif
+
 $(warning ********************* /boot should live on $(HYBRIS_BOOT_PART))
 $(warning ********************* /data should live on $(HYBRIS_DATA_PART))
 

@@ -309,8 +309,10 @@ if [ "$DONE_SWITCH" = "no" ]; then
     if [ -f "/target/init-debug" ]; then
 	exec switch_root /target /init-debug &> /target/init-debug-stderrout
     else
-	if [ -e "/target/sbin/init" ]; then
-	    exec switch_root /target /sbin/init --log-level=debug --log-target=kmsg &> /target/init-stderrout
+	# Prefer /sbin/preinit over /sbin/init
+	[ -x /target/sbin/preinit ] && INIT=/sbin/preinit || INIT=/sbin/init
+	if [ -x "/target$INIT" ]; then
+	    exec switch_root /target $INIT --log-level=debug --log-target=kmsg &> /target/init-stderrout
 	fi
     fi
     run_debug_session "Failed to boot init in real rootfs"
@@ -328,6 +330,8 @@ else
     rm /dev/block
 
     # Now try to boot the real init
-    exec /sbin/init --log-level=debug --log-target=kmsg &> /boot/systemd_stdouterr
+    # Prefer /sbin/preinit over /sbin/init
+    [ -x /sbin/preinit ] && INIT=/sbin/preinit || INIT=/sbin/init
+    exec $INIT --log-level=debug --log-target=kmsg &> /boot/systemd_stdouterr
     run_debug_session "init in real rootfs failed"
 fi

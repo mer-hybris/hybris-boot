@@ -38,5 +38,5 @@ With your device booted to fastboot, boot the boot.img in debug mode:
 
 Wait for your host computer to pick up DHCP lease from usb network device:
 
-    $ telnet 192.168.2.1
+    $ telnet 192.168.2.15
 

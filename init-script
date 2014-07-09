@@ -69,7 +69,7 @@ export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 USB_FUNCTIONS=rndis
 
 ANDROID_USB=/sys/class/android_usb/android0
-LOCAL_IP=192.168.2.1
+LOCAL_IP=192.168.2.15
 
 DONE_SWITCH=no
 # Are we running in real rootfs

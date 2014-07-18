@@ -49,13 +49,24 @@ case "$DEVICE" in
             "$@"
         ;;
 
-    "i9305")
+    "i9305" | "encore")
 	sed -i \
 	    -e 's /block/ / ' \
 	    "$@"
 	;;
 
-     *)
+    *)
+	cat <<EOF
+
+****************************************************************
+****************************************************************
+ERROR: $DEVICE does not have mountpoint fixup data - see
+       SailfishOS HADK for details on how to fix this
+       Check: device/$VENDOR/$DEVICE/recovery.fstab
+****************************************************************
+****************************************************************
+
+EOF
         exit 1
         ;;
 esac

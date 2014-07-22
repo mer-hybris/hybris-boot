@@ -55,6 +55,19 @@ case "$DEVICE" in
 	    "$@"
 	;;
 
+    "maguro")
+        sed -i \
+            -e 's block/platform/omap/omap_hsmmc.0/by-name/system mmcblk0p10 ' \
+            -e 's block/platform/omap/omap_hsmmc.0/by-name/cache mmcblk0p11 ' \
+            -e 's block/platform/omap/omap_hsmmc.0/by-name/userdata mmcblk0p12 ' \
+            -e 's block/platform/omap/omap_hsmmc.0/by-name/misc mmcblk0p5 ' \
+            -e 's block/platform/omap/omap_hsmmc.0/by-name/boot mmcblk0p7 ' \
+            -e 's block/platform/omap/omap_hsmmc.0/by-name/recovery mmcblk0p8 ' \
+            -e 's block/platform/omap/omap_hsmmc.0/by-name/sbl mmcblk0p2 ' \
+            -e 's block/platform/omap/omap_hsmmc.0/by-name/xloader mmcblk0p1 ' \
+            -e 's block/platform/omap/omap_hsmmc.0/by-name/radio mmcblk0p9 ' \
+            "$@"
+        ;;
     *)
 	cat <<EOF
 

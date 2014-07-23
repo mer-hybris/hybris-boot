@@ -55,6 +55,12 @@ case "$DEVICE" in
 	    "$@"
 	;;
 
+    "n7000")
+        sed -i \
+            -e 's block/platform/dw_mmc/by-name/DATAFS mmcblk0p10 ' \
+            -e 's block/platform/dw_mmc/by-name/KERNEL mmcblk0p5 ' \
+            "$@"
+        ;;
     *)
 	cat <<EOF
 

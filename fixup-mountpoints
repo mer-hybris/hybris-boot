@@ -66,6 +66,9 @@ case "$DEVICE" in
         sed -i \
             -e 's block/platform/omap/omap_hsmmc.1/by-name/DATAFS mmcblk0p10 ' \
             -e 's block/platform/omap/omap_hsmmc.1/by-name/KERNEL mmcblk0p5 ' \
+            -e 's block/platform/omap/omap_hsmmc.1/by-name/FACTORYFS mmcblk0p9 ' \
+            -e 's block/platform/omap/omap_hsmmc.1/by-name/EFS mmcblk0p1 ' \
+            -e 's block/platform/omap/omap_hsmmc.1/by-name/CACHE mmcblk0p7 ' \
             "$@"
         ;;
 

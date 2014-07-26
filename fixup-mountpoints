@@ -87,6 +87,15 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "bacon")
+        sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p15 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p14 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p28 ' \
+            "$@"
+        ;;
+
     *)
 	cat <<EOF
 

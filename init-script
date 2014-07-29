@@ -196,7 +196,7 @@ run_debug_session() {
     /sbin/ifconfig usb0   $LOCAL_IP && USB_IFACE=usb0
     /sbin/ifconfig rndis0 $LOCAL_IP && USB_IFACE=rndis0
     # Report for the logs
-    /sbin/ifconfig
+    /sbin/ifconfig -a
 
     # Unable to set up USB interface? Reboot.
     if [ x$USB_IFACE = xnotfound ]; then

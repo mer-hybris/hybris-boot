@@ -88,6 +88,14 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p28 ' \
             "$@"
         ;;
+    "ace")
+       sed -i \
+            -e 's block/platform/msm_sdcc.2/by-num/p25 mmcblk0p25 ' \
+            -e 's block/platform/msm_sdcc.2/by-num/p26 mmcblk0p26 ' \
+            -e 's block/platform/msm_sdcc.2/by-num/p27 mmcblk0p27 ' \
+            -e 's block/platform/msm_sdcc.2/by-num/p28 mmcblk0p28 ' \
+            "$@"
+        ;;
 
     *)
 	cat <<EOF

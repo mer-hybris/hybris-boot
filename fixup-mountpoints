@@ -113,6 +113,17 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/LTALabel mmcblk1 ' \
             "$@"
         ;;
+    "kis3")
+       sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p12 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p13 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p15 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p7 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p16 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p14 ' \
+            "$@"
+        ;;
     *)
 	cat <<EOF
 

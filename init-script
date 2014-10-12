@@ -144,7 +144,7 @@ umount_stowaways() {
 
 # Sugar for accessing usb config
 write() {
-  echo -n "$2" > "$1"
+  [ -w "$2" ] && echo -n "$2" > "$1"
 }
 
 inject_loop() {

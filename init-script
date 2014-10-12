@@ -69,6 +69,7 @@ export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 USB_FUNCTIONS=rndis
 
 ANDROID_USB=/sys/class/android_usb/android0
+ANDROID_RNDIS=/sys/class/android_usb/f_rndis
 LOCAL_IP=192.168.2.15
 
 DONE_SWITCH=no
@@ -143,7 +144,7 @@ umount_stowaways() {
 
 # Sugar for accessing usb config
 write() {
-  echo -n "$2" > "$1"
+  [ -w "$2" ] && echo -n "$2" > "$1"
 }
 
 inject_loop() {
@@ -179,6 +180,8 @@ usb_setup() {
       write $ANDROID_USB/iSerial       "$1"
       write $ANDROID_USB/functions     $USB_FUNCTIONS
       write $ANDROID_USB/enable        1
+      #Activate usb0 for HTC ACE
+      write $ANDROID_RNDIS/on          1
 }
 # This lets us communicate errors to host (if it needs disable/enable then that's a problem)
 usb_info() {

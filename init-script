@@ -69,7 +69,7 @@ export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 USB_FUNCTIONS=rndis
 
 ANDROID_USB=/sys/class/android_usb/android0
-ANDROID_RNDIS=/sys/class/android_usb/f_rndis
+ANDROID_RNDIS=/sys/class/android_usb/android0/f_rndis
 LOCAL_IP=192.168.2.15
 
 DONE_SWITCH=no
@@ -144,7 +144,7 @@ umount_stowaways() {
 
 # Sugar for accessing usb config
 write() {
-  [ -w "$2" ] && echo -n "$2" > "$1"
+  [ -w "$1" ] && echo -n "$2" > "$1"
 }
 
 inject_loop() {
@@ -171,7 +171,8 @@ usb_setup() {
       write $ANDROID_USB/enable        0
       write $ANDROID_USB/functions     ""
       write $ANDROID_USB/enable        1
-      usleep 500000 # 0.5 delay to attempt to remove rndis function
+      sleep 1
+      #usleep 500000 # 0.5 delay to attempt to remove rndis function
       write $ANDROID_USB/enable        0
       write $ANDROID_USB/idVendor      18D1
       write $ANDROID_USB/idProduct     D001

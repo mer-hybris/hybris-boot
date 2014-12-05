@@ -213,6 +213,7 @@ run_debug_session() {
     echo "end 192.168.2.90" >> /etc/udhcpd.conf
     echo "lease_file /var/udhcpd.leases" >> /etc/udhcpd.conf
     echo "interface $USB_IFACE" >> /etc/udhcpd.conf
+    echo "option subnet 255.255.255.0" >> /etc/udhcpd.conf
 
     # Be explicit about busybox so this works in a rootfs too
     echo "########################## starting dhcpd"

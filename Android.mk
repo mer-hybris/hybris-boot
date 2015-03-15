@@ -48,8 +48,8 @@ HYBRIS_FSTABS := $(shell find device/*/$(TARGET_DEVICE) -name *fstab* | grep -v 
 
 # Get the unique /dev field(s) from the line(s) containing the fs mount point
 # Note the perl one-liner uses double-$ as per Makefile syntax
-HYBRIS_BOOT_PART := $(shell /usr/bin/perl -w -e '$$fs=shift; while (<>) { next unless /^$$fs\s|\s$$fs\s/;for (split) {next unless m(^/dev); print "$$_\n"; }}' /boot $(HYBRIS_FSTABS) | sort -u)
-HYBRIS_DATA_PART := $(shell /usr/bin/perl -w -e '$$fs=shift; while (<>) { next unless /^$$fs\s|\s$$fs\s/;for (split) {next unless m(^/dev); print "$$_\n"; }}' /data $(HYBRIS_FSTABS) | sort -u)
+HYBRIS_BOOT_PART := $(shell /usr/bin/perl -w -e '$$fs=shift; if ($$ARGV[0]) { while (<>) { next unless /^$$fs\s|\s$$fs\s/;for (split) {next unless m(^/dev); print "$$_\n"; }}} else { print "ERROR: *fstab* not found\n";}' /boot $(HYBRIS_FSTABS) | sort -u)
+HYBRIS_DATA_PART := $(shell /usr/bin/perl -w -e '$$fs=shift; if ($$ARGV[0]) { while (<>) { next unless /^$$fs\s|\s$$fs\s/;for (split) {next unless m(^/dev); print "$$_\n"; }}} else { print "ERROR: *fstab* not found\n";}' /data $(HYBRIS_FSTABS) | sort -u)
 
 $(warning ********************* /boot appears to live on $(HYBRIS_BOOT_PART))
 $(warning ********************* /data appears to live on $(HYBRIS_DATA_PART))

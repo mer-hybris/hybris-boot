@@ -104,6 +104,14 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p30 ' \
             "$@"
         ;;
+    "yuga")
+        sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/boot block/mmcblk0p17 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system block/mmcblk0p24 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache block/mmcblk0p25 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata block/mmcblk0p26 ' \
+            "$@"
+        ;;
     *)
 	cat <<EOF
 

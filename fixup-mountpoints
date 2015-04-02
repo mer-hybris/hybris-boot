@@ -106,10 +106,11 @@ case "$DEVICE" in
         ;;
     "yuga")
         sed -i \
-            -e 's block/platform/msm_sdcc.1/by-name/boot block/mmcblk0p17 ' \
-            -e 's block/platform/msm_sdcc.1/by-name/system block/mmcblk0p24 ' \
-            -e 's block/platform/msm_sdcc.1/by-name/cache block/mmcblk0p25 ' \
-            -e 's block/platform/msm_sdcc.1/by-name/userdata block/mmcblk0p26 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p17 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p24 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p25 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p26 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/LTALabel mmcblk1 ' \
             "$@"
         ;;
     *)

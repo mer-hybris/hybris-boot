@@ -232,7 +232,25 @@ $(LOCAL_BUILT_MODULE): $(UPDATER_UNPACK_SRC)
 
 HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)
 
+################################################################
+
+# Hybris tools module makes sure tools in HYBRIS_TOOLS are built
+include $(CLEAR_VARS)
+LOCAL_MODULE := hybris-tools
+LOCAL_MODULE_CLASS := FAKE
+
+# If more tools from android side need to be built, add them here:
+HYBRIS_TOOLS := mkbootimg img2simg_host simg2img_host
+
+include $(BUILD_SYSTEM)/base_rules.mk
+
+# There is no module to build, we just require the tools here so they get built
+$(LOCAL_BUILT_MODULE): $(HYBRIS_TOOLS)
+	@echo "Pulled in tools: $(HYBRIS_TOOLS)"
+	mkdir -p $(dir $@)
+	@touch $@
+
 
 .PHONY: hybris-hal
-hybris-hal: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot linker init libc adb adbd libEGL libGLESv2 servicemanager logcat updater
+hybris-hal: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot hybris-tools linker init libc adb adbd libEGL libGLESv2 servicemanager logcat updater
 

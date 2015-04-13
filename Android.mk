@@ -234,5 +234,5 @@ HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)
 
 
 .PHONY: hybris-hal
-hybris-hal: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot linker init libc adb adbd libEGL libGLESv2 servicemanager logcat updater
+hybris-hal: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot img2simg_host simg2img_host linker init libc adb adbd libEGL libGLESv2 servicemanager logcat updater
 

@@ -35,6 +35,25 @@ Welcome to the Mer/SailfishOS Boat loader debug init system.
 
 Log so far is in /init.log
 
+To make post-switch_root halt before starting systemd, perform:
+EOF
+if [ "$DONE_SWITCH" = "no" ]; then
+cat <<EOF >> /etc/issue.net
+  touch /target/init_enter_debug2
+EOF
+else
+cat <<EOF >> /etc/issue.net
+  touch /init_enter_debug2
+EOF
+fi
+cat <<EOF >> /etc/issue.net
+(When run post-switch_root, telnet is on port 2323, not 23)
+
+EOF
+
+HALT_BOOT="${1:-y}"
+if [ "$HALT_BOOT" == "y" ]; then
+cat <<EOF >> /etc/issue.net
 You may inject commands into init shell process (PID 1):
 
 To see output of commands as they're injected:
@@ -48,9 +67,8 @@ daemons and disable busybox hotplug handling)
 To allow init to continue:
   echo "continue" >/init-ctl/stdin
 
-The init script also functions as a post-switch_root debugger too:
-  cp /init /target/init-debug
-(When run post-switch_root, telnet is on port 2323, not 23)
+EOF
+fi
 
 if [ "$DONE_SWITCH" = "no" ]; then
     cat <<EOF >> /etc/issue.net
@@ -222,7 +240,8 @@ run_debug_session() {
     echo "########################## starting dhcpd"
     $EXPLICIT_BUSYBOX udhcpd
 
-    set_welcome_msg
+    HALT_BOOT="${2:-y}"
+    set_welcome_msg $HALT_BOOT
     # Non-blocking telnetd
     echo "########################## starting telnetd"
     # We run telnetd on different ports pre/post-switch_root This
@@ -233,15 +252,17 @@ run_debug_session() {
     # For some reason this does not work in rootfs
     usb_info "Mer Debug telnet on port $TELNET_DEBUG_PORT on $USB_IFACE $LOCAL_IP - also running udhcpd"
 
-    # Some logging output
-    ps -wlT
-    ps -ef
-    netstat -lnp
-    cat /proc/mounts
-    sync
+    if [ "$HALT_BOOT" == "y" ]; then
+        # Some logging output
+        ps -wlT
+        ps -ef
+        netstat -lnp
+        cat /proc/mounts
+        sync
 
-    # Run command injection loop = can be exited via 'continue'
-    inject_loop
+        # Run command injection loop = can be exited via 'continue'
+        inject_loop
+    fi
 }
 
 # writes to /diagnosis.log if there's a problem
@@ -330,7 +351,9 @@ else
 
     do_mount_devprocsys
 
-    run_debug_session "init-debug in real rootfs"
+    HALT_BOOT="n"
+    [ -f /init_enter_debug2 ] && HALT_BOOT="y"
+    run_debug_session "init-debug in real rootfs" $HALT_BOOT
 
     # If we don't do this then udev will not be able to create /dev/block/*
     rm /dev/block

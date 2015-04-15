@@ -52,6 +52,8 @@ The init script also functions as a post-switch_root debugger too:
   cp /init /target/init-debug
 (When run post-switch_root, telnet is on port 2323, not 23)
 
+if [ "$DONE_SWITCH" = "no" ]; then
+    cat <<EOF >> /etc/issue.net
 In order to work safely with the device's mmc you should
   echo "umount_stowaways" >/init-ctl/stdin
 
@@ -60,6 +62,7 @@ Then you can mount and modify exported mass storage on host. When done
 
 
 EOF
+fi
 }
 
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin

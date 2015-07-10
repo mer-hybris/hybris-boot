@@ -200,6 +200,17 @@ UPDATER_INTERMEDIATE := $(call intermediates-dir-for,ROOT,$(LOCAL_MODULE),)
 
 UPDATER_SCRIPT_SRC := $(LOCAL_PATH)/updater-script
 
+ANDROID_VERSION_MAJOR := $(word 1, $(subst ., , $(PLATFORM_VERSION)))
+ANDROID_VERSION_MINOR := $(word 2, $(subst ., , $(PLATFORM_VERSION)))
+
+USE_SET_METADATA := $(shell test $(ANDROID_VERSION_MAJOR) -eq 4 -a $(ANDROID_VERSION_MINOR) -ge 4 -o $(ANDROID_VERSION_MAJOR) -ge 5 && echo true)
+
+ifeq ($(USE_SET_METADATA),true)
+SET_PERMISSIONS := 'set_metadata("/tmp/updater-unpack.sh", "uid", 0, "gid", 0, "mode", 0755);'
+else
+SET_PERMISSIONS := 'set_perm(0, 0, 755, "/tmp/updater-unpack.sh");'
+endif
+
 $(LOCAL_BUILT_MODULE): $(UPDATER_SCRIPT_SRC)
 	@echo "Installing updater .zip script resources."
 	mkdir -p $(dir $@)
@@ -207,6 +218,7 @@ $(LOCAL_BUILT_MODULE): $(UPDATER_SCRIPT_SRC)
 	@sed -e 's %DEVICE% $(TARGET_DEVICE) g' \
              -e 's %BOOT_PART% $(HYBRIS_BOOT_PART) g' \
              -e 's %DATA_PART% $(HYBRIS_DATA_PART) g' \
+             -e 's|%SET_PERMISSIONS%|$(SET_PERMISSIONS)|' \
 	      $(UPDATER_SCRIPT_SRC) > $@
 
 HYBRIS_UPDATER_SCRIPT := $(LOCAL_BUILD_MODULE)

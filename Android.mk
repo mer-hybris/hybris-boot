@@ -206,9 +206,9 @@ ANDROID_VERSION_MINOR := $(word 2, $(subst ., , $(PLATFORM_VERSION)))
 USE_SET_METADATA := $(shell test $(ANDROID_VERSION_MAJOR) -eq 4 -a $(ANDROID_VERSION_MINOR) -ge 4 -o $(ANDROID_VERSION_MAJOR) -ge 5 && echo true)
 
 ifeq ($(USE_SET_METADATA),true)
-SET_PERMISSIONS := 'set_metadata("/tmp/updater-unpack.sh", "uid", 0, "gid", 0, "mode", 0755);'
+SET_PERMISSIONS := set_metadata("/tmp/updater-unpack.sh", "uid", 0, "gid", 0, "mode", 0755);
 else
-SET_PERMISSIONS := 'set_perm(0, 0, 755, "/tmp/updater-unpack.sh");'
+SET_PERMISSIONS := set_perm(0, 0, 755, "/tmp/updater-unpack.sh");
 endif
 
 $(LOCAL_BUILT_MODULE): $(UPDATER_SCRIPT_SRC)

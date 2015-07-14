@@ -23,7 +23,7 @@ ui_print("Copying installation script ...");
 package_extract_file("updater-unpack.sh", "/tmp/updater-unpack.sh");
 
 ui_print("Running installation script ...");
-set_metadata("/tmp/updater-unpack.sh", "uid", 0, "gid", 0, "mode", 0755);
+%SET_PERMISSIONS%
 run_program("/tmp/updater-unpack.sh");
 
 ui_print("Flashing hybris-boot.img ...");

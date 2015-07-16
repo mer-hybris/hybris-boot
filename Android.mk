@@ -75,6 +75,12 @@ endif
 MKBOOTIMG := mkbootimg
 BB_STATIC := $(PRODUCT_OUT)/utilities/busybox
 
+ifneq ($(strip $(TARGET_NO_KERNEL)),true)
+  INSTALLED_KERNEL_TARGET := $(PRODUCT_OUT)/kernel
+else
+  INSTALLED_KERNEL_TARGET :=
+endif
+
 HYBRIS_BOOTIMAGE_ARGS := \
 	$(addprefix --second ,$(INSTALLED_2NDBOOTLOADER_TARGET)) \
 	--kernel $(INSTALLED_KERNEL_TARGET)

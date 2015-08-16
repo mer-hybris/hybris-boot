@@ -113,6 +113,11 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/LTALabel mmcblk1 ' \
             "$@"
         ;;
+    "skomer")
+	sed -i \
+	    -e 's /block/ / ' \
+	    "$@"
+	;;
     *)
 	cat <<EOF
 

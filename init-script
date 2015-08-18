@@ -247,7 +247,7 @@ run_debug_session() {
     # We run telnetd on different ports pre/post-switch_root This
     # avoids problems with an unterminated pre-switch_root telnetd
     # hogging the port
-    $EXPLICIT_BUSYBOX telnetd -p $TELNET_DEBUG_PORT -l /bin/sh
+    $EXPLICIT_BUSYBOX telnetd -b ${LOCAL_IP}:${TELNET_DEBUG_PORT} -l /bin/sh
 
     # For some reason this does not work in rootfs
     usb_info "Mer Debug telnet on port $TELNET_DEBUG_PORT on $USB_IFACE $LOCAL_IP - also running udhcpd"

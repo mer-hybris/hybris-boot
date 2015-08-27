@@ -96,6 +96,14 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.2/by-num/p28 mmcblk0p28 ' \
             "$@"
         ;;
+    "deb")
+        sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p4 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p14 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p22 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p31 ' \
+            "$@"
+        ;;
     "flo")
         sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p4 ' \

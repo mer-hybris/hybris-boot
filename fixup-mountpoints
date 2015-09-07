@@ -49,7 +49,7 @@ case "$DEVICE" in
             "$@"
         ;;
 
-    "i9305" | "encore" | "n7000" | "n7100" | "i9300" | "iyokan")
+    "i9305" | "encore" | "n7000" | "n7100" | "i9300" | "iyokan" | "skomer")
 	sed -i \
 	    -e 's /block/ / ' \
 	    "$@"

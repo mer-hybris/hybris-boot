@@ -52,7 +52,7 @@ cat <<EOF >> /etc/issue.net
 EOF
 
 HALT_BOOT="${1:-y}"
-if [ "$HALT_BOOT" == "y" ]; then
+if [ "$HALT_BOOT" = "y" ]; then
 cat <<EOF >> /etc/issue.net
 You may inject commands into init shell process (PID 1):
 
@@ -216,8 +216,10 @@ run_debug_session() {
     usb_setup "Mer Debug setting up (DONE_SWITCH=$DONE_SWITCH)"
 
     USB_IFACE=notfound
-    /sbin/ifconfig usb0   $LOCAL_IP && USB_IFACE=usb0
     /sbin/ifconfig rndis0 $LOCAL_IP && USB_IFACE=rndis0
+    if [ x$USB_IFACE = xnotfound ]; then
+        /sbin/ifconfig usb0 $LOCAL_IP && USB_IFACE=usb0
+    fi
     # Report for the logs
     /sbin/ifconfig -a
 
@@ -252,7 +254,7 @@ run_debug_session() {
     # For some reason this does not work in rootfs
     usb_info "Mer Debug telnet on port $TELNET_DEBUG_PORT on $USB_IFACE $LOCAL_IP - also running udhcpd"
 
-    if [ "$HALT_BOOT" == "y" ]; then
+    if [ "$HALT_BOOT" = "y" ]; then
         # Some logging output
         ps -wlT
         ps -ef

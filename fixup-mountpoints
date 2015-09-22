@@ -49,7 +49,9 @@ case "$DEVICE" in
             "$@"
         ;;
 
-    "i9305" | "encore" | "n7000" | "n7100" | "i9300" | "iyokan")
+    "i9305" | "encore" | "n7000" | "n7100" | "i9300" | "anzu" | \
+    "coconut" | "haida" | "hallon" | "iyokan" | "mango" | "phoenix" | \
+    "satsuma" | "smultron" | "urushi" | "zeus")
 	sed -i \
 	    -e 's /block/ / ' \
 	    "$@"
@@ -119,6 +121,48 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p25 ' \
             -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p26 ' \
             -e 's block/platform/msm_sdcc.1/by-name/LTALabel mmcblk1 ' \
+            "$@"
+        ;;
+    "z3c")
+    # Also called "aries" | "d5803" in aosp (called z3c in cm12.1)
+    # untested for | "sirius" | "amami" | "leo" | "tianchi")
+         sed -i \
+             -e 's block/platform/msm_sdcc.1/by-name/DDR mmcblk0p17 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/FOTAKernel mmcblk0p16 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/LTALabel mmcblk0p18 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/TA mmcblk0p1 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/aboot mmcblk0p5 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/alt_aboot mmcblk0p11 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/alt_dbi mmcblk0p10 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/alt_rpm mmcblk0p12 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/alt_s1sbl mmcblk0p9 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/alt_sbl1 mmcblk0p8 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/alt_tz mmcblk0p13 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/apps_log mmcblk0p22 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p14 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p24 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/dbi mmcblk0p4 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/fsg mmcblk0p21 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/modemst1 mmcblk0p19 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/modemst2 mmcblk0p20 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/ramdump mmcblk0p15 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/rpm mmcblk0p6 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/s1sbl mmcblk0p3 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/sbl1 mmcblk0p2 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p23 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/tz mmcblk0p7 ' \
+             -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p25 ' \
+            "$@"
+         ;;
+    "kis3")
+       sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p12 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p13 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p15 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p7 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p16 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p14 ' \
             "$@"
         ;;
     *)

@@ -256,7 +256,9 @@ $(LOCAL_BUILT_MODULE): $(UPDATER_UNPACK_SRC)
 
 HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)
 
-
 .PHONY: hybris-hal
+ifeq ("$(TARGET_ARCH)", "arm64")
 hybris-hal: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot linker_32 init libc_32 adb adbd libEGL_32 libGLESv1_CM_32 libGLESv2_32 servicemanager logcat updater
-
+else
+hybris-hal: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot linker init libc adb adbd libEGL libGLESv1_CM libGLESv2 servicemanager logcat updater
+endif

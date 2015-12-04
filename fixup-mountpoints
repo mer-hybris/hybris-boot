@@ -18,7 +18,6 @@ case "$DEVICE" in
             "$@"
         ;;
 
-
     "hammerhead")
         sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \

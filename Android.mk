@@ -17,7 +17,7 @@
 
 LOCAL_PATH:= $(call my-dir)
 HYBRIS_PATH:=$(LOCAL_PATH)
-
+$(info $(TARGET_ARCH))
 # We use the commandline and kernel configuration varables from
 # build/core/Makefile to be consistent. Support for boot/recovery
 # image specific kernel COMMANDLINE vars is provided but whether it
@@ -33,6 +33,7 @@ HYBRIS_B_ALWAYSDEBUG :=
 HYBRIS_R_DEFAULT_OS := sailfishos
 HYBRIS_R_ALWAYSDEBUG := 1
 
+TARGET_DEVICE := $(DEVICE)
 ## All manual "config" should be done above this line
 
 # Force deferred assignment
@@ -256,9 +257,13 @@ $(LOCAL_BUILT_MODULE): $(UPDATER_UNPACK_SRC)
 
 HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)
 
-.PHONY: hybris-hal
+
+.PHONY: hybris-hal hybris-common
+
+hybris-common: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot servicemanager logcat updater init adb adbd
+
 ifeq ("$(TARGET_ARCH)", "arm64")
-hybris-hal: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot linker_32 init libc_32 adb adbd libEGL_32 libGLESv1_CM_32 libGLESv2_32 servicemanager logcat updater
+hybris-hal: hybris-common linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32 
 else
-hybris-hal: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot linker init libc adb adbd libEGL libGLESv1_CM libGLESv2 servicemanager logcat updater
+hybris-hal: hybris-common linker libc libEGL libGLESv1_CM libGLESv2
 endif

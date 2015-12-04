@@ -9,6 +9,16 @@ shift
 echo "Fixing mount-points for device $DEVICE"
 
 case "$DEVICE" in
+    "bullhead")
+        sed -i \
+            -e 's block/platform/soc.0/f9824900.sdhci/by-name/modem mmcblk0p1 ' \
+            -e 's block/platform/soc.0/f9824900.sdhci/by-name/persist mmcblk0p24 ' \
+            -e 's block/platform/soc.0/f9824900.sdhci/by-name/system mmcblk0p41 ' \
+            -e 's block/platform/soc.0/f9824900.sdhci/by-name/userdata mmcblk0p45 ' \
+            "$@"
+        ;;
+
+
     "hammerhead")
         sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \

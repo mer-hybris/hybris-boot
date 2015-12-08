@@ -17,7 +17,7 @@
 
 LOCAL_PATH:= $(call my-dir)
 HYBRIS_PATH:=$(LOCAL_PATH)
-$(info $(TARGET_ARCH))
+
 # We use the commandline and kernel configuration varables from
 # build/core/Makefile to be consistent. Support for boot/recovery
 # image specific kernel COMMANDLINE vars is provided but whether it

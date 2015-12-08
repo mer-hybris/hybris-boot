@@ -33,7 +33,6 @@ HYBRIS_B_ALWAYSDEBUG :=
 HYBRIS_R_DEFAULT_OS := sailfishos
 HYBRIS_R_ALWAYSDEBUG := 1
 
-TARGET_DEVICE := $(DEVICE)
 ## All manual "config" should be done above this line
 
 # Force deferred assignment

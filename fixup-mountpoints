@@ -9,7 +9,7 @@ shift
 echo "Fixing mount-points for device $DEVICE"
 
 case "$DEVICE" in
-    "cm_onyx")
+    "onyx")
         sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p7' \
             -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p27' \

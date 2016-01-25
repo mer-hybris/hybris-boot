@@ -181,6 +181,15 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p14 ' \
             "$@"
         ;;
+    "m7spr")
+       sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p35 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p36 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p37 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p38 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p39 ' \
+            "$@"
+        ;;
     *)
 	cat <<EOF
 

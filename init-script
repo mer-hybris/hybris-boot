@@ -118,6 +118,7 @@ do_mount_devprocsys()
     mkdir /proc
     mkdir /sys
     mount -t sysfs sysfs /sys
+    mount -t configfs configfs /sys/kernel/config
     mount -t proc proc /proc
 }
 
@@ -188,6 +189,8 @@ inject_loop() {
 
 # This sets up the USB with whatever USB_FUNCTIONS are set to
 usb_setup() {
+    if [ -d $ANDROID_USB ]; then
+      G_USB_ISERIAL=$ANDROID_USB/iSerial
       write $ANDROID_USB/enable        0
       write $ANDROID_USB/functions     ""
       write $ANDROID_USB/enable        1
@@ -200,13 +203,33 @@ usb_setup() {
       write $ANDROID_USB/iSerial       "$1"
       write $ANDROID_USB/functions     $USB_FUNCTIONS
       write $ANDROID_USB/enable        1
+    elif [ -d /sys/kernel/config/usb_gadget ]; then
+      G_USB_ISERIAL=/sys/kernel/config/usb_gadget/g1/strings/0x409/serialnumber
+      cd /sys/kernel/config/usb_gadget
+      mkdir g1
+      cd g1
+      write idVendor  "0x18D1"
+      write idProduct "0xD001"
+      mkdir strings/0x409
+      echo "$1" > strings/0x409/serialnumber
+      echo "Mer Boat Loader" > strings/0x409/manufacturer
+      echo "$CUSTOMPRODUCT"  > strings/0x409/product
+      echo $USB_FUNCTIONS | grep -E "rndis" && mkdir functions/rndis.usb0
+      echo $USB_FUNCTIONS | grep -E "mass_storage" && mkdir functions/storage.0
+      mkdir configs/c.1
+      mkdir configs/c.1/strings/0x409
+      echo "$USB_FUNCTIONS" > configs/c.1/strings/0x409/configuration
+      ln -s functions/rndis.usb0 configs/c.1
+      echo "$(ls /sys/class/udc)" > UDC
+      cd /
+    fi
 }
 # This lets us communicate errors to host (if it needs disable/enable then that's a problem)
 usb_info() {
     # make sure USB is settled
     echo "########################## usb_info: $1"
     sleep 1
-    write $ANDROID_USB/iSerial       "$1"
+    write $G_USB_ISERIAL       "$1"
 }
 
 

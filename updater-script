@@ -24,7 +24,7 @@ package_extract_file("updater-unpack.sh", "/tmp/updater-unpack.sh");
 
 ui_print("Running installation script ...");
 %SET_PERMISSIONS%
-run_program("/tmp/updater-unpack.sh");
+run_program("/tmp/updater-unpack.sh") == "0" || abort("Failed to extract filesystem!");
 
 ui_print("Flashing hybris-boot.img ...");
 package_extract_file("hybris-boot.img", "%BOOT_PART%");

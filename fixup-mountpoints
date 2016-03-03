@@ -9,6 +9,43 @@ shift
 echo "Fixing mount-points for device $DEVICE"
 
 case "$DEVICE" in
+    "FP2")
+        sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p13 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p20 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p16 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p14 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modemst1 mmcblk0p11 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modemst2 mmcblk0p12 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/fsg mmcblk0p17 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/fsc mmcblk0p18 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/dbi mmcblk0p3 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p15 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p8 ' \
+            "$@"
+        ;;
+
+    "onyx")
+        sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p7 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p27 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p28 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p15 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p14 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
+            "$@"
+        ;;
+
+    "bullhead")
+        sed -i \
+            -e 's block/platform/soc.0/f9824900.sdhci/by-name/modem mmcblk0p1 ' \
+            -e 's block/platform/soc.0/f9824900.sdhci/by-name/persist mmcblk0p24 ' \
+            -e 's block/platform/soc.0/f9824900.sdhci/by-name/system mmcblk0p41 ' \
+            -e 's block/platform/soc.0/f9824900.sdhci/by-name/userdata mmcblk0p45 ' \
+            "$@"
+        ;;
+
     "hammerhead")
         sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
@@ -159,6 +196,15 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p16 ' \
             -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
             -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p14 ' \
+            "$@"
+        ;;
+    "m7spr")
+       sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p35 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p36 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p37 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p38 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p39 ' \
             "$@"
         ;;
     *)

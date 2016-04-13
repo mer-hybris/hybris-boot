@@ -207,6 +207,16 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p39 ' \
             "$@"
         ;;
+    "falcon")
+       sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p31 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p32 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p34 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p33 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p36 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/pds mmcblk0p26 ' \
+            "$@"
+        ;;
     *)
 	cat <<EOF
 

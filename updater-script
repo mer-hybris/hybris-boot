@@ -12,7 +12,7 @@ ui_print("    /data -> %DATA_PART%");
 ui_print("========================================");
 ui_print("");
 
-assert(getprop("ro.product.device") == "%DEVICE%" || getprop("ro.build.product") == "%DEVICE%" || getprop("ro.cm.device") == "%DEVICE%");
+assert(getprop("ro.product.device") == "%DEVICE%" || getprop("ro.build.product") == "%DEVICE%" || getprop("ro.cm.device") == "%DEVICE%"|| getprop("ro.hw.device") == "%DEVICE%" || getprop("ro.boot.device") == "%DEVICE%");
 
 ui_print("Device check succeeded, mounting filesystems ...");
 mount("ext4", "EMMC", "%DATA_PART%", "/data");

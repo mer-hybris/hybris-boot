@@ -215,6 +215,12 @@ UPDATER_SCRIPT_SRC := $(LOCAL_PATH)/updater-script
 ANDROID_VERSION_MAJOR := $(word 1, $(subst ., , $(PLATFORM_VERSION)))
 ANDROID_VERSION_MINOR := $(word 2, $(subst ., , $(PLATFORM_VERSION)))
 
+ifeq ($(TARGET_OTA_ASSERT_DEVICE),)
+    ASSERT_DEVICE := assert(getprop("ro.product.device") == "$(TARGET_DEVICE)" \|\| getprop("ro.build.product") == "$(TARGET_DEVICE)" \|\| getprop("ro.cm.device") == "$(TARGET_DEVICE)");
+else
+    ASSERT_DEVICE := $(subst |,\|,$(shell $(LOCAL_PATH)/assert-device $(TARGET_OTA_ASSERT_DEVICE)))
+endif
+
 USE_SET_METADATA := $(shell test $(ANDROID_VERSION_MAJOR) -eq 4 -a $(ANDROID_VERSION_MINOR) -ge 4 -o $(ANDROID_VERSION_MAJOR) -ge 5 && echo true)
 
 ifeq ($(USE_SET_METADATA),true)
@@ -230,6 +236,7 @@ $(LOCAL_BUILT_MODULE): $(UPDATER_SCRIPT_SRC)
 	@sed -e 's %DEVICE% $(TARGET_DEVICE) g' \
              -e 's %BOOT_PART% $(HYBRIS_BOOT_PART) g' \
              -e 's %DATA_PART% $(HYBRIS_DATA_PART) g' \
+             -e 's|%ASSERT_DEVICE%|$(ASSERT_DEVICE)|' \
              -e 's|%SET_PERMISSIONS%|$(SET_PERMISSIONS)|' \
 	      $(UPDATER_SCRIPT_SRC) > $@
 

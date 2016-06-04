@@ -207,6 +207,18 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p39 ' \
             "$@"
         ;;
+    "wt88047")
+       sed -i \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p30 ' \
+            -e 's block/bootdevice/by-name/boot mmcblk0p22 ' \
+            -e 's block/bootdevice/by-name/system mmcblk0p23 ' \
+            -e 's block/bootdevice/by-name/modem mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/modemst1 mmcblk0p13 ' \
+            -e 's block/bootdevice/by-name/modemst2 mmcblk0p14 ' \
+            -e 's block/bootdevice/by-name/persist mmcblk0p25 ' \
+            "$@"
+        ;;
+
     *)
 	cat <<EOF
 

@@ -150,7 +150,7 @@ case "$DEVICE" in
     "titan")
         sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/fsg mmcblk0p21 ' \
-            -e 's block/platform/msm_sdcc.1/by-name/firmware mmcblk0p1 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
             -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p29 ' \
             -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p38 ' \
             -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p36 ' \

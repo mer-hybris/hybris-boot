@@ -227,6 +227,35 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p20 ' \
             "$@"
         ;;
+    "cancro")
+       sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/DDR mmcblk0p4 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/aboot mmcblk0p7 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/bk1 mmcblk0p8 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/bk2 mmcblk0p11 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/bk3 mmcblk0p15 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/bk4 mmcblk0p17 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/bk5 mmcblk0p18 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p19 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p24 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/dbi mmcblk0p6 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/fsc mmcblk0p14 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/fsg mmcblk0p16 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/logo mmcblk0p10 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/misc mmcblk0p9 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p22 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modemst1 mmcblk0p12 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modemst2 mmcblk0p13 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p21 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p20 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/rpm mmcblk0p2 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/sbl1 mmcblk0p1 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/ssd mmcblk0p5 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p23 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/tz mmcblk0p3 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p25 ' \
+            "$@"
+        ;;
     *)
 	cat <<EOF
 

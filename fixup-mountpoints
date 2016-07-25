@@ -256,6 +256,15 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p25 ' \
             "$@"
         ;;
+    "gts210ltexx"|"gts210wifi")
+       sed -i \
+            -e 's block/platform/15540000.dwmmc0/by-name/BOOT mmcblk0p9 ' \
+            -e 's block/platform/15540000.dwmmc0/by-name/CACHE mmcblk0p20 ' \
+            -e 's block/platform/15540000.dwmmc0/by-name/EFS mmcblk0p3 ' \
+            -e 's block/platform/15540000.dwmmc0/by-name/SYSTEM mmcblk0p19 ' \
+            -e 's block/platform/15540000.dwmmc0/by-name/USERDATA mmcblk0p22 ' \
+            "$@"
+        ;;
     *)
 	cat <<EOF
 

@@ -94,7 +94,7 @@ case "$DEVICE" in
 	    "$@"
 	;;
 
-    "p3110")
+    "p3100" | "p3110" | "p3113" | "p5100" | "p5110" | "p5113" | "espressowifi" | "espresso3g")
         sed -i \
             -e 's block/platform/omap/omap_hsmmc.1/by-name/DATAFS mmcblk0p10 ' \
             -e 's block/platform/omap/omap_hsmmc.1/by-name/KERNEL mmcblk0p5 ' \

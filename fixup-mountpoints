@@ -88,7 +88,9 @@ case "$DEVICE" in
 
     "i9305" | "encore" | "n7000" | "n7100" | "i9300" | "anzu" | \
     "coconut" | "haida" | "hallon" | "iyokan" | "mango" | "phoenix" | \
-    "satsuma" | "smultron" | "urushi" | "zeus")
+    "satsuma" | "smultron" | "urushi" | "zeus" | "jenad")
+    # Untested for other revisions of Samsung GT-S6500:
+    # | "jena" | "trebon")
 	sed -i \
 	    -e 's /block/ / ' \
 	    "$@"

@@ -41,6 +41,7 @@ case "$DEVICE" in
         sed -i \
             -e 's block/platform/soc.0/f9824900.sdhci/by-name/modem mmcblk0p1 ' \
             -e 's block/platform/soc.0/f9824900.sdhci/by-name/persist mmcblk0p24 ' \
+            -e 's block/platform/soc.0/f9824900.sdhci/by-name/vendor mmcblk0p39 ' \
             -e 's block/platform/soc.0/f9824900.sdhci/by-name/system mmcblk0p41 ' \
             -e 's block/platform/soc.0/f9824900.sdhci/by-name/userdata mmcblk0p45 ' \
             "$@"

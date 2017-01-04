@@ -265,10 +265,11 @@ HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)
 
 .PHONY: hybris-hal hybris-common
 
-hybris-common: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot servicemanager logcat updater init adb adbd
+hybris-common: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot servicemanager logcat updater init adb adbd linker libc libEGL libGLESv1_CM libGLESv2
 
 ifeq ("$(TARGET_ARCH)", "arm64")
-hybris-hal: hybris-common linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32 
+hybris-hal: hybris-common linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32
 else
-hybris-hal: hybris-common linker libc libEGL libGLESv1_CM libGLESv2
+hybris-hal: hybris-common
 endif
+

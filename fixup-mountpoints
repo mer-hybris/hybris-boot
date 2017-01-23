@@ -328,7 +328,7 @@ case "$DEVICE" in
     "find5")
        sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
-            -e 's block/platform/msm_sdcc.1/by-name/persist tmmcblk0p21 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p21 ' \
             -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p19 ' \
             -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p18 ' \
             -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p20 ' \

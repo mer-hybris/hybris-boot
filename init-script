@@ -244,6 +244,8 @@ run_debug_session() {
 
     HALT_BOOT="${2:-y}"
     set_welcome_msg $HALT_BOOT
+
+    if [ -z $DISABLE_TELNET ]; then
     # Non-blocking telnetd
     echo "########################## starting telnetd"
     # We run telnetd on different ports pre/post-switch_root This
@@ -253,6 +255,7 @@ run_debug_session() {
 
     # For some reason this does not work in rootfs
     usb_info "Mer Debug telnet on port $TELNET_DEBUG_PORT on $USB_IFACE $LOCAL_IP - also running udhcpd"
+    fi
 
     if [ "$HALT_BOOT" = "y" ]; then
         # Some logging output
@@ -274,11 +277,11 @@ check_kernel_config() {
 	echo "No /proc/config.gz. Enable CONFIG_IKCONFIG and CONFIG_IKCONFIG_PROC" >> /diagnosis.log
     else
 	# Must be =y
-	for x in CONFIG_CGROUPS CONFIG_AUTOFS4_FS CONFIG_DEVTMPFS_MOUNT CONFIG_DEVTMPFS CONFIG_UNIX CONFIG_HOTPLUG CONFIG_INOTIFY_USER CONFIG_SYSVIPC CONFIG_NET CONFIG_PROC_FS CONFIG_SIGNALFD CONFIG_SYSFS CONFIG_TMPFS_POSIX_ACL CONFIG_VT; do
+	for x in CONFIG_CGROUPS CONFIG_AUTOFS4_FS CONFIG_DEVTMPFS_MOUNT CONFIG_DEVTMPFS CONFIG_UNIX CONFIG_INOTIFY_USER CONFIG_SYSVIPC CONFIG_NET CONFIG_PROC_FS CONFIG_SIGNALFD CONFIG_SYSFS CONFIG_TMPFS_POSIX_ACL CONFIG_VT; do
 		zcat /proc/config.gz | grep -E "^$x=y\$" || echo "$x=y not found in /proc/config.gz" >> /diagnosis.log
  	done
 	# Must not be =y
-	for x in CONFIG_ANDROID_LOW_MEMORY_KILLER CONFIG_ANDROID_PARANOID_NETWORK CONFIG_DUMMY CONFIG_SYSFS_DEPRECATED; do
+	for x in CONFIG_ANDROID_LOW_MEMORY_KILLER CONFIG_DUMMY CONFIG_SYSFS_DEPRECATED; do
 		zcat /proc/config.gz | grep -E "^$x=y\$" && echo "$x=y found in /proc/config.gz, must be disabled" >> /diagnosis.log
 	done
     fi
@@ -313,6 +316,7 @@ if [ "$DONE_SWITCH" = "no" ]; then
     [ "$(get_opt bootmode)" = "debug" ] && DBG_REASON="bootmode=debug on kernel command line"
     [ x$ALWAYSDEBUG = x1 ] && DBG_REASON="Always debug: rndis + mass_storage"
     [ -f /target/init_enter_debug ] && DBG_REASON="/init_enter_debug exists"
+    [ -f /target/init_disable_telnet ] && DISABLE_TELNET="y"
 
     if ! [ "$DBG_REASON" = "" ] ; then
 	# During debug we export mmc too (some variations in location here)
@@ -355,6 +359,7 @@ else
 
     HALT_BOOT="n"
     [ -f /init_enter_debug2 ] && HALT_BOOT="y"
+    [ -f /init_disable_telnet ] && DISABLE_TELNET="y"
     run_debug_session "init-debug in real rootfs" $HALT_BOOT
 
     # If we don't do this then udev will not be able to create /dev/block/*

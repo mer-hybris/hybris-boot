@@ -36,8 +36,13 @@ HYBRIS_R_ALWAYSDEBUG := 1
 ## All manual "config" should be done above this line
 
 # Force deferred assignment
-
-HYBRIS_FIXUP_MOUNTS := $(LOCAL_PATH)/fixup-mountpoints
+ifeq ($(shell test -e rpm/fixup-mountpoints && echo -n yes),yes)
+    $(info USE CUSTOM fixup-mountpoints )
+    HYBRIS_FIXUP_MOUNTS := rpm/fixup-mountpoints
+else
+    $(info USE HYBRIS fixup-mountpoints )
+    HYBRIS_FIXUP_MOUNTS := $(LOCAL_PATH)/fixup-mountpoints
+endif
 
 
 # Find any fstab files for required partition information.

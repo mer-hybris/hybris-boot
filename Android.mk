@@ -72,7 +72,6 @@ $(error There should be a one and only one device entry for HYBRIS_BOOT_PART and
 endif
 
 # Command used to make the image
-MKBOOTIMG := mkbootimg
 BB_STATIC := $(PRODUCT_OUT)/utilities/busybox
 
 ifneq ($(strip $(TARGET_NO_KERNEL)),true)
@@ -133,11 +132,11 @@ BOOT_RAMDISK_INIT_SRC := $(LOCAL_PATH)/init-script
 BOOT_RAMDISK_INIT := $(BOOT_INTERMEDIATE)/init
 BOOT_RAMDISK_FILES := $(shell find $(BOOT_RAMDISK_SRC) -type f) $(BOOT_RAMDISK_INIT)
 
-$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK) $(MKBOOTIMG) $(BOOTIMAGE_EXTRA_DEPS)
+$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK) $(BOOTIMAGE_EXTRA_DEPS)
 	@echo "Making hybris-boot.img in $(dir $@) using $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK)"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
-	$(hide)$(MKBOOTIMG) --ramdisk $(BOOT_RAMDISK) $(HYBRIS_BOOTIMAGE_ARGS) $(BOARD_MKBOOTIMG_ARGS) --output $@
+	@mkbootimg --ramdisk $(BOOT_RAMDISK) $(HYBRIS_BOOTIMAGE_ARGS) $(BOARD_MKBOOTIMG_ARGS) --output $@
 
 $(BOOT_RAMDISK): $(BOOT_RAMDISK_FILES) $(BB_STATIC)
 	@echo "Making initramfs : $@"

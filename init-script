@@ -29,60 +29,6 @@ ALWAYSDEBUG=%ALWAYSDEBUG%
 DATA_PARTITION=%DATA_PART%
 DEFAULT_OS=%DEFAULT_OS%
 
-set_welcome_msg(){
-cat <<EOF > /etc/issue.net
-Welcome to the Mer/SailfishOS Boat loader debug init system.
-
-Log so far is in /init.log
-
-To make post-switch_root halt before starting systemd, perform:
-EOF
-if [ "$DONE_SWITCH" = "no" ]; then
-cat <<EOF >> /etc/issue.net
-  touch /target/init_enter_debug2
-EOF
-else
-cat <<EOF >> /etc/issue.net
-  touch /init_enter_debug2
-EOF
-fi
-cat <<EOF >> /etc/issue.net
-(When run post-switch_root, telnet is on port 2323, not 23)
-
-EOF
-
-HALT_BOOT="${1:-y}"
-if [ "$HALT_BOOT" = "y" ]; then
-cat <<EOF >> /etc/issue.net
-You may inject commands into init shell process (PID 1):
-
-To see output of commands as they're injected:
-  tail -f /init.log &
-To run a command:
-  echo "ls -l /" >/init-ctl/stdin
-
-(Be careful if you experiment with exec as you need to terminate
-daemons and disable busybox hotplug handling)
-
-To allow init to continue:
-  echo "continue" >/init-ctl/stdin
-
-EOF
-fi
-
-if [ "$DONE_SWITCH" = "no" ]; then
-    cat <<EOF >> /etc/issue.net
-In order to work safely with the device's mmc you should
-  echo "umount_stowaways" >/init-ctl/stdin
-
-Then you can mount and modify exported mass storage on host. When done
-  echo "mount_stowaways" >/init-ctl/stdin
-
-
-EOF
-fi
-}
-
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 
 # Default setting is rndis - add mass_storage for a debug boot
@@ -243,7 +189,6 @@ run_debug_session() {
     $EXPLICIT_BUSYBOX udhcpd
 
     HALT_BOOT="${2:-y}"
-    set_welcome_msg $HALT_BOOT
 
     if [ -z $DISABLE_TELNET ]; then
     # Non-blocking telnetd
@@ -288,7 +233,6 @@ check_kernel_config() {
 }
 
 # Now either initrd or rootfs sequence
-
 if [ "$DONE_SWITCH" = "no" ]; then
     EXPLICIT_BUSYBOX=""
     TELNET_DEBUG_PORT=23
@@ -338,17 +282,11 @@ if [ "$DONE_SWITCH" = "no" ]; then
 
     # Disable mdev hotplug now - let udev handle it in main boot
     echo "" > /proc/sys/kernel/hotplug
+	INIT=/sbin/init
 
-    if [ -f "/target/init-debug" ]; then
-	exec switch_root /target /init-debug &> /target/init-debug-stderrout
-    else
-	# Prefer /sbin/preinit over /sbin/init
-	[ -x /target/sbin/preinit ] && INIT=/sbin/preinit || INIT=/sbin/init
-	if [ -x "/target$INIT" ]; then
-	    exec switch_root /target $INIT --log-level=debug --log-target=kmsg &> /target/init-stderrout
-	fi
-    fi
-    run_debug_session "Failed to boot init in real rootfs"
+	mkdir -p /target/sys/fs/cgroup/
+	exec switch_root /target $INIT --log-level=debug --log-target=kmsg &> /target/init-stderrout
+	 run_debug_session "becuase meh"
 
 else
     # We're in the real rootfs running as init-debug

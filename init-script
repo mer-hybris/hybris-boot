@@ -93,8 +93,6 @@ mount_stowaways() {
 	mount $DATA_PARTITION /data
 	mount /data/rootfs.img /target
 
-	mount -o ro /data/system.img /target/system
-
 	mkdir /target/data # in new fs
 	mount --bind /data/${data_subdir} /target/data
     else

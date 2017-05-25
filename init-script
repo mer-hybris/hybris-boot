@@ -286,7 +286,7 @@ if [ "$DONE_SWITCH" = "no" ]; then
 	INIT=/sbin/init
 
 	mkdir -p /target/sys/fs/cgroup/
-	exec switch_root /target $INIT --log-level=debug --log-target=kmsg &> /target/init-stderrout
+	exec switch_root /target $INIT --log-target=kmsg &> /target/init-stderrout
 	 run_debug_session "becuase meh"
 
 else

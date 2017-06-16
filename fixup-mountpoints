@@ -581,6 +581,14 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/userdata mmcblk0p23 ' \
             "$@"
         ;;
+
+    "m8")
+        sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p42 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p47 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p45 ' \
+            "$@"
+        ;;
     *)
 	cat <<EOF
 

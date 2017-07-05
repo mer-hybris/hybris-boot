@@ -327,7 +327,7 @@ if [ "$DONE_SWITCH" = "no" ]; then
 	if [ -f $lun ]; then echo /dev/mmcblk0 > $lun; fi
 	USB_FUNCTIONS=rndis,mass_storage
 
-	run_debug_session $DBG_REASON
+	run_debug_session "$DBG_REASON" "y"
 
 	# Tidy up before we switch_root (rootfs init-debug leaves these running during bootup)
 	killall telnetd

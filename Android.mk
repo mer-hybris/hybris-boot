@@ -37,7 +37,7 @@ HYBRIS_R_ALWAYSDEBUG := 1
 
 # Force deferred assignment
 
-HYBRIS_FIXUP_MOUNTS := $(LOCAL_PATH)/fixup-mountpoints
+HYBRIS_FIXUP_MOUNTS := $(shell ls -1 $(LOCAL_PATH)/../fixup-mountpoints $(LOCAL_PATH)/fixup-mountpoints 2> /dev/null | head -n1)
 
 
 # Find any fstab files for required partition information.

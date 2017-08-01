@@ -248,9 +248,14 @@ run_debug_session() {
     if [ -z $DISABLE_TELNET ]; then
     # Non-blocking telnetd
     echo "########################## starting telnetd"
+    # We use iptables to limit telnet connections to only one
+    # network interface rather than to just one ip.
+    # Since telnetd does not have that cabability, we need to rely
+    # on iptables.
+    iptables -A INPUT ! -i $USB_IFACE -p tcp --destination-port $TELNET_DEBUG_PORT -j DROP
     # We run telnetd on different ports pre/post-switch_root This
     # avoids problems with an unterminated pre-switch_root telnetd
-    # hogging the port
+    # hogging the port.
     $EXPLICIT_BUSYBOX telnetd -b ${LOCAL_IP}:${TELNET_DEBUG_PORT} -l /bin/sh
 
     # For some reason this does not work in rootfs

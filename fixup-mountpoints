@@ -143,7 +143,37 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
             "$@"
         ;;
-
+    "gtexslte")
+        sed -i \
+            -e 's block/platform/sdio_emmc/by-name/KERNEL mmcblk0p20 ' \
+            -e 's block/platform/sdio_emmc/by-name/SYSTEM mmcblk0p25 ' \
+            -e 's block/platform/sdio_emmc/by-name/userdata mmcblk0p27 ' \
+            -e 's block/platform/sdio_emmc/by-name/CACHE mmcblk0p24 ' \
+            -e 's block/platform/sdio_emmc/by-name/PERSISTENT mmcblk0p22 ' \
+            -e 's block/platform/sdio_emmc/by-name/l_modem mmcblk0p8 ' \
+            -e 's block/platform/sdio_emmc/by-name/HIDDEN mmcblk0p26 ' \
+            -e 's block/platform/sdio_emmc/by-name/FOTA_SIG mmcblk0p11 ' \
+            -e 's block/platform/sdio_emmc/by-name/RECOVERY mmcblk0p21 ' \
+            -e 's block/platform/sdio_emmc/by-name/SBOOT mmcblk0p1 ' \
+            -e 's block/platform/sdio_emmc/by-name/SBOOT2 mmcblk0p2 ' \
+            -e 's block/platform/sdio_emmc/by-name/PARAM mmcblk0p16 ' \
+            -e 's block/platform/sdio_emmc/by-name/prodnv mmcblk0p18 ' \
+            -e 's block/platform/sdio_emmc/by-name/efs mmcblk0p17 ' \
+            -e 's block/platform/sdio_emmc/by-name/RESERVED2 mmcblk0p19 ' \
+            -e 's block/platform/sdio_emmc/by-name/PERSDATA mmcblk0p23 ' \
+            -e 's block/platform/sdio_emmc/by-name/l_fixnv1 mmcblk0p3 ' \
+            -e 's block/platform/sdio_emmc/by-name/l_fixnv2 mmcblk0p4 ' \
+            -e 's block/platform/sdio_emmc/by-name/l_gdsp mmcblk0p9 ' \
+            -e 's block/platform/sdio_emmc/by-name/l_ldsp mmcblk0p7 ' \
+            -e 's block/platform/sdio_emmc/by-name/l_runtimenv1 mmcblk0p12 ' \
+            -e 's block/platform/sdio_emmc/by-name/l_runtimenv2 mmcblk0p13 ' \
+            -e 's block/platform/sdio_emmc/by-name/l_warm mmcblk0p10 ' \
+            -e 's block/platform/sdio_emmc/by-name/pm_sys mmcblk0p5 ' \
+            -e 's block/platform/sdio_emmc/by-name/rsvdfixnv1 mmcblk0p6 ' \
+            -e 's block/platform/sdio_emmc/by-name/td_runtimenv1 mmcblk0p14 ' \
+            -e 's block/platform/sdio_emmc/by-name/td_runtimenv2 mmcblk0p15 ' \
+            "$@"
+        ;;
     "bullhead")
         sed -i \
             -e 's block/platform/soc.0/f9824900.sdhci/by-name/DDR mmcblk0p28 ' \
@@ -658,4 +688,3 @@ EOF
         exit 1
         ;;
 esac
-

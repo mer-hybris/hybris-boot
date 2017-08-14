@@ -539,6 +539,42 @@ case "$DEVICE" in
 	    "$@"
         ;;
 
+    "ido")
+       sed -i \
+            -e 's block/bootdevice/by-name/DDR mmcblk0p19 ' \
+            -e 's block/bootdevice/by-name/aboot mmcblk0p4 ' \
+            -e 's block/bootdevice/by-name/abootbak mmcblk0p5 ' \
+            -e 's block/bootdevice/by-name/boot mmcblk0p22 ' \
+            -e 's block/bootdevice/by-name/cache mmcblk0p25 ' \
+            -e 's block/bootdevice/by-name/config mmcblk0p28 ' \
+            -e 's block/bootdevice/by-name/cust mmcblk0p30 ' \
+            -e 's block/bootdevice/by-name/fsc mmcblk0p16 ' \
+            -e 's block/bootdevice/by-name/fsg mmcblk0p20 ' \
+            -e 's block/bootdevice/by-name/hyp mmcblk0p10 ' \
+            -e 's block/bootdevice/by-name/hypbak mmcblk0p11 ' \
+            -e 's block/bootdevice/by-name/keystore mmcblk0p27 ' \
+            -e 's block/bootdevice/by-name/misc mmcblk0p15 ' \
+            -e 's block/bootdevice/by-name/modem mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/modemst1 mmcblk0p13 ' \
+            -e 's block/bootdevice/by-name/modemst2 mmcblk0p14 ' \
+            -e 's block/bootdevice/by-name/oem mmcblk0p29 ' \
+            -e 's block/bootdevice/by-name/pad mmcblk0p12 ' \
+            -e 's block/bootdevice/by-name/persist mmcblk0p24 ' \
+            -e 's block/bootdevice/by-name/recovery mmcblk0p26 ' \
+            -e 's block/bootdevice/by-name/rpm mmcblk0p6 ' \
+            -e 's block/bootdevice/by-name/rpmbak mmcblk0p7 ' \
+            -e 's block/bootdevice/by-name/sbl1 mmcblk0p2 ' \
+            -e 's block/bootdevice/by-name/sbl1bak mmcblk0p3 ' \
+            -e 's block/bootdevice/by-name/sec mmcblk0p21 ' \
+            -e 's block/bootdevice/by-name/splash mmcblk0p18 ' \
+            -e 's block/bootdevice/by-name/ssd mmcblk0p17 ' \
+            -e 's block/bootdevice/by-name/system mmcblk0p23 ' \
+            -e 's block/bootdevice/by-name/tz mmcblk0p8 ' \
+            -e 's block/bootdevice/by-name/tzbak mmcblk0p9 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p31 ' \
+           "$@"
+        ;;
+
     "armani")
         sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/aboot mmcblk0p10 ' \

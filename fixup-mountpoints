@@ -703,6 +703,17 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/xblbak sdc1 ' \
             "$@"
         ;;
+    
+    "T00F")
+        sed -i \
+            -e 's /dev/block/by-name/system /dev/mmcblk0p9 ' \
+            -e 's /dev/block/by-name/cache /dev/mmcblk0p6 ' \
+            -e 's /dev/block/by-name/config /dev/mmcblk0p5 ' \
+            -e 's /dev/block/by-name/data /dev/mmcblk0p10 ' \
+            -e 's /dev/block/by-name/factory /dev/mmcblk0p3 ' \
+            "$@"
+        ;;
+        
     *)
 	cat <<EOF
 

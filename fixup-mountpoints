@@ -831,6 +831,18 @@ case "$DEVICE" in
              -e 's block/platform/soc/7464900.sdhci/by-name/xbl mmcblk0p5 ' \
             "$@"
         ;;
+	
+	"Z00L"|"Z00LD")
+        sed -i \
+            -e 's /dev/block/by-name/system /dev/mmcblk0p45 ' \
+            -e 's /dev/block/by-name/cache /dev/mmcblk0p44 ' \
+            -e 's /dev/block/by-name/persist /dev/mmcblk0p39 ' \
+	    -e 's /dev/block/by-name/firmware /dev/mmcblk0p41 ' \
+	    -e 's /dev/block/by-name/asdf /dev/mmcblk0p33 ' \
+            -e 's /dev/block/by-name/data /dev/mmcblk0p46 ' \
+            -e 's /dev/block/by-name/factory /dev/mmcblk0p20 ' \
+            "$@"
+	;;
 
     *)
 	cat <<EOF

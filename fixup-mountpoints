@@ -717,6 +717,7 @@ case "$DEVICE" in
             "$@"
         ;;
 
+<<<<<<< HEAD
     "T00F")
         sed -i \
             -e 's /dev/block/by-name/system /dev/mmcblk0p9 ' \

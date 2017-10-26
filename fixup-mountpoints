@@ -1,7 +1,12 @@
 #!/bin/sh
 # Fix up mount points device node names.
-# This is broken pending systemd > 191-2 so hack the generated unit files :(
-# See: https://bugzilla.redhat.com/show_bug.cgi?id=859297
+#
+# /data needs to be mounted in initrd, but there is no udev that early,
+# which means there is no /dev/block/platform/*/by-name/* (or bootdevice).
+# This file is a map from the "by-name" path to /dev/mmcblkMpN.
+# It also serves dhd to convert fstab and *.rc mount entries to systemd units,
+# because at that boot stage there is still no udev "by-name" paths, even when
+# systemd starts to execut the "*.mount" units.
 
 DEVICE=$1
 shift
@@ -991,8 +996,7 @@ case "$DEVICE" in
 ****************************************************************
 ****************************************************************
 ERROR: $DEVICE does not have mountpoint fixup data - see
-       SailfishOS HADK for details on how to fix this
-       Check: device/$VENDOR/$DEVICE/recovery.fstab
+       Sailfish OS HADK for details on how to fix this.
 ****************************************************************
 ****************************************************************
 

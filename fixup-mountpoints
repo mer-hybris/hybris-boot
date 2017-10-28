@@ -922,10 +922,13 @@ case "$DEVICE" in
         ;;
     "oneplus2")
         sed -i \
-            -e 's block/bootdevice/by-name/boot mmcblk0p7 ' \
-            -e 's block/bootdevice/by-name/userdata mmcblk0p28 ' \
-            -e 's block/bootdevice/by-name/system mmcblk0p27 ' \
-            -e 's block/bootdevice/by-name/cache mmcblk0p15 ' \
+            -e 's block/bootdevice/by-name/boot mmcblk0p35 ' \
+            -e 's block/bootdevice/by-name/system mmcblk0p42 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p43 ' \
+            -e 's block/bootdevice/by-name/cache mmcblk0p41 ' \
+            -e 's block/bootdevice/by-name/persist mmcblk0p37 ' \
+            -e 's block/bootdevice/by-name/modem mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/bluetooth mmcblk0p2 ' \
             "$@"
         ;;
     "shamu")

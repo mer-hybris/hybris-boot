@@ -900,6 +900,18 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/oem mmcblk0p30 ' \
             "$@"
         ;;
+
+    "krillin")
+        sed -i \
+            -e 's block/platform/mtk-msdc.0/by-num/p1 mmcblk0p1 ' \
+            -e 's block/platform/mtk-msdc.0/by-num/p2 mmcblk0p2 ' \
+            -e 's block/platform/mtk-msdc.0/by-num/p3 mmcblk0p3 ' \
+            -e 's block/platform/mtk-msdc.0/by-num/p4 mmcblk0p4 ' \
+            -e 's block/platform/mtk-msdc.0/by-num/p5 mmcblk0p5 ' \
+            -e 's block/platform/mtk-msdc.0/by-num/p6 mmcblk0p6 ' \
+            -e 's block/platform/mtk-msdc.0/by-num/p7 mmcblk0p7 ' \
+            "$@"
+        ;;
     *)
 	cat <<EOF
 

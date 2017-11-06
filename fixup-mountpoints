@@ -840,10 +840,11 @@ case "$DEVICE" in
         ;;
     "shamu")
         sed -i \
-            -e 's block/bootdevice/by-name/boot mmcblk0p37 ' \
-            -e 's block/bootdevice/by-name/userdata mmcblk0p42 ' \
-            -e 's block/bootdevice/by-name/system mmcblk0p41 ' \
-            -e 's block/bootdevice/by-name/cache mmcblk0p38 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p37 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p42 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p41 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p38 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
             "$@"
         ;;
     "flounder")

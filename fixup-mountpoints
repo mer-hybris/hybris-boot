@@ -26,6 +26,15 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "pico")
+        sed -i \
+            -e 's null null ' \
+            -e 's block/mmcblk0p3 mmcblk0p3 ' \
+            -e 's block/mtdblock4 mtdblock4 ' \
+            -e 's block/mmcblk0p2 mmcblk0p2 ' \
+            "$@"
+        ;;
+
     "alice")
         sed -i \
             -e 's block/mmcblk0p38 mmcblk0p38 ' \

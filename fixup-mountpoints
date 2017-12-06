@@ -26,6 +26,20 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "victara")
+        sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/fsg mmcblk0p22 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p31 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p39 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p38 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p37 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p34 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/pds mmcblk0p27 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p33 ' \
+            "$@"
+        ;;
+
     "pico")
         sed -i \
             -e 's null null ' \

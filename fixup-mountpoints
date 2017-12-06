@@ -25,7 +25,18 @@ case "$DEVICE" in
              -e 's block/bootdevice/by-name/userdata mmcblk0p51 ' \
             "$@"
         ;;
-             
+
+    "alice")
+        sed -i \
+            -e 's block/mmcblk0p38 mmcblk0p38 ' \
+            -e 's block/platform/hi_mci.0/by-name/userdata mmcblk0p40 ' \
+            -e 's block/mmcblk0p34 mmcblk0p34 ' \
+            -e 's block/platform/hi_mci.0/by-name/misc mmcblk0p19 ' \
+            -e 's block/platform/hi_mci.0/by-name/boot mmcblk0p27 ' \
+            -e 's block/platform/hi_mci.0/by-name/recovery mmcblk0p28 ' \
+            "$@"
+        ;;
+
     "kinzie")
         sed -i \
             -e 's block/bootdevice/by-name/fsg mmcblk0p24 ' \

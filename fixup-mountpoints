@@ -14,6 +14,19 @@ shift
 echo "Fixing mount-points for device $DEVICE"
 
 case "$DEVICE" in
+    "lux")
+        sed -i \
+            -e 's block/bootdevice/by-name/boot mmcblk0p31 ' \
+            -e 's block/bootdevice/by-name/system mmcblk0p41 ' \
+            -e 's block/bootdevice/by-name/cache mmcblk0p40 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p42 ' \
+            -e 's block/bootdevice/by-name/modem mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/persist mmcblk0p29 ' \
+            -e 's block/bootdevice/by-name/fsg mmcblk0p23 ' \
+            -e 's block/bootdevice/by-name/recovery mmcblk0p32 ' \
+            "$@"
+        ;;
+
     "victara")
         sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/fsg mmcblk0p22 ' \

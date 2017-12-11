@@ -23,6 +23,19 @@ case "$DEVICE" in
              -e 's block/bootdevice/by-name/persist mmcblk0p25 ' \
              -e 's block/bootdevice/by-name/system mmcblk0p52 ' \
              -e 's block/bootdevice/by-name/userdata mmcblk0p51 ' \
+             "$@"
+        ;;
+
+    "lux")
+        sed -i \
+            -e 's block/bootdevice/by-name/boot mmcblk0p31 ' \
+            -e 's block/bootdevice/by-name/system mmcblk0p41 ' \
+            -e 's block/bootdevice/by-name/cache mmcblk0p40 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p42 ' \
+            -e 's block/bootdevice/by-name/modem mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/persist mmcblk0p29 ' \
+            -e 's block/bootdevice/by-name/fsg mmcblk0p23 ' \
+            -e 's block/bootdevice/by-name/recovery mmcblk0p32 ' \
             "$@"
         ;;
 

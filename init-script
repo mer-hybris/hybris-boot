@@ -345,7 +345,7 @@ if [ "$DONE_SWITCH" = "no" ]; then
     else
         # Prefer /sbin/preinit over /sbin/init
         [ -x /target/sbin/preinit ] && INIT=/sbin/preinit || INIT=/sbin/init
-        exec switch_root /target $INIT --log-target=kmsg &> /target/init-stderrout
+        exec switch_root /target $INIT &> /target/init-stderrout
     fi
     run_debug_session "Failed to boot init in real rootfs"
 
@@ -367,6 +367,6 @@ else
     # Now try to boot the real init
     # Prefer /sbin/preinit over /sbin/init
     [ -x /sbin/preinit ] && INIT=/sbin/preinit || INIT=/sbin/init
-    exec $INIT --log-level=debug --log-target=kmsg &> /boot/systemd_stdouterr
+    exec $INIT &> /boot/systemd_stdouterr
     run_debug_session "init in real rootfs failed"
 fi

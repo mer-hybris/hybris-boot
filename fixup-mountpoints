@@ -913,6 +913,54 @@ case "$DEVICE" in
             -e 's block/platform/mtk-msdc.0/by-num/p7 mmcblk0p7 ' \
             "$@"
         ;;
+
+    "suzuran")
+        sed -i \
+            -e 's block/bootdevice/by-name/DDR mmcblk0p7 ' \
+            -e 's block/bootdevice/by-name/FOTAKernel mmcblk0p32 ' \
+            -e 's block/bootdevice/by-name/LTALabel mmcblk0p2 ' \
+            -e 's block/bootdevice/by-name/TA mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/aboot mmcblk0p27 ' \
+            -e 's block/bootdevice/by-name/alt_aboot mmcblk0p28 ' \
+            -e 's block/bootdevice/by-name/alt_hyp mmcblk0p12 ' \
+            -e 's block/bootdevice/by-name/alt_pmic mmcblk0p5 ' \
+            -e 's block/bootdevice/by-name/alt_rpm mmcblk0p26 ' \
+            -e 's block/bootdevice/by-name/alt_s1sbl mmcblk0p20 ' \
+            -e 's block/bootdevice/by-name/alt_sbl1 mmcblk0p16 ' \
+            -e 's block/bootdevice/by-name/alt_sdi mmcblk0p22 ' \
+            -e 's block/bootdevice/by-name/alt_tz mmcblk0p24 ' \
+            -e 's block/bootdevice/by-name/apdp mmcblk0p8 ' \
+            -e 's block/bootdevice/by-name/apps_log mmcblk0p38 ' \
+            -e 's block/bootdevice/by-name/boot mmcblk0p29 ' \
+            -e 's block/bootdevice/by-name/cache mmcblk0p41 ' \
+            -e 's block/bootdevice/by-name/config mmcblk0p36 ' \
+            -e 's block/bootdevice/by-name/devinfo mmcblk0p35 ' \
+            -e 's block/bootdevice/by-name/diag mmcblk0p39 ' \
+            -e 's block/bootdevice/by-name/dpo mmcblk0p10 ' \
+            -e 's block/bootdevice/by-name/fsg mmcblk0p13 ' \
+            -e 's block/bootdevice/by-name/hyp mmcblk0p11 ' \
+            -e 's block/bootdevice/by-name/keystore mmcblk0p34 ' \
+            -e 's block/bootdevice/by-name/limits mmcblk0p6 ' \
+            -e 's block/bootdevice/by-name/misc mmcblk0p33 ' \
+            -e 's block/bootdevice/by-name/modem mmcblk0p3 ' \
+            -e 's block/bootdevice/by-name/modemst1 mmcblk0p17 ' \
+            -e 's block/bootdevice/by-name/modemst2 mmcblk0p18 ' \
+            -e 's block/bootdevice/by-name/msadp mmcblk0p9 ' \
+            -e 's block/bootdevice/by-name/oem mmcblk0p40 ' \
+            -e 's block/bootdevice/by-name/persist mmcblk0p31 ' \
+            -e 's block/bootdevice/by-name/pmic mmcblk0p4 ' \
+            -e 's block/bootdevice/by-name/rddata mmcblk0p37 ' \
+            -e 's block/bootdevice/by-name/rdimage mmcblk0p30 ' \
+            -e 's block/bootdevice/by-name/rpm mmcblk0p25 ' \
+            -e 's block/bootdevice/by-name/s1sbl mmcblk0p19 ' \
+            -e 's block/bootdevice/by-name/sbl1 mmcblk0p15 ' \
+            -e 's block/bootdevice/by-name/sdi mmcblk0p21 ' \
+            -e 's block/bootdevice/by-name/ssd mmcblk0p14 ' \
+            -e 's block/bootdevice/by-name/system mmcblk0p43 ' \
+            -e 's block/bootdevice/by-name/tz mmcblk0p23 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p42 ' \
+            "$@"
+        ;;
     "sumire")
         sed -i \
             -e 's block/platform/soc.0/by-name/DDR mmcblk0p7 ' \

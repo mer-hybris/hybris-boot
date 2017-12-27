@@ -337,15 +337,22 @@ if [ "$DONE_SWITCH" = "no" ]; then
 	usb_setup "Mer Debug: done debug, disabling storage"
     fi
 
+    # Remount the target as ro if it provides the .halium-ro file
+    if [ -e /target/.halium-ro ]; then
+        mount /target -o remount,ro
+    fi
+
     # Disable mdev hotplug now - let udev handle it in main boot
     echo "" > /proc/sys/kernel/hotplug
 
     if [ -f "/target/init-debug" ]; then
-        exec switch_root /target /init-debug &> /target/init-debug-stderrout
+        echo "hybris-boot: Running init-debug" > /target/data/init-debug-stderrout
+        exec switch_root /target /init-debug >> /target/data/init-debug-stderrout 2>&1
     else
         # Prefer /sbin/preinit over /sbin/init
         [ -x /target/sbin/preinit ] && INIT=/sbin/preinit || INIT=/sbin/init
-        exec switch_root /target $INIT &> /target/init-stderrout
+        echo "hybris-boot: Booting $INIT in real rootfs" > /target/data/init-stderrout
+        exec switch_root /target $INIT >> /target/data/init-stderrout 2>&1
     fi
     run_debug_session "Failed to boot init in real rootfs"
 

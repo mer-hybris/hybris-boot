@@ -960,6 +960,19 @@ case "$DEVICE" in
             -e 's block/platform/soc.0/by-name/userdata mmcblk0p42 ' \
             "$@"
         ;;
+    "peregrine")
+        sed -i \
+            -e 's block/bootdevice/by-name/system mmcblk0p34 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p36 ' \
+            -e 's block/bootdevice/by-name/cache mmcblk0p33 ' \
+            -e 's block/bootdevice/by-name/fsg mmcblk0p21 ' \
+            -e 's block/bootdevice/by-name/modem mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/persist mmcblk0p29 ' \
+            -e 's block/bootdevice/by-name/boot mmcblk0p31 ' \
+            -e 's block/bootdevice/by-name/recovery mmcblk0p32 ' \
+            -e 's block/bootdevice/by-name/misc mmcblk0p30 ' \
+            "$@"
+        ;;
     *)
 	cat <<EOF
 

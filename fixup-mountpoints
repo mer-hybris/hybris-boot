@@ -1049,6 +1049,16 @@ case "$DEVICE" in
             -e 's /dev/block/bootdevice/by-name/misc sda9 ' \
             "$@"
         ;;
+    "titan")
+        sed -i \
+            -e 's block/bootdevice/by-name/modem mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/system mmcblk0p36 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p38 ' \
+            -e 's block/bootdevice/by-name/recovery mmcblk0p32 ' \
+            -e 's block/bootdevice/by-name/cache mmcblk0p35 ' \
+            -e 's block/bootdevice/by-name/boot mmcblk0p31 ' \
+            "$@"
+        ;;
     *)
 	cat <<EOF
 

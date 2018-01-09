@@ -1050,6 +1050,17 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "titan")
+        sed -i \
+            -e 's block/bootdevice/by-name/modem mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/system mmcblk0p36 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p38 ' \
+            -e 's block/bootdevice/by-name/recovery mmcblk0p32 ' \
+            -e 's block/bootdevice/by-name/cache mmcblk0p35 ' \
+            -e 's block/bootdevice/by-name/boot mmcblk0p31 ' \
+            "$@"
+        ;;
+
     "i9300")
         sed -i \
             -e 's block/platform/dw_mmc/by-name/USERDATA mmcblk0p16 ' \
@@ -1094,7 +1105,6 @@ case "$DEVICE" in
             -e 's block/platform/sdhci-tegra.3/by-name/UDA mmcblk0p15 ' \
 	   "$@"
         ;;
-
     *)
 	cat <<EOF
 

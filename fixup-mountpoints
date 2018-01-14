@@ -1105,6 +1105,16 @@ case "$DEVICE" in
             -e 's block/platform/sdhci-tegra.3/by-name/UDA mmcblk0p15 ' \
 	   "$@"
         ;;
+
+    "scorpion")
+        sed -i \
+            -e 's block/bootdevice/by-name/boot mmcblk0p14 ' \
+            -e 's block/bootdevice/by-name/cache mmcblk0p24 ' \
+            -e 's block/bootdevice/by-name/system mmcblk0p23 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p26 ' \
+            "$@"
+        ;;
+
     *)
 	cat <<EOF
 

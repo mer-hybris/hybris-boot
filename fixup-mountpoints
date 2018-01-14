@@ -320,7 +320,7 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/misc mmcblk0p24 ' \
             "$@"
         ;;
-    "yuga")
+    "yuga" | "odin" | "dogo" | "pollux" | "pollux_windy")
         sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p17 ' \
             -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p24 ' \

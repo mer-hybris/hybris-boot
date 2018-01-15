@@ -1106,12 +1106,12 @@ case "$DEVICE" in
 	   "$@"
         ;;
 
-    "scorpion")
+    "scorpion" | "scorpion_windy")
         sed -i \
-            -e 's block/bootdevice/by-name/boot mmcblk0p14 ' \
-            -e 's block/bootdevice/by-name/cache mmcblk0p24 ' \
-            -e 's block/bootdevice/by-name/system mmcblk0p23 ' \
-            -e 's block/bootdevice/by-name/userdata mmcblk0p26 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p14 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p24 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p23 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p26 ' \
             "$@"
         ;;
 

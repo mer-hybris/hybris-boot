@@ -39,24 +39,26 @@ HYBRIS_R_ALWAYSDEBUG := 1
 
 HYBRIS_FIXUP_MOUNTS := $(LOCAL_PATH)/fixup-mountpoints
 
+# Filter fstabs with duplicate entries out
+FSTABS_FILTER := (goldfish|recovery)
 
 # Find any fstab files for required partition information.
 # in AOSP we could use TARGET_VENDOR
 # TARGET_VENDOR := $(shell echo $(PRODUCT_MANUFACTURER) | tr '[:upper:]' '[:lower:]')
 # but Cyanogenmod seems to use device/*/$(TARGET_DEVICE) in config.mk so we will too.
-HYBRIS_FSTABS := $(shell find device/*/$(TARGET_DEVICE) -name *fstab* | grep -v goldfish)
+HYBRIS_FSTABS := $(shell find device/*/$(TARGET_DEVICE) -name *fstab* | grep -v -E '$(FSTABS_FILTER)')
 # If fstab files were not found from primary device repo then they might be in
 # some other device repo so try to search for them first in device/PRODUCT_MANUFACTURER. 
 # In many cases PRODUCT_MANUFACTURER is the short vendor name used in folder names.
 ifeq "$(HYBRIS_FSTABS)" ""
 TARGET_VENDOR := "$(shell echo $(PRODUCT_MANUFACTURER) | tr '[:upper:]' '[:lower:]')"
-HYBRIS_FSTABS := $(shell find device/$(TARGET_VENDOR) -name *fstab* | grep -v goldfish)
+HYBRIS_FSTABS := $(shell find device/$(TARGET_VENDOR) -name *fstab* | grep -v -E '$(FSTABS_FILTER)')
 endif
 # Some devices devices have the short vendor name in PRODUCT_BRAND so try to
 # search from device/PRODUCT_BRAND if fstab files are still not found.
 ifeq "$(HYBRIS_FSTABS)" ""
 TARGET_VENDOR := "$(shell echo $(PRODUCT_BRAND) | tr '[:upper:]' '[:lower:]')"
-HYBRIS_FSTABS := $(shell find device/$(TARGET_VENDOR) -name *fstab* | grep -v goldfish)
+HYBRIS_FSTABS := $(shell find device/$(TARGET_VENDOR) -name *fstab* | grep -v -E '$(FSTABS_FILTER)')
 endif
 
 # Get the unique /dev field(s) from the line(s) containing the fs mount point

@@ -1143,6 +1143,17 @@ case "$DEVICE" in
            "$@"
         ;;
 
+    "herolte")
+        sed -i \
+            -e 's block/platform/155a0000.ufs/by-name/SYSTEM sda14 ' \
+            -e 's block/platform/155a0000.ufs/by-name/EFS sda3 ' \
+            -e 's block/platform/155a0000.ufs/by-name/CACHE sda15 ' \
+            -e 's block/platform/155a0000.ufs/by-name/USERDATA sda18 ' \
+            -e 's block/platform/155a0000.ufs/by-name/OTA sda7 ' \
+            -e 's block/platform/155a0000.ufs/by-name/HIDDEN sda16 ' \
+            "$@"
+        ;;
+
     *)
 	cat <<EOF
 

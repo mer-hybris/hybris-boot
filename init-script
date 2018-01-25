@@ -281,7 +281,7 @@ check_kernel_config() {
 		zcat /proc/config.gz | grep -E "^$x=y\$" || echo "$x=y not found in /proc/config.gz" >> /diagnosis.log
  	done
 	# Must not be =y
-	for x in CONFIG_ANDROID_LOW_MEMORY_KILLER CONFIG_DUMMY CONFIG_SYSFS_DEPRECATED; do
+	for x in CONFIG_DUMMY CONFIG_SYSFS_DEPRECATED; do
 		zcat /proc/config.gz | grep -E "^$x=y\$" && echo "$x=y found in /proc/config.gz, must be disabled" >> /diagnosis.log
 	done
     fi

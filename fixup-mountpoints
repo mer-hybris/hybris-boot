@@ -439,6 +439,17 @@ case "$DEVICE" in
 	    "$@"
 	;;
 
+    "shieldtablet")
+        sed -i \
+            -e 's block/platform/sdhci-tegra.3/by-name/APP mmcblk0p14 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/CAC mmcblk0p15 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/UDA mmcblk0p24 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/MSC mmcblk0p16 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/LNX mmcblk0p13 ' \
+            -e 's block/platform/sdhci-tegra.3/by-name/SOS mmcblk0p11 ' \
+            "$@"
+        ;;
+
     "p3100" | "p3110" | "p3113" | "p5100" | "p5110" | "p5113" | "espressowifi" | "espresso3g" | "i9100g")
         sed -i \
             -e 's block/platform/omap/omap_hsmmc.1/by-name/DATAFS mmcblk0p10 ' \

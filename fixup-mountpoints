@@ -285,7 +285,7 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/utagsBackup sda2 ' \
             -e 's block/bootdevice/by-name/xbl sdb1 ' \
             "$@"
-	;;
+        ;;
 
     "eva")
         sed -i \
@@ -600,7 +600,7 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/skylink mmcblk0p31 ' \
             -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p39 ' \
             -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p42 ' \
-            -e 's block/platform/msm_sdcc.1/by-name/wcnss mmcblk0p18 ' \            
+            -e 's block/platform/msm_sdcc.1/by-name/wcnss mmcblk0p18 ' \
             "$@"
         ;;
 

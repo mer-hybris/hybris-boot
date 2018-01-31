@@ -553,6 +553,38 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p39 ' \
             "$@"
         ;;
+        
+    "t6")
+        sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/adsp mmcblk0p16 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p37 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p41 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/carrier mmcblk0p32 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cdma_record mmcblk0p30 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/control mmcblk0p27 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/devlog mmcblk0p24 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/dsps mmcblk0p15 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/extra mmcblk0p29 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/local mmcblk0p28 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/misc mmcblk0p21 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modem_st1 mmcblk0p22 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modem_st2 mmcblk0p23 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/pdata mmcblk0p26 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/radio mmcblk0p34 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/radio_config mmcblk0p17 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p38 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/reserve mmcblk0p33 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/reserve_1 mmcblk0p20 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/reserve_2 mmcblk0p35 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/reserve_3 mmcblk0p36 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/reserve_4 mmcblk0p40 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/skylink mmcblk0p31 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p39 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p42 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/wcnss mmcblk0p18 ' \            
+            "$@"
+        ;;
+
     "wt88047")
        sed -i \
             -e 's block/bootdevice/by-name/userdata mmcblk0p30 ' \

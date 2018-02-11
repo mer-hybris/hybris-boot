@@ -1130,6 +1130,19 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "jfltexx")
+        sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p20 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p21 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p16 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/apnhlos mmcblk0p1 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/mdm mmcblk0p2 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p18 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p29 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/fota mmcblk0p22 ' \    
+           "$@"
+        ;;
+
     *)
 	cat <<EOF
 

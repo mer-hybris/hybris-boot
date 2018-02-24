@@ -1154,6 +1154,20 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "athene")
+        sed -i \
+            -e 's block/bootdevice/by-name/system mmcblk0p47 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p48 ' \
+            -e 's block/bootdevice/by-name/cache mmcblk0p46 ' \
+            -e 's block/bootdevice/by-name/fsg mmcblk0p16 ' \
+            -e 's block/bootdevice/by-name/modem mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/persist mmcblk0p30 ' \
+            -e 's block/bootdevice/by-name/boot mmcblk0p28 ' \
+            -e 's block/bootdevice/by-name/recovery mmcblk0p29 ' \
+            -e 's block/bootdevice/by-name/misc mmcblk0p31 ' \
+            "$@"
+        ;;
+
     *)
 	cat <<EOF
 

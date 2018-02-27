@@ -1167,6 +1167,41 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/misc mmcblk0p31 ' \
             "$@"
         ;;
+	
+    "jfltetmo")
+       sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/aboot mmcblk0p6 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/apnhlos mmcblk0p1 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/backup mmcblk0p23 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p20 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p18 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/carrier mmcblk0p28 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/efs mmcblk0p10 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/fota mmcblk0p22 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/fsg mmcblk0p24 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/hidden mmcblk0p27 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/m9kefs1 mmcblk0p13 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/m9kefs2 mmcblk0p14 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/m9kefs3 mmcblk0p15 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/mdm mmcblk0p2 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modemst1 mmcblk0p11 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modemst2 mmcblk0p12 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/pad mmcblk0p9 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/param mmcblk0p19 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/persdata mmcblk0p26 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p17 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p21 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/rpm mmcblk0p7 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/sbl1 mmcblk0p3 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/sbl2 mmcblk0p4 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/sbl3 mmcblk0p5 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/ssd mmcblk0p25 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p16 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/tz mmcblk0p8 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p29 ' \
+            "$@"
+        ;;
+
 
     *)
 	cat <<EOF

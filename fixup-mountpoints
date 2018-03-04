@@ -1202,6 +1202,15 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "dreamlte"|"dream2lte")
+       sed -i \
+            -e 's block/platform/11120000.ufs/by-name/CACHE sda18 ' \
+            -e 's block/platform/11120000.ufs/by-name/EFS sda3 ' \
+            -e 's block/platform/11120000.ufs/by-name/HIDDEN sda19 ' \
+            -e 's block/platform/11120000.ufs/by-name/SYSTEM sda17 ' \
+            -e 's block/platform/11120000.ufs/by-name/USERDATA sda24 ' \
+            "$@"
+        ;;
 
     *)
 	cat <<EOF

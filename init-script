@@ -85,11 +85,16 @@ fi
 
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 
+# Is CONFIG_HOTPLUG set
+IS_HOTPLUG="y"
+
 # Default setting is rndis - add mass_storage for a debug boot
 # enable using usb_setup
 USB_FUNCTIONS=rndis
 
 ANDROID_USB=/sys/class/android_usb/android0
+CONFIGFS_USB=/sys/kernel/config/usb_gadget/g1
+
 LOCAL_IP=192.168.2.15
 
 DONE_SWITCH=no
@@ -119,6 +124,17 @@ do_mount_devprocsys()
     mkdir /sys
     mount -t sysfs sysfs /sys
     mount -t proc proc /proc
+}
+
+is_hotplug_set()
+{
+    IS_HOTPLUG="n"
+    if [ -e /proc/config.gz ]; then
+        # Must be =y
+        for x in CONFIG_HOTPLUG; do
+            zcat /proc/config.gz | grep -E "^$x=y\$" && IS_HOTPLUG="y"
+        done
+    fi
 }
 
 do_hotplug_scan()
@@ -188,6 +204,14 @@ inject_loop() {
 
 # This sets up the USB with whatever USB_FUNCTIONS are set to
 usb_setup() {
+    if [ ! "$(get_opt androidboot.configfs)" = "true" ]; then
+        android_usb_setup $1
+    else
+        configfs_usb_setup $1
+    fi
+}
+
+android_usb_setup() {
       write $ANDROID_USB/enable        0
       write $ANDROID_USB/functions     ""
       write $ANDROID_USB/enable        1
@@ -201,12 +225,38 @@ usb_setup() {
       write $ANDROID_USB/functions     $USB_FUNCTIONS
       write $ANDROID_USB/enable        1
 }
+
+configfs_usb_setup() {
+      write $CONFIGFS_USB/UDC                  ""
+      mkdir $CONFIGFS_USB/configs/c.1
+      rm $CONFIGFS_USB/configs/c.1/*.usb
+      write $CONFIGFS_USB/UDC                  "$(ls /sys/class/udc/)"
+      usleep 500000 # 0.5 delay to attempt to remove rndis function
+      write $CONFIGFS_USB/UDC                  ""
+      write $CONFIGFS_USB/idVendor             18D1
+      write $CONFIGFS_USB/idProduct            D001
+      mkdir $CONFIGFS_USB/strings/0x409
+      write $CONFIGFS_USB/strings/0x409/manufacturer   "Mer Boat Loader"
+      write $CONFIGFS_USB/strings/0x409/product         "$CUSTOMPRODUCT"
+      write $CONFIGFS_USB/strings/0x409/serialnumber   "$1"
+      IFS=','
+      for i in $USB_FUNCTIONS; do
+          mkdir $CONFIGFS_USB/functions/$i.usb0
+          ln -s $CONFIGFS_USB/functions/$i.usb0 $CONFIGFS_USB/configs/c.1
+      done
+      write $CONFIGFS_USB/UDC                  "$(ls /sys/class/udc/)"
+}
+
 # This lets us communicate errors to host (if it needs disable/enable then that's a problem)
 usb_info() {
-    # make sure USB is settled
     echo "########################## usb_info: $1"
     sleep 1
-    write $ANDROID_USB/iSerial       "$1"
+    # make sure USB is settled
+    if [ ! "$(get_opt androidboot.configfs)" = "true" ]; then
+        write $ANDROID_USB/iSerial             "$1"
+    else
+        write $CONFIGFS_USB/strings/0x409/serialnumber "$1"
+    fi
 }
 
 
@@ -229,6 +279,14 @@ run_debug_session() {
 	    dmesg
 	    sleep 60 # plenty long enough to check usb on host
 	    reboot -f
+    fi
+
+    if [ "$DONE_SWITCH" = "yes" ]; then
+        if [ "$HALT_BOOT" = "y" ]; then
+            rm /etc/udhcpd.conf
+        else
+            ln -s /run/usb-moded/udhcpd.conf /etc/udhcpd.conf
+        fi
     fi
 
     # Create /etc/udhcpd.conf file.
@@ -288,7 +346,6 @@ check_kernel_config() {
 }
 
 # Now either initrd or rootfs sequence
-
 if [ "$DONE_SWITCH" = "no" ]; then
     EXPLICIT_BUSYBOX=""
     TELNET_DEBUG_PORT=23
@@ -296,14 +353,23 @@ if [ "$DONE_SWITCH" = "no" ]; then
     date
 
     do_mount_devprocsys
-
-    do_hotplug_scan
+    
+    # check if CONFIG_HOTPLUG is set
+    is_hotplug_set
+    if [ "$IS_HOTPLUG" = "y" ]; then
+        do_hotplug_scan
+    fi
 
     # Support /dev/block/mmcXXX only in initrd phase
     ln -s . /dev/block
     ln -s /proc/mounts /etc/mtab
 
     check_kernel_config
+
+    if [ "$(get_opt androidboot.configfs)" = "true" ]; then
+        mount -t configfs none /sys/kernel/config
+        mkdir "$CONFIGFS_USB"
+    fi
 
     bootsplash
 
@@ -319,14 +385,23 @@ if [ "$DONE_SWITCH" = "no" ]; then
     [ -f /target/init_disable_telnet ] && DISABLE_TELNET="y"
 
     if ! [ "$DBG_REASON" = "" ] ; then
-	# During debug we export mmc too (some variations in location here)
-	lun=/sys/class/android_usb/f_mass_storage/lun/file
-	if [ -f $lun ]; then echo /dev/mmcblk0 > $lun; fi
-	lun=/sys/class/android_usb/f_mass_storage/lun0/file
-	if [ -f $lun ]; then echo /dev/mmcblk0 > $lun; fi
+        # During debug we export mmc too (some variations in location here)
+        if ! [ "$(get_opt androidboot.configfs)" = "true" ] ; then 
+	    lun=/sys/class/android_usb/f_mass_storage/lun/file
+	    if [ -f $lun ]; then echo /dev/mmcblk0 > $lun; fi
+	    lun=/sys/class/android_usb/f_mass_storage/lun0/file
+	    if [ -f $lun ]; then echo /dev/mmcblk0 > $lun; fi
+        else
+	    mkdir $CONFIGFS_USB/functions/mass_storage.usb0
+	    lun=$CONFIGFS_USB/functions/mass_storage.usb0/lun.0/file
+	    if [ -f $lun ]; then echo /dev/mmcblk0 > $lun; fi
+	    mkdir $CONFIGFS_USB/functions/mass_storage.usb0/lun.1
+	    lun=$CONFIGFS_USB/functions/mass_storage.usb0/lun.1/file
+	    if [ -f $lun ]; then echo /dev/mmcblk0 > $lun; fi
+        fi
 	USB_FUNCTIONS=rndis,mass_storage
 
-	run_debug_session $DBG_REASON
+        run_debug_session $DBG_REASON
 
 	# Tidy up before we switch_root (rootfs init-debug leaves these running during bootup)
 	killall telnetd
@@ -337,7 +412,9 @@ if [ "$DONE_SWITCH" = "no" ]; then
     fi
 
     # Disable mdev hotplug now - let udev handle it in main boot
-    echo "" > /proc/sys/kernel/hotplug
+    if [ "$IS_HOTPLUG" = "y" ]; then
+        echo "" > /proc/sys/kernel/hotplug
+    fi
 
     if [ -f "/target/init-debug" ]; then
 	exec switch_root /target /init-debug &> /target/init-debug-stderrout
@@ -356,6 +433,12 @@ else
     TELNET_DEBUG_PORT=2323
 
     do_mount_devprocsys
+
+    # remount configfs
+    if [ "$(get_opt androidboot.configfs)" = "true" ]; then
+        mount -t configfs none /sys/kernel/config
+        mkdir "$CONFIGFS_USB"
+    fi
 
     HALT_BOOT="n"
     [ -f /init_enter_debug2 ] && HALT_BOOT="y"

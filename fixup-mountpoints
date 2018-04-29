@@ -1212,6 +1212,15 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "x2")
+        sed -i \
+            -e 's block/bootdevice/by-name/system sde19 ' \
+            -e 's block/bootdevice/by-name/userdata sda9 ' \
+            -e 's block/bootdevice/by-name/cache sda3 ' \
+            -e 's block/bootdevice/by-name/modem sde12 ' \
+            "$@"
+        ;;
+
     *)
 	cat <<EOF
 

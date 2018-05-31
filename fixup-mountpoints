@@ -14,59 +14,14 @@ shift
 echo "Fixing mount-points for device $DEVICE"
 
 case "$DEVICE" in
-    "suzu")
+    "suzu" | "kugo" | "blanc")
          sed -i \
-             -e 's block/bootdevice/by-name/DDR mmcblk0p16 ' \
-             -e 's block/bootdevice/by-name/FOTAKernel mmcblk0p42 ' \
-             -e 's block/bootdevice/by-name/LTALabel mmcblk0p2 ' \
-             -e 's block/bootdevice/by-name/Qnovo mmcblk0p46 ' \
-             -e 's block/bootdevice/by-name/TA mmcblk0p1 ' \
-             -e 's block/bootdevice/by-name/aboot mmcblk0p20 ' \
-             -e 's block/bootdevice/by-name/abootbak mmcblk0p21 ' \
-             -e 's block/bootdevice/by-name/apdp mmcblk0p37 ' \
-             -e 's block/bootdevice/by-name/apps_log mmcblk0p44 ' \
-             -e 's block/bootdevice/by-name/boot mmcblk0p22 ' \
              -e 's block/bootdevice/by-name/cache mmcblk0p24 ' \
-             -e 's block/bootdevice/by-name/cmnlib mmcblk0p33 ' \
-             -e 's block/bootdevice/by-name/cmnlibbak mmcblk0p35 ' \
-             -e 's block/bootdevice/by-name/config mmcblk0p27 ' \
-             -e 's block/bootdevice/by-name/devcfg mmcblk0p31 ' \
-             -e 's block/bootdevice/by-name/devinfo mmcblk0p23 ' \
-             -e 's block/bootdevice/by-name/diag mmcblk0p45 ' \
-             -e 's block/bootdevice/by-name/dpo mmcblk0p39 ' \
              -e 's block/bootdevice/by-name/dsp mmcblk0p13 ' \
-             -e 's block/bootdevice/by-name/fsg mmcblk0p17 ' \
-             -e 's block/bootdevice/by-name/hyp mmcblk0p11 ' \
-             -e 's block/bootdevice/by-name/hypbak mmcblk0p12 ' \
-             -e 's block/bootdevice/by-name/keymaster mmcblk0p34 ' \
-             -e 's block/bootdevice/by-name/keymasterbak mmcblk0p36 ' \
-             -e 's block/bootdevice/by-name/keystore mmcblk0p26 ' \
-             -e 's block/bootdevice/by-name/limits mmcblk0p29 ' \
-             -e 's block/bootdevice/by-name/mcfg mmcblk0p32 ' \
              -e 's block/bootdevice/by-name/modem mmcblk0p3 ' \
-             -e 's block/bootdevice/by-name/modemst1 mmcblk0p14 ' \
-             -e 's block/bootdevice/by-name/modemst2 mmcblk0p15 ' \
-             -e 's block/bootdevice/by-name/mota mmcblk0p30 ' \
-             -e 's block/bootdevice/by-name/msadp mmcblk0p38 ' \
              -e 's block/bootdevice/by-name/oem mmcblk0p28 ' \
              -e 's block/bootdevice/by-name/persist mmcblk0p25 ' \
-             -e 's block/bootdevice/by-name/rdimage mmcblk0p43 ' \
-             -e 's block/bootdevice/by-name/rpm mmcblk0p7 ' \
-             -e 's block/bootdevice/by-name/rpmbak mmcblk0p8 ' \
-             -e 's block/bootdevice/by-name/s1sbl mmcblk0p40 ' \
-             -e 's block/bootdevice/by-name/s1sblbak mmcblk0p41 ' \
-             -e 's block/bootdevice/by-name/sbl1 mmcblk0p5 ' \
-             -e 's block/bootdevice/by-name/sbl1bak mmcblk0p6 ' \
-             -e 's block/bootdevice/by-name/sec mmcblk0p18 ' \
-             -e 's block/bootdevice/by-name/splash mmcblk0p19 ' \
-             -e 's block/bootdevice/by-name/ssd mmcblk0p4 ' \
              -e 's block/bootdevice/by-name/system mmcblk0p52 ' \
-             -e 's block/bootdevice/by-name/tz mmcblk0p9 ' \
-             -e 's block/bootdevice/by-name/tzbak mmcblk0p10 ' \
-             -e 's block/bootdevice/by-name/tzs1attest mmcblk0p47 ' \
-             -e 's block/bootdevice/by-name/tzs1attestbak mmcblk0p48 ' \
-             -e 's block/bootdevice/by-name/tzs1sbl mmcblk0p49 ' \
-             -e 's block/bootdevice/by-name/tzs1sblbak mmcblk0p50 ' \
              -e 's block/bootdevice/by-name/userdata mmcblk0p51 ' \
             "$@"
         ;;

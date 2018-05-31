@@ -1190,9 +1190,9 @@ case "$DEVICE" in
 	
     "nicki")
         sed -i \
-            -e 's /dev/block/platform/msm_sdcc.1/by-name/cache mmcblk0p26 ' \
-            -e 's /dev/block/platform/msm_sdcc.1/by-name/system mmcblk0p25 ' \
-            -e 's /dev/block/platform/msm_sdcc.1/by-name/userdata mmcblk0p27 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p26 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p25 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p27 ' \
             "$@"
         ;;
 

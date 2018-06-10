@@ -1169,13 +1169,13 @@ case "$DEVICE" in
     
     "cedric")
          sed -i \
-            -e 's /dev/block/bootdevice/by-name/system /dev/block/mmcblk0p53 ' \
-            -e 's /dev/block/bootdevice/by-name/userdata /dev/block/mmcblk0p54 ' \
-            -e 's /dev/block/bootdevice/by-name/cache /dev/block/mmcblk0p52 ' \
-            -e 's /dev/block/bootdevice/by-name/modem /dev/block/mmcblk0p19 ' \
-            -e 's /dev/block/bootdevice/by-name/fsg /dev/block/mmcblk0p29 ' \
-            -e 's /dev/block/bootdevice/by-name/dsp /dev/block/mmcblk0p22 ' \
-            -e 's /dev/block/bootdevice/by-name/persist /dev/block/mmcblk0p30 ' \
+            -e 's block/bootdevice/by-name/system mmcblk0p53 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p54 ' \
+            -e 's block/bootdevice/by-name/cache mmcblk0p52 ' \
+            -e 's block/bootdevice/by-name/modem mmcblk0p19 ' \
+            -e 's block/bootdevice/by-name/fsg mmcblk0p29 ' \
+            -e 's block/bootdevice/by-name/dsp mmcblk0p22 ' \
+            -e 's block/bootdevice/by-name/persist mmcblk0p30 ' \
             "$@"
         ;;
 

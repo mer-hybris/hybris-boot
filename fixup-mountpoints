@@ -512,10 +512,10 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/LTALabel mmcblk1 ' \
             "$@"
         ;;
-    "z3c" | "sirius")
+    "z3c" | "sirius" | "z3" | "leo")
     # Z3 compact is also called "aries" | "d5803" in aosp (called z3c in cm12.1)
     # Z2 is also called "d6503" in aosp (called sirius in cm12.1)
-    # untested for "amami" | "leo" | "tianchi")
+    # untested for "amami" | "tianchi")
          sed -i \
              -e 's block/platform/msm_sdcc.1/by-name/DDR mmcblk0p17 ' \
              -e 's block/platform/msm_sdcc.1/by-name/FOTAKernel mmcblk0p16 ' \

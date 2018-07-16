@@ -91,6 +91,7 @@ USB_FUNCTIONS=rndis
 
 ANDROID_USB=/sys/class/android_usb/android0
 GADGET_DIR=/config/usb_gadget
+USB_SETUP_FALLBACK=0
 LOCAL_IP=192.168.2.15
 
 DONE_SWITCH=no
@@ -192,6 +193,18 @@ inject_loop() {
 
 # This sets up the USB with whatever USB_FUNCTIONS are set to
 usb_setup() {
+    if [ $USB_SETUP_FALLBACK != 1 ]; then
+      usb_setup_configfs $1
+      if [ $? != 0 ]; then
+        USB_SETUP_FALLBACK=1
+	usb_setup $1
+      fi
+    else
+      usb_setup_android_usb $1
+    fi
+}
+
+usb_setup_configfs() {
     if [ -d $GADGET_DIR ]; then
       G_USB_ISERIAL=$GADGET_DIR/g1/strings/0x409/serialnumber
 
@@ -215,27 +228,39 @@ usb_setup() {
 
       if echo $USB_FUNCTIONS | grep -q "rndis"; then
           ln -s $GADGET_DIR/g1/functions/rndis.usb0 $GADGET_DIR/g1/configs/c.1
+	  if [ $? != 0 ]; then
+	    return 1
+	  fi
           ln -s $GADGET_DIR/g1/functions/rndis_bam.rndis $GADGET_DIR/g1/configs/c.1
+	  if [ $? != 0 ]; then
+	    return 1
+	  fi
       fi
       echo $USB_FUNCTIONS | grep -q "mass_storage" && ln -s $GADGET_DIR/g1/functions/storage.0 $GADGET_DIR/g1/configs/c.1
 
       echo "$(ls /sys/class/udc)" > $GADGET_DIR/g1/UDC
     else
-        G_USB_ISERIAL=$ANDROID_USB/iSerial
-        write $ANDROID_USB/enable          0
-        write $ANDROID_USB/functions       ""
-        write $ANDROID_USB/enable          1
-        usleep 500000 # 0.5 delay to attempt to remove rndis function
-        write $ANDROID_USB/enable          0
-        write $ANDROID_USB/idVendor        18D1
-        write $ANDROID_USB/idProduct       D001
-        write $ANDROID_USB/iManufacturer   "Mer Boat Loader"
-        write $ANDROID_USB/iProduct        "$CUSTOMPRODUCT"
-        write $ANDROID_USB/iSerial         "$1"
-        write $ANDROID_USB/functions       $USB_FUNCTIONS
-        write $ANDROID_USB/enable          1
+      USB_SETUP_FALLBACK=1
+      usb_setup_android_usb $1
     fi
 }
+
+usb_setup_android_usb() {
+    G_USB_ISERIAL=$ANDROID_USB/iSerial
+    write $ANDROID_USB/enable          0
+    write $ANDROID_USB/functions       ""
+    write $ANDROID_USB/enable          1
+    usleep 500000 # 0.5 delay to attempt to remove rndis function
+    write $ANDROID_USB/enable          0
+    write $ANDROID_USB/idVendor        18D1
+    write $ANDROID_USB/idProduct       D001
+    write $ANDROID_USB/iManufacturer   "Mer Boat Loader"
+    write $ANDROID_USB/iProduct        "$CUSTOMPRODUCT"
+    write $ANDROID_USB/iSerial         "$1"
+    write $ANDROID_USB/functions       $USB_FUNCTIONS
+    write $ANDROID_USB/enable          1
+}
+
 # This lets us communicate errors to host (if it needs disable/enable then that's a problem)
 usb_info() {
     # make sure USB is settled

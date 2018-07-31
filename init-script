@@ -90,6 +90,7 @@ export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 USB_FUNCTIONS=rndis
 
 ANDROID_USB=/sys/class/android_usb/android0
+GADGET_DIR=/config/usb_gadget
 LOCAL_IP=192.168.2.15
 
 DONE_SWITCH=no
@@ -119,6 +120,9 @@ do_mount_devprocsys()
     mkdir /sys
     mount -t sysfs sysfs /sys
     mount -t proc proc /proc
+
+    mkdir /config
+    mount -t configfs none /config
 }
 
 do_hotplug_scan()
@@ -186,27 +190,69 @@ inject_loop() {
     echo "########################## inject loop done"
 }
 
-# This sets up the USB with whatever USB_FUNCTIONS are set to
-usb_setup() {
-      write $ANDROID_USB/enable        0
-      write $ANDROID_USB/functions     ""
-      write $ANDROID_USB/enable        1
-      usleep 500000 # 0.5 delay to attempt to remove rndis function
-      write $ANDROID_USB/enable        0
-      write $ANDROID_USB/idVendor      18D1
-      write $ANDROID_USB/idProduct     D001
-      write $ANDROID_USB/iManufacturer "Mer Boat Loader"
-      write $ANDROID_USB/iProduct      "$CUSTOMPRODUCT"
-      write $ANDROID_USB/iSerial       "$1"
-      write $ANDROID_USB/functions     $USB_FUNCTIONS
-      write $ANDROID_USB/enable        1
+# This sets up the USB with whatever USB_FUNCTIONS are set to via configfs
+usb_setup_configfs() {
+    G_USB_ISERIAL=$GADGET_DIR/g1/strings/0x409/serialnumber
+
+    mkdir $GADGET_DIR/g1
+    write $GADGET_DIR/g1/idVendor                   "0x18D1"
+    write $GADGET_DIR/g1/idProduct                  "0xD001"
+    mkdir $GADGET_DIR/g1/strings/0x409
+    write $GADGET_DIR/g1/strings/0x409/serialnumber "$1"
+    write $GADGET_DIR/g1/strings/0x409/manufacturer "Mer Boat Loader"
+    write $GADGET_DIR/g1/strings/0x409/product      "$CUSTOMPRODUCT"
+
+    if echo $USB_FUNCTIONS | grep -q "rndis"; then
+        mkdir $GADGET_DIR/g1/functions/rndis.usb0
+        mkdir $GADGET_DIR/g1/functions/rndis_bam.rndis
+    fi
+    echo $USB_FUNCTIONS | grep -q "mass_storage" && mkdir $GADGET_DIR/g1/functions/storage.0
+
+    mkdir $GADGET_DIR/g1/configs/c.1
+    mkdir $GADGET_DIR/g1/configs/c.1/strings/0x409
+    write $GADGET_DIR/g1/configs/c.1/strings/0x409/configuration "$USB_FUNCTIONS"
+
+    if echo $USB_FUNCTIONS | grep -q "rndis"; then
+        ln -s $GADGET_DIR/g1/functions/rndis.usb0 $GADGET_DIR/g1/configs/c.1
+        ln -s $GADGET_DIR/g1/functions/rndis_bam.rndis $GADGET_DIR/g1/configs/c.1
+    fi
+    echo $USB_FUNCTIONS | grep -q "mass_storage" && ln -s $GADGET_DIR/g1/functions/storage.0 $GADGET_DIR/g1/configs/c.1
+
+    echo "$(ls /sys/class/udc)" > $GADGET_DIR/g1/UDC
 }
+
+# This sets up the USB with whatever USB_FUNCTIONS are set to via android_usb
+usb_setup_android_usb() {
+    G_USB_ISERIAL=$ANDROID_USB/iSerial
+    write $ANDROID_USB/enable          0
+    write $ANDROID_USB/functions       ""
+    write $ANDROID_USB/enable          1
+    usleep 500000 # 0.5 delay to attempt to remove rndis function
+    write $ANDROID_USB/enable          0
+    write $ANDROID_USB/idVendor        18D1
+    write $ANDROID_USB/idProduct       D001
+    write $ANDROID_USB/iManufacturer   "Mer Boat Loader"
+    write $ANDROID_USB/iProduct        "$CUSTOMPRODUCT"
+    write $ANDROID_USB/iSerial         "$1"
+    write $ANDROID_USB/functions       $USB_FUNCTIONS
+    write $ANDROID_USB/enable          1
+}
+
+# This determines which USB setup method is going to be used
+usb_setup() {
+    if [ -d $ANDROID_USB ]; then
+        usb_setup_android_usb $1
+    elif [ -d $GADGET_DIR ]; then
+        usb_setup_configfs $1
+    fi
+}
+
 # This lets us communicate errors to host (if it needs disable/enable then that's a problem)
 usb_info() {
     # make sure USB is settled
     echo "########################## usb_info: $1"
     sleep 1
-    write $ANDROID_USB/iSerial       "$1"
+    write $G_USB_ISERIAL "$1"
 }
 
 

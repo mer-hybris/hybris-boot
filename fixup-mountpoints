@@ -1112,6 +1112,53 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/oem mmcblk0p30 ' \
             "$@"
         ;;
+    "Z00ED")
+        sed -i \
+            -e 's block/bootdevice/by-name/ADF /dev/block/mmcblk0p39 ' \
+            -e 's block/bootdevice/by-name/APD /dev/block/mmcblk0p40 ' \
+            -e 's block/bootdevice/by-name/DDR /dev/block/mmcblk0p9 ' \
+            -e 's block/bootdevice/by-name/aboot /dev/block/mmcblk0p12 ' \
+            -e 's block/bootdevice/by-name/abootbak /dev/block/mmcblk0p13 ' \
+            -e 's block/bootdevice/by-name/abootdebug /dev/block/mmcblk0p32 ' \
+            -e 's block/bootdevice/by-name/asdf /dev/block/mmcblk0p31 ' \
+            -e 's block/bootdevice/by-name/asusfw /dev/block/mmcblk0p37 ' \
+            -e 's block/bootdevice/by-name/asusgpt /dev/block/mmcblk0p25 ' \
+            -e 's block/bootdevice/by-name/asusgpt1 /dev/block/mmcblk0p26 ' \
+            -e 's block/bootdevice/by-name/asusgpt2 /dev/block/mmcblk0p27 ' \
+            -e 's block/bootdevice/by-name/asuskey /dev/block/mmcblk0p20 ' \
+            -e 's block/bootdevice/by-name/asuskey2 /dev/block/mmcblk0p21 ' \
+            -e 's block/bootdevice/by-name/asuskey3 /dev/block/mmcblk0p22 ' \
+            -e 's block/bootdevice/by-name/asuskey4 /dev/block/mmcblk0p23 ' \
+            -e 's block/bootdevice/by-name/boot /dev/block/mmcblk0p34 ' \
+            -e 's block/bootdevice/by-name/cache /dev/block/mmcblk0p41 ' \
+            -e 's block/bootdevice/by-name/config /dev/block/mmcblk0p30 ' \
+            -e 's block/bootdevice/by-name/factory /dev/block/mmcblk0p18 ' \
+            -e 's block/bootdevice/by-name/factorybak /dev/block/mmcblk0p19 ' \
+            -e 's block/bootdevice/by-name/fsc /dev/block/mmcblk0p15 ' \
+            -e 's block/bootdevice/by-name/fsg /dev/block/mmcblk0p14 ' \
+            -e 's block/bootdevice/by-name/hyp /dev/block/mmcblk0p7 ' \
+            -e 's block/bootdevice/by-name/hypbak /dev/block/mmcblk0p8 ' \
+            -e 's block/bootdevice/by-name/keystore /dev/block/mmcblk0p29 ' \
+            -e 's block/bootdevice/by-name/misc /dev/block/mmcblk0p28 ' \
+            -e 's block/bootdevice/by-name/modem /dev/block/mmcblk0p38 ' \
+            -e 's block/bootdevice/by-name/modemst1 /dev/block/mmcblk0p16 ' \
+            -e 's block/bootdevice/by-name/modemst2 /dev/block/mmcblk0p17 ' \
+            -e 's block/bootdevice/by-name/oem /dev/block/mmcblk0p33 ' \
+            -e 's block/bootdevice/by-name/persist /dev/block/mmcblk0p36 ' \
+            -e 's block/bootdevice/by-name/persistent /dev/block/mmcblk0p24 ' \
+            -e 's block/bootdevice/by-name/recovery /dev/block/mmcblk0p35 ' \
+            -e 's block/bootdevice/by-name/rpm /dev/block/mmcblk0p3 ' \
+            -e 's block/bootdevice/by-name/rpmbak /dev/block/mmcblk0p4 ' \
+            -e 's block/bootdevice/by-name/sbl1 /dev/block/mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/sbl1bak /dev/block/mmcblk0p2 ' \
+            -e 's block/bootdevice/by-name/sec /dev/block/mmcblk0p11 ' \
+            -e 's block/bootdevice/by-name/ssd /dev/block/mmcblk0p10 ' \
+            -e 's block/bootdevice/by-name/system /dev/block/mmcblk0p42 ' \
+            -e 's block/bootdevice/by-name/tz /dev/block/mmcblk0p5 ' \
+            -e 's block/bootdevice/by-name/tzbak /dev/block/mmcblk0p6 ' \
+            -e 's block/bootdevice/by-name/userdata /dev/block/mmcblk0p43 ' \
+            "$@"
+        ;;
     *)
         cat <<EOF
 

@@ -266,7 +266,7 @@ HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)
 .PHONY: hybris-hal hybris-common
 
 HYBRIS_COMMON_TARGETS := bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot servicemanager logcat updater init adb adbd linker libc libEGL libGLESv1_CM libGLESv2
-HYBRIS_COMMON_ANDROID8_TARGETS := verity_signer boot_signer e2fsdroid vendorimage ramdisk libselinux_stubs libsurfaceflinger libsf_compat_layer
+HYBRIS_COMMON_ANDROID8_TARGETS := verity_signer boot_signer e2fsdroid vendorimage ramdisk libselinux_stubs libsurfaceflinger libsf_compat_layer bootctl
 
 ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 8 && echo true),true)
 HYBRIS_COMMON_TARGETS += $(HYBRIS_COMMON_ANDROID8_TARGETS)

@@ -52,7 +52,7 @@ cat <<EOF >> /etc/issue.net
 EOF
 
 HALT_BOOT="${1:-y}"
-if [ "$HALT_BOOT" == "y" ]; then
+if [ "$HALT_BOOT" = "y" ]; then
 cat <<EOF >> /etc/issue.net
 You may inject commands into init shell process (PID 1):
 
@@ -90,6 +90,7 @@ export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 USB_FUNCTIONS=rndis
 
 ANDROID_USB=/sys/class/android_usb/android0
+GADGET_DIR=/config/usb_gadget
 LOCAL_IP=192.168.2.15
 
 DONE_SWITCH=no
@@ -119,6 +120,9 @@ do_mount_devprocsys()
     mkdir /sys
     mount -t sysfs sysfs /sys
     mount -t proc proc /proc
+
+    mkdir /config
+    mount -t configfs none /config
 }
 
 do_hotplug_scan()
@@ -186,27 +190,69 @@ inject_loop() {
     echo "########################## inject loop done"
 }
 
-# This sets up the USB with whatever USB_FUNCTIONS are set to
-usb_setup() {
-      write $ANDROID_USB/enable        0
-      write $ANDROID_USB/functions     ""
-      write $ANDROID_USB/enable        1
-      usleep 500000 # 0.5 delay to attempt to remove rndis function
-      write $ANDROID_USB/enable        0
-      write $ANDROID_USB/idVendor      18D1
-      write $ANDROID_USB/idProduct     D001
-      write $ANDROID_USB/iManufacturer "Mer Boat Loader"
-      write $ANDROID_USB/iProduct      "$CUSTOMPRODUCT"
-      write $ANDROID_USB/iSerial       "$1"
-      write $ANDROID_USB/functions     $USB_FUNCTIONS
-      write $ANDROID_USB/enable        1
+# This sets up the USB with whatever USB_FUNCTIONS are set to via configfs
+usb_setup_configfs() {
+    G_USB_ISERIAL=$GADGET_DIR/g1/strings/0x409/serialnumber
+
+    mkdir $GADGET_DIR/g1
+    write $GADGET_DIR/g1/idVendor                   "0x18D1"
+    write $GADGET_DIR/g1/idProduct                  "0xD001"
+    mkdir $GADGET_DIR/g1/strings/0x409
+    write $GADGET_DIR/g1/strings/0x409/serialnumber "$1"
+    write $GADGET_DIR/g1/strings/0x409/manufacturer "Mer Boat Loader"
+    write $GADGET_DIR/g1/strings/0x409/product      "$CUSTOMPRODUCT"
+
+    if echo $USB_FUNCTIONS | grep -q "rndis"; then
+        mkdir $GADGET_DIR/g1/functions/rndis.usb0
+        mkdir $GADGET_DIR/g1/functions/rndis_bam.rndis
+    fi
+    echo $USB_FUNCTIONS | grep -q "mass_storage" && mkdir $GADGET_DIR/g1/functions/storage.0
+
+    mkdir $GADGET_DIR/g1/configs/c.1
+    mkdir $GADGET_DIR/g1/configs/c.1/strings/0x409
+    write $GADGET_DIR/g1/configs/c.1/strings/0x409/configuration "$USB_FUNCTIONS"
+
+    if echo $USB_FUNCTIONS | grep -q "rndis"; then
+        ln -s $GADGET_DIR/g1/functions/rndis.usb0 $GADGET_DIR/g1/configs/c.1
+        ln -s $GADGET_DIR/g1/functions/rndis_bam.rndis $GADGET_DIR/g1/configs/c.1
+    fi
+    echo $USB_FUNCTIONS | grep -q "mass_storage" && ln -s $GADGET_DIR/g1/functions/storage.0 $GADGET_DIR/g1/configs/c.1
+
+    echo "$(ls /sys/class/udc)" > $GADGET_DIR/g1/UDC
 }
+
+# This sets up the USB with whatever USB_FUNCTIONS are set to via android_usb
+usb_setup_android_usb() {
+    G_USB_ISERIAL=$ANDROID_USB/iSerial
+    write $ANDROID_USB/enable          0
+    write $ANDROID_USB/functions       ""
+    write $ANDROID_USB/enable          1
+    usleep 500000 # 0.5 delay to attempt to remove rndis function
+    write $ANDROID_USB/enable          0
+    write $ANDROID_USB/idVendor        18D1
+    write $ANDROID_USB/idProduct       D001
+    write $ANDROID_USB/iManufacturer   "Mer Boat Loader"
+    write $ANDROID_USB/iProduct        "$CUSTOMPRODUCT"
+    write $ANDROID_USB/iSerial         "$1"
+    write $ANDROID_USB/functions       $USB_FUNCTIONS
+    write $ANDROID_USB/enable          1
+}
+
+# This determines which USB setup method is going to be used
+usb_setup() {
+    if [ -d $ANDROID_USB ]; then
+        usb_setup_android_usb $1
+    elif [ -d $GADGET_DIR ]; then
+        usb_setup_configfs $1
+    fi
+}
+
 # This lets us communicate errors to host (if it needs disable/enable then that's a problem)
 usb_info() {
     # make sure USB is settled
     echo "########################## usb_info: $1"
     sleep 1
-    write $ANDROID_USB/iSerial       "$1"
+    write $G_USB_ISERIAL "$1"
 }
 
 
@@ -216,8 +262,10 @@ run_debug_session() {
     usb_setup "Mer Debug setting up (DONE_SWITCH=$DONE_SWITCH)"
 
     USB_IFACE=notfound
-    /sbin/ifconfig usb0   $LOCAL_IP && USB_IFACE=usb0
     /sbin/ifconfig rndis0 $LOCAL_IP && USB_IFACE=rndis0
+    if [ x$USB_IFACE = xnotfound ]; then
+        /sbin/ifconfig usb0 $LOCAL_IP && USB_IFACE=usb0
+    fi
     # Report for the logs
     /sbin/ifconfig -a
 
@@ -242,17 +290,20 @@ run_debug_session() {
 
     HALT_BOOT="${2:-y}"
     set_welcome_msg $HALT_BOOT
+
+    if [ -z $DISABLE_TELNET ]; then
     # Non-blocking telnetd
     echo "########################## starting telnetd"
     # We run telnetd on different ports pre/post-switch_root This
     # avoids problems with an unterminated pre-switch_root telnetd
     # hogging the port
-    $EXPLICIT_BUSYBOX telnetd -p $TELNET_DEBUG_PORT -l /bin/sh
+    $EXPLICIT_BUSYBOX telnetd -b ${LOCAL_IP}:${TELNET_DEBUG_PORT} -l /bin/sh
 
     # For some reason this does not work in rootfs
     usb_info "Mer Debug telnet on port $TELNET_DEBUG_PORT on $USB_IFACE $LOCAL_IP - also running udhcpd"
+    fi
 
-    if [ "$HALT_BOOT" == "y" ]; then
+    if [ "$HALT_BOOT" = "y" ]; then
         # Some logging output
         ps -wlT
         ps -ef
@@ -272,11 +323,11 @@ check_kernel_config() {
 	echo "No /proc/config.gz. Enable CONFIG_IKCONFIG and CONFIG_IKCONFIG_PROC" >> /diagnosis.log
     else
 	# Must be =y
-	for x in CONFIG_CGROUPS CONFIG_AUTOFS4_FS CONFIG_DEVTMPFS_MOUNT CONFIG_DEVTMPFS CONFIG_UNIX CONFIG_HOTPLUG CONFIG_INOTIFY_USER CONFIG_SYSVIPC CONFIG_NET CONFIG_PROC_FS CONFIG_SIGNALFD CONFIG_SYSFS CONFIG_TMPFS_POSIX_ACL CONFIG_VT; do
+	for x in CONFIG_CGROUPS CONFIG_AUTOFS4_FS CONFIG_DEVTMPFS_MOUNT CONFIG_DEVTMPFS CONFIG_UNIX CONFIG_INOTIFY_USER CONFIG_SYSVIPC CONFIG_NET CONFIG_PROC_FS CONFIG_SIGNALFD CONFIG_SYSFS CONFIG_TMPFS_POSIX_ACL CONFIG_VT; do
 		zcat /proc/config.gz | grep -E "^$x=y\$" || echo "$x=y not found in /proc/config.gz" >> /diagnosis.log
  	done
 	# Must not be =y
-	for x in CONFIG_ANDROID_LOW_MEMORY_KILLER CONFIG_ANDROID_PARANOID_NETWORK CONFIG_DUMMY CONFIG_SYSFS_DEPRECATED; do
+	for x in CONFIG_DUMMY CONFIG_SYSFS_DEPRECATED; do
 		zcat /proc/config.gz | grep -E "^$x=y\$" && echo "$x=y found in /proc/config.gz, must be disabled" >> /diagnosis.log
 	done
     fi
@@ -311,6 +362,7 @@ if [ "$DONE_SWITCH" = "no" ]; then
     [ "$(get_opt bootmode)" = "debug" ] && DBG_REASON="bootmode=debug on kernel command line"
     [ x$ALWAYSDEBUG = x1 ] && DBG_REASON="Always debug: rndis + mass_storage"
     [ -f /target/init_enter_debug ] && DBG_REASON="/init_enter_debug exists"
+    [ -f /target/init_disable_telnet ] && DISABLE_TELNET="y"
 
     if ! [ "$DBG_REASON" = "" ] ; then
 	# During debug we export mmc too (some variations in location here)
@@ -353,6 +405,7 @@ else
 
     HALT_BOOT="n"
     [ -f /init_enter_debug2 ] && HALT_BOOT="y"
+    [ -f /init_disable_telnet ] && DISABLE_TELNET="y"
     run_debug_session "init-debug in real rootfs" $HALT_BOOT
 
     # If we don't do this then udev will not be able to create /dev/block/*

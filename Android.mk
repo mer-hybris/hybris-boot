@@ -37,7 +37,7 @@ HYBRIS_R_ALWAYSDEBUG := 1
 
 # Force deferred assignment
 
-HYBRIS_FIXUP_MOUNTS := $(LOCAL_PATH)/fixup-mountpoints
+HYBRIS_FIXUP_MOUNTS := $(shell ls -1 $(LOCAL_PATH)/../fixup-mountpoints $(LOCAL_PATH)/fixup-mountpoints 2> /dev/null | head -n1)
 
 
 # Find any fstab files for required partition information.
@@ -58,6 +58,10 @@ ifeq "$(HYBRIS_FSTABS)" ""
 TARGET_VENDOR := "$(shell echo $(PRODUCT_BRAND) | tr '[:upper:]' '[:lower:]')"
 HYBRIS_FSTABS := $(shell find device/$(TARGET_VENDOR) -name *fstab* | grep -v goldfish)
 endif
+# Some devices are inside subfolders
+ifeq "$(HYBRIS_FSTABS)" ""
+HYBRIS_FSTABS := $(shell find device/*/*/$(TARGET_DEVICE) -name *fstab* | grep -v goldfish)
+endif
 
 # Get the unique /dev field(s) from the line(s) containing the fs mount point
 # Note the perl one-liner uses double-$ as per Makefile syntax
@@ -67,8 +71,8 @@ HYBRIS_DATA_PART := $(shell /usr/bin/perl -w -e '$$fs=shift; if ($$ARGV[0]) { wh
 $(warning ********************* /boot appears to live on $(HYBRIS_BOOT_PART))
 $(warning ********************* /data appears to live on $(HYBRIS_DATA_PART))
 
-ifneq ($(words $(HYBRIS_BOOT_PART))$(words $(HYBRIS_DATA_PART)),11)
-$(error There should be a one and only one device entry for HYBRIS_BOOT_PART and HYBRIS_DATA_PART)
+ifneq ($(words $(HYBRIS_DATA_PART)),1)
+$(error There should be a one and only one device entry for HYBRIS_DATA_PART)
 endif
 
 # Command used to make the image
@@ -84,6 +88,12 @@ endif
 HYBRIS_BOOTIMAGE_ARGS := \
 	$(addprefix --second ,$(INSTALLED_2NDBOOTLOADER_TARGET)) \
 	--kernel $(INSTALLED_KERNEL_TARGET)
+
+ifeq ($(BOARD_KERNEL_SEPARATED_DT),true)
+  INSTALLED_DTIMAGE_TARGET := $(PRODUCT_OUT)/dt.img
+  HYBRIS_BOOTIMAGE_ARGS += --dt $(INSTALLED_DTIMAGE_TARGET)
+  BOOTIMAGE_EXTRA_DEPS := $(INSTALLED_DTIMAGE_TARGET)
+endif
 
 ifdef BOARD_KERNEL_BASE
   HYBRIS_BOOTIMAGE_ARGS += --base $(BOARD_KERNEL_BASE)
@@ -127,7 +137,7 @@ BOOT_RAMDISK_INIT_SRC := $(LOCAL_PATH)/init-script
 BOOT_RAMDISK_INIT := $(BOOT_INTERMEDIATE)/init
 BOOT_RAMDISK_FILES := $(shell find $(BOOT_RAMDISK_SRC) -type f) $(BOOT_RAMDISK_INIT)
 
-$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK) $(MKBOOTIMG)
+$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK) $(MKBOOTIMG) $(BOOTIMAGE_EXTRA_DEPS)
 	@echo "Making hybris-boot.img in $(dir $@) using $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK)"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
@@ -170,7 +180,7 @@ RECOVERY_RAMDISK_INIT_SRC := $(LOCAL_PATH)/init-script
 RECOVERY_RAMDISK_INIT := $(RECOVERY_INTERMEDIATE)/init
 RECOVERY_RAMDISK_FILES := $(shell find $(RECOVERY_RAMDISK_SRC) -type f) $(RECOVERY_RAMDISK_INIT)
 
-$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(RECOVERY_RAMDISK) $(MKBOOTIMG)
+$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(RECOVERY_RAMDISK) $(MKBOOTIMG) $(BOOTIMAGE_EXTRA_DEPS)
 	@echo "Making hybris-recovery.img in $(dir $@) using $(INSTALLED_KERNEL_TARGET) $(RECOVERY_RAMDISK)"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
@@ -209,6 +219,12 @@ UPDATER_SCRIPT_SRC := $(LOCAL_PATH)/updater-script
 ANDROID_VERSION_MAJOR := $(word 1, $(subst ., , $(PLATFORM_VERSION)))
 ANDROID_VERSION_MINOR := $(word 2, $(subst ., , $(PLATFORM_VERSION)))
 
+ifeq ($(TARGET_OTA_ASSERT_DEVICE),)
+    ASSERT_DEVICE := assert(getprop("ro.product.device") == "$(TARGET_DEVICE)" \|\| getprop("ro.build.product") == "$(TARGET_DEVICE)" \|\| getprop("ro.cm.device") == "$(TARGET_DEVICE)");
+else
+    ASSERT_DEVICE := $(subst |,\|,$(shell $(LOCAL_PATH)/assert-device $(TARGET_OTA_ASSERT_DEVICE)))
+endif
+
 USE_SET_METADATA := $(shell test $(ANDROID_VERSION_MAJOR) -eq 4 -a $(ANDROID_VERSION_MINOR) -ge 4 -o $(ANDROID_VERSION_MAJOR) -ge 5 && echo true)
 
 ifeq ($(USE_SET_METADATA),true)
@@ -224,6 +240,7 @@ $(LOCAL_BUILT_MODULE): $(UPDATER_SCRIPT_SRC)
 	@sed -e 's %DEVICE% $(TARGET_DEVICE) g' \
              -e 's %BOOT_PART% $(HYBRIS_BOOT_PART) g' \
              -e 's %DATA_PART% $(HYBRIS_DATA_PART) g' \
+             -e 's|%ASSERT_DEVICE%|$(ASSERT_DEVICE)|' \
              -e 's|%SET_PERMISSIONS%|$(SET_PERMISSIONS)|' \
 	      $(UPDATER_SCRIPT_SRC) > $@
 
@@ -250,7 +267,33 @@ $(LOCAL_BUILT_MODULE): $(UPDATER_UNPACK_SRC)
 
 HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)
 
+.PHONY: hybris-hal hybris-common
 
-.PHONY: hybris-hal
-hybris-hal: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot linker init libc adb adbd libEGL libGLESv1_CM libGLESv2 servicemanager logcat updater
+HYBRIS_COMMON_TARGETS := bootimage hybris-updater-unpack hybris-recovery hybris-boot servicemanager logcat updater init adb adbd linker libc libEGL libGLESv1_CM libGLESv2
+ifneq ($(HYBRIS_BOOT_PART),)
+HYBRIS_COMMON_TARGETS += hybris-updater-script
+else
+$(warning Skipping build of hybris-updater-script since HYBRIS_BOOT_PART is not specified)
+endif
+
+HYBRIS_COMMON_ANDROID8_TARGETS := verity_signer boot_signer e2fsdroid vendorimage ramdisk libselinux_stubs libsurfaceflinger libsf_compat_layer bootctl
+
+ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 8 && echo true),true)
+HYBRIS_COMMON_TARGETS += $(HYBRIS_COMMON_ANDROID8_TARGETS)
+# for 64 bit Android, also include the 32 bit variants that we need.
+HYBRIS_COMMON_64_BIT_EXTRA_TARGETS = linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32 libsf_compat_layer_32
+else
+# for 64 bit Android, also include the 32 bit variants that we need.
+HYBRIS_COMMON_64_BIT_EXTRA_TARGETS = linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32
+endif
+
+hybris-common: $(HYBRIS_COMMON_TARGETS)
+
+ifeq ("$(TARGET_ARCH)", "arm64")
+HYBRIS_TARGETS := $(HYBRIS_COMMON_TARGETS) $(HYBRIS_COMMON_64_BIT_EXTRA_TARGETS)
+else
+HYBRIS_TARGETS := $(HYBRIS_COMMON_TARGETS)
+endif
+
+hybris-hal: $(HYBRIS_TARGETS)
 

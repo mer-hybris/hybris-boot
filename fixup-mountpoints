@@ -1112,6 +1112,19 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/oem mmcblk0p30 ' \
             "$@"
         ;;
+
+    "a5ultexx")
+         sed -i \
+             -e 's block/bootdevice/by-name/system mmcblk0p24 ' \
+             -e 's block/bootdevice/by-name/userdata mmcblk0p27 ' \
+             -e 's block/bootdevice/by-name/cache mmcblk0p25 ' \
+             -e 's block/bootdevice/by-name/boot mmcblk0p16 ' \
+             -e 's block/bootdevice/by-name/modem mmcblk0p2 ' \
+             -e 's block/bootdevice/by-name/apnhlos mmcblk0p1 ' \
+             -e 's block/bootdevice/by-name/persist mmcblk0p22 ' \
+            "$@"
+        ;;
+
     *)
         cat <<EOF
 

@@ -58,6 +58,10 @@ ifeq "$(HYBRIS_FSTABS)" ""
 TARGET_VENDOR := "$(shell echo $(PRODUCT_BRAND) | tr '[:upper:]' '[:lower:]')"
 HYBRIS_FSTABS := $(shell find device/$(TARGET_VENDOR) -name *fstab* | grep -v goldfish)
 endif
+# Some devices are inside subfolders
+ifeq "$(HYBRIS_FSTABS)" ""
+HYBRIS_FSTABS := $(shell find device/*/*/$(TARGET_DEVICE) -name *fstab* | grep -v goldfish)
+endif
 
 # Get the unique /dev field(s) from the line(s) containing the fs mount point
 # Note the perl one-liner uses double-$ as per Makefile syntax
@@ -67,8 +71,8 @@ HYBRIS_DATA_PART := $(shell /usr/bin/perl -w -e '$$fs=shift; if ($$ARGV[0]) { wh
 $(warning ********************* /boot appears to live on $(HYBRIS_BOOT_PART))
 $(warning ********************* /data appears to live on $(HYBRIS_DATA_PART))
 
-ifneq ($(words $(HYBRIS_BOOT_PART))$(words $(HYBRIS_DATA_PART)),11)
-$(error There should be a one and only one device entry for HYBRIS_BOOT_PART and HYBRIS_DATA_PART)
+ifneq ($(words $(HYBRIS_DATA_PART)),1)
+$(error There should be a one and only one device entry for HYBRIS_DATA_PART)
 endif
 
 # Command used to make the image
@@ -265,11 +269,31 @@ HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)
 
 .PHONY: hybris-hal hybris-common
 
-hybris-common: bootimage hybris-updater-unpack hybris-updater-script hybris-recovery hybris-boot servicemanager logcat updater init adb adbd linker libc libEGL libGLESv1_CM libGLESv2
+HYBRIS_COMMON_TARGETS := bootimage hybris-updater-unpack hybris-recovery hybris-boot servicemanager logcat updater init adb adbd linker libc libEGL libGLESv1_CM libGLESv2
+ifneq ($(HYBRIS_BOOT_PART),)
+HYBRIS_COMMON_TARGETS += hybris-updater-script
+else
+$(warning Skipping build of hybris-updater-script since HYBRIS_BOOT_PART is not specified)
+endif
+
+HYBRIS_COMMON_ANDROID8_TARGETS := verity_signer boot_signer e2fsdroid vendorimage ramdisk libselinux_stubs libsurfaceflinger libsf_compat_layer libhwc2_compat_layer bootctl
+
+ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 8 && echo true),true)
+HYBRIS_COMMON_TARGETS += $(HYBRIS_COMMON_ANDROID8_TARGETS)
+# for 64 bit Android, also include the 32 bit variants that we need.
+HYBRIS_COMMON_64_BIT_EXTRA_TARGETS = linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32 libsf_compat_layer_32 libhwc2_compat_layer_32
+else
+# for 64 bit Android, also include the 32 bit variants that we need.
+HYBRIS_COMMON_64_BIT_EXTRA_TARGETS = linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32
+endif
+
+hybris-common: $(HYBRIS_COMMON_TARGETS)
 
 ifeq ("$(TARGET_ARCH)", "arm64")
-hybris-hal: hybris-common linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32
+HYBRIS_TARGETS := $(HYBRIS_COMMON_TARGETS) $(HYBRIS_COMMON_64_BIT_EXTRA_TARGETS)
 else
-hybris-hal: hybris-common
+HYBRIS_TARGETS := $(HYBRIS_COMMON_TARGETS)
 endif
+
+hybris-hal: $(HYBRIS_TARGETS)
 

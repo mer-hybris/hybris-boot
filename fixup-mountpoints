@@ -14,6 +14,67 @@ shift
 echo "Fixing mount-points for device $DEVICE"
 
 case "$DEVICE" in
+    "pioneer"|"discovery"|"voyager")
+        sed -i \
+            -e 's block/bootdevice/by-name/LTALabel mmcblk0p7 ' \
+            -e 's block/bootdevice/by-name/Qnovo mmcblk0p75 ' \
+            -e 's block/bootdevice/by-name/TA mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/abl mmcblk0p20 ' \
+            -e 's block/bootdevice/by-name/apdp mmcblk0p52 ' \
+            -e 's block/bootdevice/by-name/appslog mmcblk0p73 ' \
+            -e 's block/bootdevice/by-name/bluetooth_a mmcblk0p40 ' \
+            -e 's block/bootdevice/by-name/boot mmcblk0p38 ' \
+            -e 's block/bootdevice/by-name/cdt mmcblk0p24 ' \
+            -e 's block/bootdevice/by-name/cmnlib64 mmcblk0p27 ' \
+            -e 's block/bootdevice/by-name/cmnlib mmcblk0p25 ' \
+            -e 's block/bootdevice/by-name/ddr mmcblk0p59 ' \
+            -e 's block/bootdevice/by-name/devcfg mmcblk0p29 ' \
+            -e 's block/bootdevice/by-name/devinfo mmcblk0p51 ' \
+            -e 's block/bootdevice/by-name/diag mmcblk0p74 ' \
+            -e 's block/bootdevice/by-name/dip mmcblk0p50 ' \
+            -e 's block/bootdevice/by-name/dpo mmcblk0p54 ' \
+            -e 's block/bootdevice/by-name/dsp_a mmcblk0p44 ' \
+            -e 's block/bootdevice/by-name/frp mmcblk0p62 ' \
+            -e 's block/bootdevice/by-name/fsc mmcblk0p3 ' \
+            -e 's block/bootdevice/by-name/fsg mmcblk0p6 ' \
+            -e 's block/bootdevice/by-name/fsmetadata mmcblk0p72 ' \
+            -e 's block/bootdevice/by-name/hyp mmcblk0p16 ' \
+            -e 's block/bootdevice/by-name/keymaster mmcblk0p22 ' \
+            -e 's block/bootdevice/by-name/keystore mmcblk0p67 ' \
+            -e 's block/bootdevice/by-name/limits mmcblk0p56 ' \
+            -e 's block/bootdevice/by-name/logfs mmcblk0p58 ' \
+            -e 's block/bootdevice/by-name/mdtp mmcblk0p48 ' \
+            -e 's block/bootdevice/by-name/mdtpsecapp mmcblk0p46 ' \
+            -e 's block/bootdevice/by-name/misc mmcblk0p64 ' \
+            -e 's block/bootdevice/by-name/modem_a mmcblk0p42 ' \
+            -e 's block/bootdevice/by-name/modemst1 mmcblk0p4 ' \
+            -e 's block/bootdevice/by-name/modemst2 mmcblk0p5 ' \
+            -e 's block/bootdevice/by-name/msadp mmcblk0p53 ' \
+            -e 's block/bootdevice/by-name/oem_a mmcblk0p68 ' \
+            -e 's block/bootdevice/by-name/persist mmcblk0p2 ' \
+            -e 's block/bootdevice/by-name/pmic mmcblk0p18 ' \
+            -e 's block/bootdevice/by-name/rddata mmcblk0p77 ' \
+            -e 's block/bootdevice/by-name/rdimage mmcblk0p65 ' \
+            -e 's block/bootdevice/by-name/rpm mmcblk0p14 ' \
+            -e 's block/bootdevice/by-name/sec mmcblk0p60 ' \
+            -e 's block/bootdevice/by-name/splash mmcblk0p55 ' \
+            -e 's block/bootdevice/by-name/ssd mmcblk0p61 ' \
+            -e 's block/bootdevice/by-name/sti mmcblk0p63 ' \
+            -e 's block/bootdevice/by-name/storsec mmcblk0p31 ' \
+            -e 's block/bootdevice/by-name/system mmcblk0p78 ' \
+            -e 's block/bootdevice/by-name/toolsfv mmcblk0p57 ' \
+            -e 's block/bootdevice/by-name/tz mmcblk0p12 ' \
+            -e 's block/bootdevice/by-name/tzxfl mmcblk0p36 ' \
+            -e 's block/bootdevice/by-name/tzxflattest mmcblk0p34 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p76 ' \
+            -e 's block/bootdevice/by-name/vendor mmcblk0p70 ' \
+            -e 's block/bootdevice/by-name/xbl mmcblk0p10 ' \
+            -e 's block/bootdevice/by-name/xfl mmcblk0p32 ' \
+            -e 's block/bootdevice/by-name/xflkeystore mmcblk0p8 ' \
+            -e 's block/bootdevice/by-name/xflkeystorebak mmcblk0p9 ' \
+            "$@"
+        ;;
+
     "ghost")
         sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \

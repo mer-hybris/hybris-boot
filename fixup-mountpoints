@@ -301,7 +301,7 @@ case "$DEVICE" in
              -e 's block/platform/soc/1da4000.ufshc/by-name/xflbak sde24 ' \
              -e 's block/platform/soc/1da4000.ufshc/by-name/xflkeystore sde29 ' \
              -e 's block/platform/soc/1da4000.ufshc/by-name/xflkeystorebak sde30 ' \
-
+            "$@"
         ;;
 
     "moto_msm8960_jbbl")

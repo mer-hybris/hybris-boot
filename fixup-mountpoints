@@ -242,7 +242,7 @@ case "$DEVICE" in
              -e 's block/platform/soc/1da4000.ufshc/by-name/ablbak sde10 ' \
              -e 's block/platform/soc/1da4000.ufshc/by-name/apdp sde38 ' \
              -e 's block/platform/soc/1da4000.ufshc/by-name/apps_log sda9 ' \
-             -e 's block/platform/soc/1da4000.ufshc/by-name/bluetooth/sde37 '\
+             -e 's block/platform/soc/1da4000.ufshc/by-name/bluetooth sde37 '\
              -e 's block/platform/soc/1da4000.ufshc/by-name/boot sde35 ' \
              -e 's block/platform/soc/1da4000.ufshc/by-name/cache sda5 ' \
              -e 's block/platform/soc/1da4000.ufshc/by-name/cmnlib sde14 ' \

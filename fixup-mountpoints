@@ -174,6 +174,78 @@ case "$DEVICE" in
             -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p32 ' \
             "$@"
         ;;
+        
+        "maple")
+         sed -i \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/FOTAKernel sde45 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/LTALabel sda2 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/Qnovo sda11 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/TA sda1 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/abl sde9 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/ablbak sde10 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/apdp sde38 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/apps_log sda9 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/bluetooth sde37 '\
+             -e 's block/platform/soc/1da4000.ufshc/by-name/boot sde35 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/cache sda5 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/cmnlib sde14 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/cmnlib64 sde16 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/cmnlib64bak sde17 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/cmnlibbak sde15 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/ddr sdd1 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/devcfg sde19 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/devcfgbak sde20 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/devinfo sde11 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/diag sda10 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/dpo sde40 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/dsp sde34 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/frp sda8 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/fsc sdf3 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/fsg sde31 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/fsmetadata sda12 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/hyp sde5 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/hypbak sde6 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/keymaster sde12 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/keymasterbak sde13 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/keystore sda7 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/limits sde42 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/logfs sde44 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/misc sda6 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/modem sde33 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/modemst1 sdf1 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/modemst2 sdf2 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/msadp sde39 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/oem sda14 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/persist sda4 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/pmic sde7 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/pmicbak sde8 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/rdimage sda13 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/recovery sde36 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/rpm sde1 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/rpmbak sde2 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/sec sde32 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/splash sde41 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/ssd sda3 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/sti sde18 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/storsec sde21 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/storsecbak sde22 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/system sde46 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/toolsfv sde43 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/tz sde3 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/tzbak sde4 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/tzxfl sde27 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/tzxflattest sde25 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/tzxflattestbak sde26 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/tzxflbak sde28 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/userdata sda15 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/xbl sdb1 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/xblbak sdc1 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/xfl sde23 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/xflbak sde24 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/xflkeystore sde29 ' \
+             -e 's block/platform/soc/1da4000.ufshc/by-name/xflkeystorebak sde30 ' \
+             "$@"
+         ;;
 
     "suzu")
         sed -i \

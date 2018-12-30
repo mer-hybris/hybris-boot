@@ -245,7 +245,7 @@ case "$DEVICE" in
              -e 's block/platform/soc/1da4000.ufshc/by-name/xflkeystore sde29 ' \
              -e 's block/platform/soc/1da4000.ufshc/by-name/xflkeystorebak sde30 ' \
              "$@"
-         ;;
+        ;;
 
     "suzu")
         sed -i \

@@ -1,0 +1,80 @@
+#!/sbin/sh
+
+# The display screen
+SCREEN=/proc/self/fd/$2
+
+# The current zip installer
+ZIPFILE="$3"
+
+# The zip extract directory
+EX_DIR=/tmp/DJ9
+
+FS_ARC="/data/sailfishos-rootfs.tar.bz2"
+FS_DST="/data/.stowaways/sailfishos"
+
+# ui_print "<message>" ["<message 2>" ...]
+ui_print() {
+  until [ ! "$1" ]; do
+    echo -e "ui_print $1\nui_print" >> $SCREEN
+    shift
+  done
+}
+
+package_extract_dir() {
+   if [ -d $EX_DIR/$1 ]; then
+      cp -a $EX_DIR/$1/* $2
+   else
+      ui_print "Invalid directory: $1"
+   fi
+}
+
+package_extract_file() {
+   if [ -e $EX_DIR/$1 ]; then
+      dd if=$EX_DIR/$1 of=$2
+   else
+      ui_print "Invalid file: $1"
+   fi
+}
+
+ui_print("");
+ui_print("========================================");
+ui_print("Hybris Installer");
+ui_print("========================================");
+ui_print("      Device: %DEVICE%");
+ui_print("     Version: %VERSION%");
+ui_print("       Image: %IMAGE_FILE%");
+ui_print("        Size: %IMAGE_SIZE%");
+ui_print("  Partitions:");
+ui_print("    /boot -> %BOOT_PART%");
+ui_print("    /data -> %DATA_PART%");
+ui_print("========================================");
+ui_print("");
+
+%ASSERT_DEVICE%
+
+ui_print("Device check succeeded, unzipping archive to $EX_DIR...");
+cd /tmp
+mkdir -p $EX_DIR
+cd $EX_DIR
+# Careful with large files! They may exceed the limits of the tmpfs
+unzip -o "$ZIPFILE"
+
+ui_print("Mounting filesystems ...");
+mount -o remount,rw -t ext4 "%DATA_PART%" /data
+
+ui_print("Copying sailfish filesystem archive ...");
+package_extract_file("%IMAGE_FILE%", "/data/sailfishos-rootfs.tar.bz2");
+
+ui_print("Extracting sailfish rootfs ...");
+rm -rf $FS_DST
+mkdir -p $FS_DST
+tar --numeric-owner -xvjf $FS_ARC -C $FS_DST
+rm $FS_ARC
+
+ui_print("Flashing hybris-boot.img ...");
+package_extract_file("hybris-boot.img", "%BOOT_PART%");
+
+ui_print("Unmounting filesystems ...");
+unmount /data
+
+ui_print("Done!");

@@ -1114,7 +1114,7 @@ case "$DEVICE" in
         ;;
                       
 	 "payton")
-       sed -i \
+   	    sed -i \
 			-e 's block/bootdevice/by-name/abl_a mmcblk0p13 ' \
 			-e 's block/bootdevice/by-name/abl_b mmcblk0p14 ' \
 			-e 's block/bootdevice/by-name/apdp mmcblk0p50 ' \
@@ -1148,7 +1148,7 @@ case "$DEVICE" in
 			-e 's block/bootdevice/by-name/keymaster_b mmcblk0p20 ' \
 			-e 's block/bootdevice/by-name/kpan mmcblk0p43 ' \
 			-e 's block/bootdevice/by-name/logfs mmcblk0p49 ' \
-			-e 's block/bootdevice/by-name/logo_a mmcblk0p56 ' \       
+			-e 's block/bootdevice/by-name/logo_a mmcblk0p56 ' \
 			-e 's block/bootdevice/by-name/logo_b mmcblk0p57 ' \
 			-e 's block/bootdevice/by-name/metadata mmcblk0p42 ' \
 			-e 's block/bootdevice/by-name/misc mmcblk0p48 ' \
@@ -1182,13 +1182,11 @@ case "$DEVICE" in
 			-e 's block/bootdevice/by-name/vendor_a oem_a ' \
 			-e 's block/bootdevice/by-name/vendor_b oem_b ' \
 			-e 's block/bootdevice/by-name/xbl_a mmcblk0p1 ' \
-			-e 's block/bootdevice/by-name/xbl_b mmcblk0p2 ' \
-            "$@"
-
-         ;;
-         
-    *)
-        cat <<EOF
+			-e 's block/bootdevice/by-name/xbl_b mmcblk0p2 ' \            
+			"$@"
+			;;
+   	      *)
+       	 cat <<EOF
 
 ****************************************************************
 ****************************************************************

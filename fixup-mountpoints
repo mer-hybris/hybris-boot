@@ -1113,80 +1113,80 @@ case "$DEVICE" in
             "$@"
         ;;
                       
-	 "payton")
-   	    sed -i \
-			-e 's block/bootdevice/by-name/abl_a mmcblk0p13 ' \
-			-e 's block/bootdevice/by-name/abl_b mmcblk0p14 ' \
-			-e 's block/bootdevice/by-name/apdp mmcblk0p50 ' \
-			-e 's block/bootdevice/by-name/bluetooth_a mmcblk0p54 ' \
-			-e 's block/bootdevice/by-name/bluetooth_b mmcblk0p55 ' \
-			-e 's block/bootdevice/by-name/boot_a mmcblk0p44 ' \
-			-e 's block/bootdevice/by-name/boot_b mmcblk0p45 ' \
-			-e 's block/bootdevice/by-name/carrier mmcblk0p41 ' \
-			-e 's block/bootdevice/by-name/cid mmcblk0p40 ' \
-			-e 's block/bootdevice/by-name/cmnlib64_a mmcblk0p16 ' \
-			-e 's block/bootdevice/by-name/cmnlib64_b mmcblk0p18 ' \
-			-e 's block/bootdevice/by-name/cmnlib_a mmcblk0p15 ' \
-			-e 's block/bootdevice/by-name/cmnlib_b mmcblk0p17 ' \
-			-e 's block/bootdevice/by-name/ddr mmcblk0p31 ' \
-			-e 's block/bootdevice/by-name/devcfg_a mmcblk0p9 ' \
-			-e 's block/bootdevice/by-name/devcfg_b mmcblk0p10 ' \
-			-e 's block/bootdevice/by-name/devinfo mmcblk0p53 ' \
-			-e 's block/bootdevice/by-name/dpo mmcblk0p52 ' \
-			-e 's block/bootdevice/by-name/dsp_a mmcblk0p29 ' \
-			-e 's block/bootdevice/by-name/dsp_b mmcblk0p30 ' \
-			-e 's block/bootdevice/by-name/dto_a mmcblk0p46 ' \
-			-e 's block/bootdevice/by-name/dto_b mmcblk0p47 ' \
-			-e 's block/bootdevice/by-name/frp mmcblk0p39 ' \
-			-e 's block/bootdevice/by-name/fsc mmcblk0p27 ' \
-			-e 's block/bootdevice/by-name/fsg_a mmcblk0p36 ' \
-			-e 's block/bootdevice/by-name/fsg_b mmcblk0p37 ' \
-			-e 's block/bootdevice/by-name/hw mmcblk0p61 ' \
-			-e 's block/bootdevice/by-name/hyp_a mmcblk0p7 ' \
-			-e 's block/bootdevice/by-name/hyp_b mmcblk0p8 ' \
-			-e 's block/bootdevice/by-name/keymaster_a mmcblk0p19 ' \
-			-e 's block/bootdevice/by-name/keymaster_b mmcblk0p20 ' \
-			-e 's block/bootdevice/by-name/kpan mmcblk0p43 ' \
-			-e 's block/bootdevice/by-name/logfs mmcblk0p49 ' \
-			-e 's block/bootdevice/by-name/logo_a mmcblk0p56 ' \
-			-e 's block/bootdevice/by-name/logo_b mmcblk0p57 ' \
-			-e 's block/bootdevice/by-name/metadata mmcblk0p42 ' \
-			-e 's block/bootdevice/by-name/misc mmcblk0p48 ' \
-			-e 's block/bootdevice/by-name/modem_a mmcblk0p25 ' \
-			-e 's block/bootdevice/by-name/modem_b mmcblk0p26 ' \
-			-e 's block/bootdevice/by-name/modemst1 mmcblk0p34 ' \
-			-e 's block/bootdevice/by-name/modemst2 mmcblk0p35 ' \
-			-e 's block/bootdevice/by-name/msadp mmcblk0p51 ' \
-			-e 's block/bootdevice/by-name/oem_a mmcblk0p63 ' \
-			-e 's block/bootdevice/by-name/oem_b mmcblk0p64 ' \
-			-e 's block/bootdevice/by-name/persist mmcblk0p38 ' \
-			-e 's block/bootdevice/by-name/pmic_a mmcblk0p11 ' \
-			-e 's block/bootdevice/by-name/pmic_b mmcblk0p12 ' \
-			-e 's block/bootdevice/by-name/prov_a mmcblk0p23 ' \
-			-e 's block/bootdevice/by-name/prov_b mmcblk0p24 ' \
-			-e 's block/bootdevice/by-name/rpm_a mmcblk0p5 ' \
-			-e 's block/bootdevice/by-name/rpm_b mmcblk0p6 ' \
-			-e 's block/bootdevice/by-name/sp mmcblk0p62 ' \
-			-e 's block/bootdevice/by-name/ssd mmcblk0p28 ' \
-			-e 's block/bootdevice/by-name/storsec_a mmcblk0p21 ' \
-			-e 's block/bootdevice/by-name/storsec_b mmcblk0p22 ' \
-			-e 's block/bootdevice/by-name/system_a mmcblk0p65 ' \
-			-e 's block/bootdevice/by-name/system_b mmcblk0p66 ' \
-			-e 's block/bootdevice/by-name/tz_a mmcblk0p3 ' \
-			-e 's block/bootdevice/by-name/tz_b mmcblk0p4 ' \
-			-e 's block/bootdevice/by-name/userdata mmcblk0p67 ' \
-			-e 's block/bootdevice/by-name/utags mmcblk0p32 ' \
-			-e 's block/bootdevice/by-name/utagsBackup mmcblk0p33 ' \
-			-e 's block/bootdevice/by-name/vbmeta_a mmcblk0p58 ' \
-			-e 's block/bootdevice/by-name/vbmeta_b mmcblk0p59 ' \
-			-e 's block/bootdevice/by-name/vendor_a oem_a ' \
-			-e 's block/bootdevice/by-name/vendor_b oem_b ' \
-			-e 's block/bootdevice/by-name/xbl_a mmcblk0p1 ' \
-			-e 's block/bootdevice/by-name/xbl_b mmcblk0p2 ' \            
-			"$@"
-			;;
-   	      *)
-       	 cat <<EOF
+    "payton")
+   	sed -i \
+	    -e 's block/bootdevice/by-name/abl_a mmcblk0p13 ' \
+	    -e 's block/bootdevice/by-name/abl_b mmcblk0p14 ' \
+	    -e 's block/bootdevice/by-name/apdp mmcblk0p50 ' \
+	    -e 's block/bootdevice/by-name/bluetooth_a mmcblk0p54 ' \
+	    -e 's block/bootdevice/by-name/bluetooth_b mmcblk0p55 ' \
+	    -e 's block/bootdevice/by-name/boot_a mmcblk0p44 ' \
+	    -e 's block/bootdevice/by-name/boot_b mmcblk0p45 ' \
+	    -e 's block/bootdevice/by-name/carrier mmcblk0p41 ' \
+	    -e 's block/bootdevice/by-name/cid mmcblk0p40 ' \
+	    -e 's block/bootdevice/by-name/cmnlib64_a mmcblk0p16 ' \
+	    -e 's block/bootdevice/by-name/cmnlib64_b mmcblk0p18 ' \
+	    -e 's block/bootdevice/by-name/cmnlib_a mmcblk0p15 ' \
+	    -e 's block/bootdevice/by-name/cmnlib_b mmcblk0p17 ' \
+	    -e 's block/bootdevice/by-name/ddr mmcblk0p31 ' \
+	    -e 's block/bootdevice/by-name/devcfg_a mmcblk0p9 ' \
+	    -e 's block/bootdevice/by-name/devcfg_b mmcblk0p10 ' \
+	    -e 's block/bootdevice/by-name/devinfo mmcblk0p53 ' \
+	    -e 's block/bootdevice/by-name/dpo mmcblk0p52 ' \
+	    -e 's block/bootdevice/by-name/dsp_a mmcblk0p29 ' \
+	    -e 's block/bootdevice/by-name/dsp_b mmcblk0p30 ' \
+	    -e 's block/bootdevice/by-name/dto_a mmcblk0p46 ' \
+	    -e 's block/bootdevice/by-name/dto_b mmcblk0p47 ' \
+	    -e 's block/bootdevice/by-name/frp mmcblk0p39 ' \
+	    -e 's block/bootdevice/by-name/fsc mmcblk0p27 ' \
+	    -e 's block/bootdevice/by-name/fsg_a mmcblk0p36 ' \
+	    -e 's block/bootdevice/by-name/fsg_b mmcblk0p37 ' \
+	    -e 's block/bootdevice/by-name/hw mmcblk0p61 ' \
+	    -e 's block/bootdevice/by-name/hyp_a mmcblk0p7 ' \
+	    -e 's block/bootdevice/by-name/hyp_b mmcblk0p8 ' \
+	    -e 's block/bootdevice/by-name/keymaster_a mmcblk0p19 ' \
+	    -e 's block/bootdevice/by-name/keymaster_b mmcblk0p20 ' \
+	    -e 's block/bootdevice/by-name/kpan mmcblk0p43 ' \
+	    -e 's block/bootdevice/by-name/logfs mmcblk0p49 ' \
+	    -e 's block/bootdevice/by-name/logo_a mmcblk0p56 ' \
+	    -e 's block/bootdevice/by-name/logo_b mmcblk0p57 ' \
+	    -e 's block/bootdevice/by-name/metadata mmcblk0p42 ' \
+	    -e 's block/bootdevice/by-name/misc mmcblk0p48 ' \
+	    -e 's block/bootdevice/by-name/modem_a mmcblk0p25 ' \
+	    -e 's block/bootdevice/by-name/modem_b mmcblk0p26 ' \
+	    -e 's block/bootdevice/by-name/modemst1 mmcblk0p34 ' \
+	    -e 's block/bootdevice/by-name/modemst2 mmcblk0p35 ' \
+	    -e 's block/bootdevice/by-name/msadp mmcblk0p51 ' \
+	    -e 's block/bootdevice/by-name/oem_a mmcblk0p63 ' \
+	    -e 's block/bootdevice/by-name/oem_b mmcblk0p64 ' \
+	    -e 's block/bootdevice/by-name/persist mmcblk0p38 ' \
+	    -e 's block/bootdevice/by-name/pmic_a mmcblk0p11 ' \
+	    -e 's block/bootdevice/by-name/pmic_b mmcblk0p12 ' \
+	    -e 's block/bootdevice/by-name/prov_a mmcblk0p23 ' \
+	    -e 's block/bootdevice/by-name/prov_b mmcblk0p24 ' \
+	    -e 's block/bootdevice/by-name/rpm_a mmcblk0p5 ' \
+	    -e 's block/bootdevice/by-name/rpm_b mmcblk0p6 ' \
+	    -e 's block/bootdevice/by-name/sp mmcblk0p62 ' \
+	    -e 's block/bootdevice/by-name/ssd mmcblk0p28 ' \
+	    -e 's block/bootdevice/by-name/storsec_a mmcblk0p21 ' \
+	    -e 's block/bootdevice/by-name/storsec_b mmcblk0p22 ' \
+	    -e 's block/bootdevice/by-name/system_a mmcblk0p65 ' \
+	    -e 's block/bootdevice/by-name/system_b mmcblk0p66 ' \
+	    -e 's block/bootdevice/by-name/tz_a mmcblk0p3 ' \
+	    -e 's block/bootdevice/by-name/tz_b mmcblk0p4 ' \
+	    -e 's block/bootdevice/by-name/userdata mmcblk0p67 ' \
+	    -e 's block/bootdevice/by-name/utags mmcblk0p32 ' \
+	    -e 's block/bootdevice/by-name/utagsBackup mmcblk0p33 ' \
+	    -e 's block/bootdevice/by-name/vbmeta_a mmcblk0p58 ' \
+	    -e 's block/bootdevice/by-name/vbmeta_b mmcblk0p59 ' \
+	    -e 's block/bootdevice/by-name/vendor_a oem_a ' \
+	    -e 's block/bootdevice/by-name/vendor_b oem_b ' \
+	    -e 's block/bootdevice/by-name/xbl_a mmcblk0p1 ' \
+	    -e 's block/bootdevice/by-name/xbl_b mmcblk0p2 ' \
+	    "$@"
+	;;
+    *)
+       	cat <<EOF
 
 ****************************************************************
 ****************************************************************

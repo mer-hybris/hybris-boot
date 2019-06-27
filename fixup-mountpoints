@@ -703,6 +703,7 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/reserve sdd1 ' \
             -e 's block/bootdevice/by-name/reserve1 sda10 ' \
             -e 's block/bootdevice/by-name/reserve2 sda11 ' \
+            -e 's block/bootdevice/by-name/reserve3 sdf7 ' \
             -e 's block/bootdevice/by-name/rpm sde1 ' \
             -e 's block/bootdevice/by-name/rpmbak sde2 ' \
             -e 's block/bootdevice/by-name/sec sde7 ' \
@@ -716,6 +717,7 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/tz sde3 ' \
             -e 's block/bootdevice/by-name/tzbak sde4 ' \
             -e 's block/bootdevice/by-name/userdata sda13 ' \
+            -e 's block/bootdevice/by-name/vendor sdf6 ' \
             -e 's block/bootdevice/by-name/xbl sdb1 ' \
             -e 's block/bootdevice/by-name/xblbak sdc1 ' \
             "$@"

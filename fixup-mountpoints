@@ -14,7 +14,7 @@ shift
 echo "Fixing mount-points for device $DEVICE"
 
 case "$DEVICE" in
-    "kirin")
+    "kirin"|"mermaid")
         sed -i \
             -e 's block/bootdevice/by-name/LTALabel mmcblk0p7 ' \
             -e 's block/bootdevice/by-name/TA mmcblk0p1 ' \

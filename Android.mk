@@ -219,6 +219,10 @@ UPDATER_SCRIPT_SRC := $(LOCAL_PATH)/updater-script
 ANDROID_VERSION_MAJOR := $(word 1, $(subst ., , $(PLATFORM_VERSION)))
 ANDROID_VERSION_MINOR := $(word 2, $(subst ., , $(PLATFORM_VERSION)))
 
+ifeq ($(ANDROID_VERSION_MINOR),)
+    ANDROID_VERSION_MINOR := 0
+endif
+
 ifeq ($(TARGET_OTA_ASSERT_DEVICE),)
     ASSERT_DEVICE := assert(getprop("ro.product.device") == "$(TARGET_DEVICE)" \|\| getprop("ro.build.product") == "$(TARGET_DEVICE)" \|\| getprop("ro.cm.device") == "$(TARGET_DEVICE)");
 else

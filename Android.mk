@@ -301,3 +301,6 @@ endif
 
 hybris-hal: $(HYBRIS_TARGETS)
 
+droidmedia: $(shell external/droidmedia/detect_build_targets.sh $(PORT_ARCH) $(TARGET_ARCH))
+
+audioflingerglue: $(shell external/audioflingerglue/detect_build_targets.sh $(PORT_ARCH) $(TARGET_ARCH))

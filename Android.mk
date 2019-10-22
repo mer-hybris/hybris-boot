@@ -266,7 +266,7 @@ $(LOCAL_BUILT_MODULE): $(UPDATER_UNPACK_SRC)
 	@echo "Installing updater .zip script resources."
 	mkdir -p $(dir $@)
 	rm -rf $@
-	@sed -e 's %DEVICE% $(TARGET_DEVICET) g' \
+	@sed -e 's %DEVICE% $(TARGET_DEVICE) g' \
 	     $(UPDATER_UNPACK_SRC) > $@
 
 HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)

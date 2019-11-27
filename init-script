@@ -102,7 +102,7 @@ fi
 # Get options from kernel command line
 get_opt() {
   for param in $(cat /proc/cmdline); do
-    echo "$param" | grep "^$1=*" | cut -d'=' -f2
+    echo "$param" | grep "^$1=.*" | cut -d'=' -f2
   done
 }
 

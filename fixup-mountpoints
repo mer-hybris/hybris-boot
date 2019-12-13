@@ -258,6 +258,20 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "t5")
+        sed -i \
+            -e 's block/bootdevice/by-name/boot sde12 ' \
+            -e 's block/bootdevice/by-name/system sda6 ' \
+            -e 's block/bootdevice/by-name/userdata sda8 ' \
+            -e 's block/bootdevice/by-name/modem sde5 ' \
+            -e 's block/bootdevice/by-name/persist sda2 ' \
+            -e 's block/bootdevice/by-name/misc sda3 ' \
+            -e 's block/bootdevice/by-name/bluetooth sde6 ' \
+            -e 's block/bootdevice/by-name/dsp sde9 ' \
+            -e 's block/bootdevice/by-name/vendor sde16 ' \
+            "$@"
+        ;;
+
     "ghost")
         sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \

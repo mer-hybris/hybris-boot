@@ -255,7 +255,7 @@ case "$DEVICE" in
             "$@"
         ;;
 
-    "lux")
+    "lux"|"osprey")
         sed -i \
             -e 's block/bootdevice/by-name/boot mmcblk0p31 ' \
             -e 's block/bootdevice/by-name/system mmcblk0p41 ' \

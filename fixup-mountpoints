@@ -809,6 +809,22 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/xblbak sdc1 ' \
             "$@"
         ;;
+        
+        "enchilada")
+        sed -i \
+            -e 's block/bootdevice/by-name/bluetooth sde5 ' \
+            -e 's block/bootdevice/by-name/boot sde11 ' \
+            -e 's block/bootdevice/by-name/dsp sde9 ' \
+            -e 's block/bootdevice/by-name/misc sda3 ' \
+            -e 's block/bootdevice/by-name/modem sde4 ' \
+            -e 's block/bootdevice/by-name/odm sda15 ' \
+            -e 's block/bootdevice/by-name/persist sda2 ' \
+            -e 's block/bootdevice/by-name/system sda13 ' \
+            -e 's block/bootdevice/by-name/userdata sda17 ' \
+            -e 's block/bootdevice/by-name/vbmeta sde17 ' \
+            -e 's block/bootdevice/by-name/vendor sde16 ' \
+            "$@"
+        ;;
 
     "bacon")
         sed -i \

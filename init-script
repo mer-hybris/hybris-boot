@@ -151,7 +151,8 @@ mount_stowaways() {
 	mount $DATA_PARTITION /data
 	mount --bind /data/${data_subdir}/.stowaways/${DEFAULT_OS} /target
 	mkdir /target/data # in new fs
-	mount --bind /data/${data_subdir} /target/data
+# Don't mount /target/data since it will make /data/vendor inaccessible for encrypted devices. enchilada does not require /data partition for SFOS.
+#	mount --bind /data/${data_subdir} /target/data
     else
         echo "Failed to mount /target, device node '$DATA_PARTITION' not found!" >> /diagnosis.log
     fi
@@ -160,7 +161,8 @@ mount_stowaways() {
 
 umount_stowaways() {
     if [ ! -z $DATA_PARTITION ]; then
-	umount /target/data
+#	umount /target/data
+# /target/data is not mounted as mounting is commented out.
 	umount /target
 	umount /data
     fi

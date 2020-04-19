@@ -1060,6 +1060,7 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/userdata sda9 ' \
             -e 's block/bootdevice/by-name/cache sda3 ' \
             -e 's block/bootdevice/by-name/persist sda2 ' \
+            -e 's block/bootdevice/by-name/vendor sde34 ' \
             -e 's block/bootdevice/by-name/dsp sde13 ' \
             -e 's block/bootdevice/by-name/misc sda4 ' \
             -e 's block/bootdevice/by-name/modem sde12 ' \

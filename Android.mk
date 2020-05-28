@@ -299,6 +299,7 @@ else
 HYBRIS_TARGETS := $(HYBRIS_COMMON_TARGETS)
 endif
 
+ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 7 && echo true),true)
 PROVIDE_POWER_PROFILE := 1
 ifneq ($(shell find $(DEVICE_PACKAGE_OVERLAYS) -name power_profile.xml | wc -l),1)
 $(error Multiple or missing power_profile.xml files)
@@ -312,6 +313,7 @@ POWER_PROFILE := $(foreach d, $(DEVICE_PACKAGE_OVERLAYS), \
 BATTERY_CAPACITY := $(shell xmllint --xpath 'string(/device[@name="Android"]/item[@name="battery.capacity"])' $(POWER_PROFILE))
 $(shell mkdir -p $(PRODUCT_OUT)/system/etc/init)
 $(shell echo -e "on boot\n    setprop ro.hybris.battery.capacity $(BATTERY_CAPACITY)" > $(PRODUCT_OUT)/system/etc/init/hybris_extras.rc)
+endif
 endif
 
 hybris-hal: $(HYBRIS_TARGETS)

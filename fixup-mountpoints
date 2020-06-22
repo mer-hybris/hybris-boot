@@ -1283,6 +1283,52 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/oem mmcblk0p30 ' \
             "$@"
         ;;
+
+    "quark")
+        sed -i \
+            -e 's block/platform/msm_sdcc.1/by-name/abootBackup mmcblk0p13 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/aboot mmcblk0p6 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/boot mmcblk0p36 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cache mmcblk0p39 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/cid mmcblk0p26 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/clogo mmcblk0p29 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/ddr mmcblk0p5 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/factorytune1 mmcblk0p10 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/factorytune2 mmcblk0p38 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/frp mmcblk0p20 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/kpan mmcblk0p35 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/logo mmcblk0p28 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/logs mmcblk0p21 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/mdm1dhob mmcblk0p24 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/mdm1hob mmcblk0p23 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/mdm1m9kefs1 mmcblk0p17 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/mdm1m9kefs2 mmcblk0p18 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/mdm1m9kefs3 mmcblk0p32 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/mdm1m9kefsc mmcblk0p33 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/misc mmcblk0p30 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/padA mmcblk0p11 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/padB mmcblk0p19 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/padC mmcblk0p31 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/pds mmcblk0p27 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/persist mmcblk0p22 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/recovery mmcblk0p37 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/rpmBackup mmcblk0p14 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/rpm mmcblk0p7 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/sbl1bak mmcblk0p12 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/sbl1 mmcblk0p2 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/sdi mmcblk0p3 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/sec mmcblk0p4 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/sp mmcblk0p25 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/ssd mmcblk0p34 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/system mmcblk0p40 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/tzBackup mmcblk0p16 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/tz mmcblk0p9 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/userdata mmcblk0p41 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/utagsBackup mmcblk0p15 ' \
+            -e 's block/platform/msm_sdcc.1/by-name/utags mmcblk0p8 ' \
+            "$@"
+        ;;
     *)
         cat <<EOF
 

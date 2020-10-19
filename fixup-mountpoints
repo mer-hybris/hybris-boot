@@ -53,6 +53,7 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/logdump mmcblk0p68 ' \
             -e 's block/bootdevice/by-name/logfs mmcblk0p57 ' \
             -e 's block/bootdevice/by-name/metadata mmcblk0p66 ' \
+            -e 's block/by-name/metadata mmcblk0p66 ' \
             -e 's block/bootdevice/by-name/misc mmcblk0p62 ' \
             -e 's block/bootdevice/by-name/modem_a mmcblk0p48 ' \
             -e 's block/bootdevice/by-name/modem_b mmcblk0p49 ' \
@@ -63,6 +64,7 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/multiimgqti_a mmcblk0p73 ' \
             -e 's block/bootdevice/by-name/multiimgqti_b mmcblk0p74 ' \
             -e 's block/bootdevice/by-name/oem_a mmcblk0p83 ' \
+            -e 's block/by-name/oem_a mmcblk0p83 ' \
             -e 's block/bootdevice/by-name/oem_b mmcblk0p84 ' \
             -e 's block/bootdevice/by-name/persist mmcblk0p2 ' \
             -e 's block/bootdevice/by-name/qupfw_a mmcblk0p34 ' \

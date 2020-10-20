@@ -75,8 +75,6 @@ ifneq ($(words $(HYBRIS_DATA_PART)),1)
 $(error There should be a one and only one device entry for HYBRIS_DATA_PART)
 endif
 
-# Command used to make the image
-MKBOOTIMG := mkbootimg
 BB_STATIC := $(PRODUCT_OUT)/utilities/busybox
 
 ifneq ($(strip $(TARGET_NO_KERNEL)),true)

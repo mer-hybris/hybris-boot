@@ -271,7 +271,15 @@ HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)
 
 .PHONY: hybris-hal hybris-common
 
-HYBRIS_COMMON_TARGETS := bootimage hybris-updater-unpack hybris-recovery hybris-boot servicemanager logcat updater init adb adbd linker libc libEGL libGLESv1_CM libGLESv2
+HYBRIS_INIT_TARGETS := init
+
+ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 10 && echo true),true)
+# init is split of into early and second stage init starting with android 10
+HYBRIS_INIT_TARGETS := init_second_stage
+endif
+
+HYBRIS_COMMON_TARGETS := bootimage hybris-updater-unpack hybris-recovery hybris-boot servicemanager logcat updater adb adbd linker libc libEGL libGLESv1_CM libGLESv2 $(HYBRIS_INIT_TARGETS)
+
 ifneq ($(HYBRIS_BOOT_PART),)
 HYBRIS_COMMON_TARGETS += hybris-updater-script
 else

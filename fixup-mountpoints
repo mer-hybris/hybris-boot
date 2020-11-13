@@ -14,6 +14,100 @@ shift
 echo "Fixing mount-points for device $DEVICE"
 
 case "$DEVICE" in
+    "pdx201")
+        sed -i \
+            -e 's block/bootdevice/by-name/LTALabel mmcblk0p3 ' \
+            -e 's block/bootdevice/by-name/TA mmcblk0p1 ' \
+            -e 's block/bootdevice/by-name/abl_a mmcblk0p16 ' \
+            -e 's block/bootdevice/by-name/abl_b mmcblk0p17 ' \
+            -e 's block/bootdevice/by-name/apdp mmcblk0p53 ' \
+            -e 's block/bootdevice/by-name/appslog mmcblk0p64 ' \
+            -e 's block/bootdevice/by-name/bluetooth_a mmcblk0p46 ' \
+            -e 's block/bootdevice/by-name/bluetooth_b mmcblk0p47 ' \
+            -e 's block/bootdevice/by-name/boot_a mmcblk0p42 ' \
+            -e 's block/bootdevice/by-name/boot_b mmcblk0p43 ' \
+            -e 's block/bootdevice/by-name/cmnlib64_a mmcblk0p22 ' \
+            -e 's block/bootdevice/by-name/cmnlib64_b mmcblk0p23 ' \
+            -e 's block/bootdevice/by-name/cmnlib_a mmcblk0p20 ' \
+            -e 's block/bootdevice/by-name/cmnlib_b mmcblk0p21 ' \
+            -e 's block/bootdevice/by-name/ddr mmcblk0p59 ' \
+            -e 's block/bootdevice/by-name/devcfg_a mmcblk0p24 ' \
+            -e 's block/bootdevice/by-name/devcfg_b mmcblk0p25 ' \
+            -e 's block/bootdevice/by-name/devinfo mmcblk0p52 ' \
+            -e 's block/bootdevice/by-name/diag mmcblk0p65 ' \
+            -e 's block/bootdevice/by-name/dsp_a mmcblk0p50 ' \
+            -e 's block/bootdevice/by-name/dsp_b mmcblk0p51 ' \
+            -e 's block/bootdevice/by-name/dtbo_a mmcblk0p79 ' \
+            -e 's block/bootdevice/by-name/dtbo_b mmcblk0p80 ' \
+            -e 's block/bootdevice/by-name/frp mmcblk0p61 ' \
+            -e 's block/bootdevice/by-name/fsc mmcblk0p38 ' \
+            -e 's block/bootdevice/by-name/fsg mmcblk0p41 ' \
+            -e 's block/bootdevice/by-name/hyp_a mmcblk0p14 ' \
+            -e 's block/bootdevice/by-name/hyp_b mmcblk0p15 ' \
+            -e 's block/bootdevice/by-name/imagefv_a mmcblk0p36 ' \
+            -e 's block/bootdevice/by-name/imagefv_b mmcblk0p37 ' \
+            -e 's block/bootdevice/by-name/keymaster_a mmcblk0p18 ' \
+            -e 's block/bootdevice/by-name/keymaster_b mmcblk0p19 ' \
+            -e 's block/bootdevice/by-name/keystore mmcblk0p63 ' \
+            -e 's block/bootdevice/by-name/limits mmcblk0p55 ' \
+            -e 's block/bootdevice/by-name/logdump mmcblk0p68 ' \
+            -e 's block/bootdevice/by-name/logfs mmcblk0p57 ' \
+            -e 's block/bootdevice/by-name/metadata mmcblk0p66 ' \
+            -e 's block/by-name/metadata mmcblk0p66 ' \
+            -e 's block/bootdevice/by-name/misc mmcblk0p62 ' \
+            -e 's block/bootdevice/by-name/modem_a mmcblk0p48 ' \
+            -e 's block/bootdevice/by-name/modem_b mmcblk0p49 ' \
+            -e 's block/bootdevice/by-name/modemst1 mmcblk0p39 ' \
+            -e 's block/bootdevice/by-name/modemst2 mmcblk0p40 ' \
+            -e 's block/bootdevice/by-name/multiimgoem_a mmcblk0p71 ' \
+            -e 's block/bootdevice/by-name/multiimgoem_b mmcblk0p72 ' \
+            -e 's block/bootdevice/by-name/multiimgqti_a mmcblk0p73 ' \
+            -e 's block/bootdevice/by-name/multiimgqti_b mmcblk0p74 ' \
+            -e 's block/bootdevice/by-name/oem_a mmcblk0p83 ' \
+            -e 's block/by-name/oem_a mmcblk0p83 ' \
+            -e 's block/bootdevice/by-name/oem_b mmcblk0p84 ' \
+            -e 's block/bootdevice/by-name/persist mmcblk0p2 ' \
+            -e 's block/bootdevice/by-name/qupfw_a mmcblk0p34 ' \
+            -e 's block/bootdevice/by-name/qupfw_b mmcblk0p35 ' \
+            -e 's block/bootdevice/by-name/rddata mmcblk0p87 ' \
+            -e 's block/bootdevice/by-name/rdimage_a mmcblk0p81 ' \
+            -e 's block/bootdevice/by-name/rdimage_b mmcblk0p82 ' \
+            -e 's block/bootdevice/by-name/recovery_a mmcblk0p44 ' \
+            -e 's block/bootdevice/by-name/recovery_b mmcblk0p45 ' \
+            -e 's block/bootdevice/by-name/rpm_a mmcblk0p12 ' \
+            -e 's block/bootdevice/by-name/rpm_b mmcblk0p13 ' \
+            -e 's block/bootdevice/by-name/secdata mmcblk0p69 ' \
+            -e 's block/bootdevice/by-name/splash mmcblk0p54 ' \
+            -e 's block/bootdevice/by-name/spunvm mmcblk0p67 ' \
+            -e 's block/bootdevice/by-name/ssd mmcblk0p60 ' \
+            -e 's block/bootdevice/by-name/storsec mmcblk0p58 ' \
+            -e 's block/bootdevice/by-name/super mmcblk0p85 ' \
+            -e 's block/bootdevice/by-name/toolsfv mmcblk0p56 ' \
+            -e 's block/bootdevice/by-name/tz_a mmcblk0p10 ' \
+            -e 's block/bootdevice/by-name/tz_b mmcblk0p11 ' \
+            -e 's block/bootdevice/by-name/tzxfl_a mmcblk0p30 ' \
+            -e 's block/bootdevice/by-name/tzxfl_b mmcblk0p31 ' \
+            -e 's block/bootdevice/by-name/tzxflattest_a mmcblk0p28 ' \
+            -e 's block/bootdevice/by-name/tzxflattest_b mmcblk0p29 ' \
+            -e 's block/bootdevice/by-name/uefisecapp_a mmcblk0p32 ' \
+            -e 's block/bootdevice/by-name/uefisecapp_b mmcblk0p33 ' \
+            -e 's block/bootdevice/by-name/uefivarstore mmcblk0p70 ' \
+            -e 's block/bootdevice/by-name/userdata mmcblk0p86 ' \
+            -e 's block/bootdevice/by-name/vbmeta_a mmcblk0p75 ' \
+            -e 's block/bootdevice/by-name/vbmeta_b mmcblk0p76 ' \
+            -e 's block/bootdevice/by-name/vbmeta_system_a mmcblk0p77 ' \
+            -e 's block/bootdevice/by-name/vbmeta_system_b mmcblk0p78 ' \
+            -e 's block/bootdevice/by-name/xbl_a mmcblk0p6 ' \
+            -e 's block/bootdevice/by-name/xbl_b mmcblk0p7 ' \
+            -e 's block/bootdevice/by-name/xbl_config_a mmcblk0p8 ' \
+            -e 's block/bootdevice/by-name/xbl_config_b mmcblk0p9 ' \
+            -e 's block/bootdevice/by-name/xfl_a mmcblk0p26 ' \
+            -e 's block/bootdevice/by-name/xfl_b mmcblk0p27 ' \
+            -e 's block/bootdevice/by-name/xflkeystore mmcblk0p4 ' \
+            -e 's block/bootdevice/by-name/xflkeystorebak mmcblk0p5 ' \
+            "$@"
+        ;;
+
     "kirin"|"mermaid")
         sed -i \
             -e 's block/bootdevice/by-name/LTALabel mmcblk0p7 ' \

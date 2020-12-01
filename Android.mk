@@ -269,7 +269,7 @@ $(LOCAL_BUILT_MODULE): $(UPDATER_UNPACK_SRC)
 
 HYBRIS_UPDATER_UNPACK := $(LOCAL_BUILD_MODULE)
 
-.PHONY: hybris-hal hybris-common
+.PHONY: hybris-hal hybris-common droidmedia audioflingerglue
 
 HYBRIS_INIT_TARGETS := init
 

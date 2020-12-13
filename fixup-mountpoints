@@ -903,6 +903,30 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/xblbak sdc1 ' \
             "$@"
         ;;
+    
+    "enchilada"|"fajita")
+        sed -i \
+            -e 's /dev/block/bootdevice/by-name/bluetooth sde33 ' \
+            -e 's /dev/block/bootdevice/by-name/bluetooth_a sde5 ' \
+            -e 's /dev/block/bootdevice/by-name/bluetooth_b sde33 ' \
+            -e 's /dev/block/bootdevice/by-name/boot sde39 ' \
+            -e 's /dev/block/bootdevice/by-name/boot_a sde11 ' \
+            -e 's /dev/block/bootdevice/by-name/boot_b sde39 ' \
+            -e 's /dev/block/bootdevice/by-name/dsp sde37 ' \
+            -e 's /dev/block/bootdevice/by-name/dsp_a sde9 ' \
+            -e 's /dev/block/bootdevice/by-name/dsp_b sde37 ' \
+            -e 's /dev/block/bootdevice/by-name/modem sde32 ' \
+            -e 's /dev/block/bootdevice/by-name/modem_a sde4 ' \
+            -e 's /dev/block/bootdevice/by-name/modem_b sde32 ' \
+            -e 's /dev/block/bootdevice/by-name/modemst1 sdf2 ' \
+            -e 's /dev/block/bootdevice/by-name/modemst2 sdf3 ' \
+            -e 's /dev/block/bootdevice/by-name/persist sda2 ' \
+            -e 's /dev/block/bootdevice/by-name/system sda14 ' \
+            -e 's /dev/block/bootdevice/by-name/system_a sda13 ' \
+            -e 's /dev/block/bootdevice/by-name/system_b sda14 ' \
+            -e 's /dev/block/bootdevice/by-name/userdata sda17 ' \
+            "$@"
+        ;;
 
     "bacon")
         sed -i \

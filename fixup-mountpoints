@@ -338,6 +338,79 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "lilac")
+        sed -i \
+            -e 's block/bootdevice/by-name/FOTAKernel sda47 ' \
+            -e 's block/bootdevice/by-name/LTALabel sda2 ' \
+            -e 's block/bootdevice/by-name/Qnovo sda60 ' \
+            -e 's block/bootdevice/by-name/TA sda1 ' \
+            -e 's block/bootdevice/by-name/abl sda11 ' \
+            -e 's block/bootdevice/by-name/ablbak sda12 ' \
+            -e 's block/bootdevice/by-name/apdp sda40 ' \
+            -e 's block/bootdevice/by-name/appslog sda58 ' \
+            -e 's block/bootdevice/by-name/bluetooth sda39 ' \
+            -e 's block/bootdevice/by-name/boot sda38 ' \
+            -e 's block/bootdevice/by-name/cache sda53 ' \
+            -e 's block/bootdevice/by-name/cmnlib sda16 ' \
+            -e 's block/bootdevice/by-name/cmnlib64 sda18 ' \
+            -e 's block/bootdevice/by-name/cmnlib64bak sda19 ' \
+            -e 's block/bootdevice/by-name/cmnlibbak sda17 ' \
+            -e 's block/bootdevice/by-name/ddr sda48 ' \
+            -e 's block/bootdevice/by-name/devcfg sda21 ' \
+            -e 's block/bootdevice/by-name/devcfgbak sda22 ' \
+            -e 's block/bootdevice/by-name/devinfo sda13 ' \
+            -e 's block/bootdevice/by-name/diag sda59 ' \
+            -e 's block/bootdevice/by-name/dpo sda42 ' \
+            -e 's block/bootdevice/by-name/dsp sda37 ' \
+            -e 's block/bootdevice/by-name/frp sda56 ' \
+            -e 's block/bootdevice/by-name/fsc sda51 ' \
+            -e 's block/bootdevice/by-name/fsg sda34 ' \
+            -e 's block/bootdevice/by-name/fsmetadata sda61 ' \
+            -e 's block/bootdevice/by-name/hyp sda7 ' \
+            -e 's block/bootdevice/by-name/hypbak sda8 ' \
+            -e 's block/bootdevice/by-name/keymaster sda14 ' \
+            -e 's block/bootdevice/by-name/keymasterbak sda15 ' \
+            -e 's block/bootdevice/by-name/keystore sda55 ' \
+            -e 's block/bootdevice/by-name/limits sda44 ' \
+            -e 's block/bootdevice/by-name/logfs sda46 ' \
+            -e 's block/bootdevice/by-name/misc sda54 ' \
+            -e 's block/bootdevice/by-name/modem sda36 ' \
+            -e 's block/bootdevice/by-name/modemst1 sda49 ' \
+            -e 's block/bootdevice/by-name/modemst2 sda50 ' \
+            -e 's block/bootdevice/by-name/msadp sda41 ' \
+            -e 's block/bootdevice/by-name/oem sda63 ' \
+            -e 's block/bootdevice/by-name/persist sda33 ' \
+            -e 's block/bootdevice/by-name/pmic sda9 ' \
+            -e 's block/bootdevice/by-name/pmicbak sda10 ' \
+            -e 's block/bootdevice/by-name/rdimage sda62 ' \
+            -e 's block/bootdevice/by-name/rpm sda3 ' \
+            -e 's block/bootdevice/by-name/rpmbak sda4 ' \
+            -e 's block/bootdevice/by-name/sec sda35 ' \
+            -e 's block/bootdevice/by-name/splash sda43 ' \
+            -e 's block/bootdevice/by-name/ssd sda52 ' \
+            -e 's block/bootdevice/by-name/sti sda20 ' \
+            -e 's block/bootdevice/by-name/storsec sda23 ' \
+            -e 's block/bootdevice/by-name/storsecbak sda24 ' \
+            -e 's block/bootdevice/by-name/system sda65 ' \
+            -e 's block/bootdevice/by-name/toolsfv sda45 ' \
+            -e 's block/bootdevice/by-name/tz sda5 ' \
+            -e 's block/bootdevice/by-name/tzbak sda6 ' \
+            -e 's block/bootdevice/by-name/tzxfl sda29 ' \
+            -e 's block/bootdevice/by-name/tzxflattest sda27 ' \
+            -e 's block/bootdevice/by-name/tzxflattestbak sda28 ' \
+            -e 's block/bootdevice/by-name/tzxflbak sda30 ' \
+            -e 's block/bootdevice/by-name/userdata sda66 ' \
+            -e 's block/bootdevice/by-name/vbmeta sda57 ' \
+            -e 's block/bootdevice/by-name/vendor sda64 ' \
+            -e 's block/bootdevice/by-name/xbl sdb1 ' \
+            -e 's block/bootdevice/by-name/xblbak sdc1 ' \
+            -e 's block/bootdevice/by-name/xfl sda25 ' \
+            -e 's block/bootdevice/by-name/xflbak sda26 ' \
+            -e 's block/bootdevice/by-name/xflkeystore sda31 ' \
+            -e 's block/bootdevice/by-name/xflkeystorebak sda32 ' \
+            "$@"
+        ;;
+
     "ghost")
         sed -i \
             -e 's block/platform/msm_sdcc.1/by-name/modem mmcblk0p1 ' \

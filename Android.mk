@@ -286,7 +286,7 @@ else
 $(warning Skipping build of hybris-updater-script since HYBRIS_BOOT_PART is not specified)
 endif
 
-HYBRIS_COMMON_ANDROID8_TARGETS := verity_signer boot_signer e2fsdroid vendorimage ramdisk libsurfaceflinger libhwc2_compat_layer bootctl fec
+HYBRIS_COMMON_ANDROID8_TARGETS := verity_signer boot_signer e2fsdroid vendorimage ramdisk libsurfaceflinger libhwc2_compat_layer bootctl fec libGLESv3
 
 ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 8 && echo true),true)
 HYBRIS_COMMON_TARGETS += $(HYBRIS_COMMON_ANDROID8_TARGETS)
@@ -295,7 +295,7 @@ ifeq ($(shell test -d */selinux_stubs && echo true),true)
 HYBRIS_COMMON_TARGETS += libselinux_stubs
 endif
 # for 64 bit Android, also include the 32 bit variants that we need.
-HYBRIS_COMMON_64_BIT_EXTRA_TARGETS = linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32 libhwc2_compat_layer_32
+HYBRIS_COMMON_64_BIT_EXTRA_TARGETS = linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32 libGLESv3_32 libhwc2_compat_layer_32
 else
 # for 64 bit Android, also include the 32 bit variants that we need.
 HYBRIS_COMMON_64_BIT_EXTRA_TARGETS = linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32

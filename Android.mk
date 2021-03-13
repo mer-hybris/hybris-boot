@@ -311,8 +311,13 @@ endif
 
 ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 7 && echo true),true)
 PROVIDE_POWER_PROFILE := 1
-ifneq ($(shell find $(DEVICE_PACKAGE_OVERLAYS) -name power_profile.xml | wc -l),1)
-$(error Multiple or missing power_profile.xml files)
+PROFILES=$(shell find $(DEVICE_PACKAGE_OVERLAYS) -name power_profile.xml | wc -l)
+ifneq ($(PROFILES),1)
+ifeq ($(PROFILES),0)
+$(warning Missing power_profile.xml file)
+else
+$(error Multiple power_profile.xml files)
+endif
 PROVIDE_POWER_PROFILE := 0
 endif
 

@@ -14,6 +14,95 @@ shift
 echo "Fixing mount-points for device $DEVICE"
 
 case "$DEVICE" in
+    "pdx213")
+        sed -i \
+            -e 's block/bootdevice/by-name/TA sda1 ' \
+            -e 's block/bootdevice/by-name/aop_a sda10 ' \
+            -e 's block/bootdevice/by-name/aop_b sda11 ' \
+            -e 's block/bootdevice/by-name/hyp_a sda12 ' \
+            -e 's block/bootdevice/by-name/hyp_b sda13 ' \
+            -e 's block/bootdevice/by-name/abl_a sda14 ' \
+            -e 's block/bootdevice/by-name/abl_b sda15 ' \
+            -e 's block/bootdevice/by-name/keymaster_a sda16 ' \
+            -e 's block/bootdevice/by-name/keymaster_b sda17 ' \
+            -e 's block/bootdevice/by-name/devcfg_a sda18 ' \
+            -e 's block/bootdevice/by-name/devcfg_b sda19 ' \
+            -e 's block/bootdevice/by-name/persist sda2 ' \
+            -e 's block/bootdevice/by-name/tzxflattest_a sda20 ' \
+            -e 's block/bootdevice/by-name/tzxflattest_b sda21 ' \
+            -e 's block/bootdevice/by-name/uefisecapp_a sda22 ' \
+            -e 's block/bootdevice/by-name/uefisecapp_b sda23 ' \
+            -e 's block/bootdevice/by-name/fsc sda24 ' \
+            -e 's block/bootdevice/by-name/modemst1 sda25 ' \
+            -e 's block/bootdevice/by-name/modemst2 sda26 ' \
+            -e 's block/bootdevice/by-name/qupfw_a sda27 ' \
+            -e 's block/bootdevice/by-name/qupfw_b sda28 ' \
+            -e 's block/bootdevice/by-name/imagefv_a sda29 ' \
+            -e 's block/bootdevice/by-name/LTALabel sda3 ' \
+            -e 's block/bootdevice/by-name/imagefv_b sda30 ' \
+            -e 's block/bootdevice/by-name/boot_a sda31 ' \
+            -e 's block/bootdevice/by-name/boot_b sda32 ' \
+            -e 's block/bootdevice/by-name/recovery_a sda33 ' \
+            -e 's block/bootdevice/by-name/recovery_b sda34 ' \
+            -e 's block/bootdevice/by-name/bluetooth sda35 ' \
+            -e 's block/bootdevice/by-name/bluetooth_b sda36 ' \
+            -e 's block/bootdevice/by-name/modem sda37 ' \
+            -e 's block/bootdevice/by-name/modem_b sda38 ' \
+            -e 's block/bootdevice/by-name/dsp sda39 ' \
+            -e 's block/bootdevice/by-name/xflkeystore sda4 ' \
+            -e 's block/bootdevice/by-name/dsp_b sda40 ' \
+            -e 's block/bootdevice/by-name/devinfo sda41 ' \
+            -e 's block/bootdevice/by-name/apdp sda42 ' \
+            -e 's block/bootdevice/by-name/splash sda43 ' \
+            -e 's block/bootdevice/by-name/limits sda44 ' \
+            -e 's block/bootdevice/by-name/toolsfv sda45 ' \
+            -e 's block/bootdevice/by-name/logfs sda46 ' \
+            -e 's block/bootdevice/by-name/storsec sda47 ' \
+            -e 's block/bootdevice/by-name/ddr sda48 ' \
+            -e 's block/bootdevice/by-name/ssd sda49 ' \
+            -e 's block/bootdevice/by-name/xflkeystorebak sda5 ' \
+            -e 's block/bootdevice/by-name/misc sda50 ' \
+            -e 's block/bootdevice/by-name/keystore sda51 ' \
+            -e 's block/bootdevice/by-name/appslog sda52 ' \
+            -e 's block/bootdevice/by-name/diag sda53 ' \
+            -e 's block/by-name/metadata sda54 ' \
+            -e 's block/bootdevice/by-name/spunvm sda55 ' \
+            -e 's block/bootdevice/by-name/secdata sda56 ' \
+            -e 's block/bootdevice/by-name/uefivarstore sda57 ' \
+            -e 's block/bootdevice/by-name/questdatafv sda58 ' \
+            -e 's block/bootdevice/by-name/limits-cdsp sda59 ' \
+            -e 's block/bootdevice/by-name/frp sda6 ' \
+            -e 's block/bootdevice/by-name/multiimgoem_a sda60 ' \
+            -e 's block/bootdevice/by-name/multiimgoem_b sda61 ' \
+            -e 's block/bootdevice/by-name/vbmeta_a sda62 ' \
+            -e 's block/bootdevice/by-name/vbmeta_b sda63 ' \
+            -e 's block/bootdevice/by-name/vbmeta_system_a sda64 ' \
+            -e 's block/bootdevice/by-name/vbmeta_system_b sda65 ' \
+            -e 's block/bootdevice/by-name/dtbo_a sda66 ' \
+            -e 's block/bootdevice/by-name/dtbo_b sda67 ' \
+            -e 's block/bootdevice/by-name/rdimage_a sda68 ' \
+            -e 's block/bootdevice/by-name/rdimage_b sda69 ' \
+            -e 's block/bootdevice/by-name/fsg sda7 ' \
+            -e 's block/bootdevice/by-name/catecontentfv sda70 ' \
+            -e 's block/bootdevice/by-name/catefv sda71 ' \
+            -e 's block/bootdevice/by-name/cateloader sda72 ' \
+            -e 's block/bootdevice/by-name/cdt sda73 ' \
+            -e 's block/bootdevice/by-name/multiimgqti_a sda74 ' \
+            -e 's block/bootdevice/by-name/multiimgqti_b sda75 ' \
+            -e 's block/by-name/oem_a sda76 ' \
+            -e 's block/bootdevice/by-name/oem_b sda77 ' \
+            -e 's block/bootdevice/by-name/super sda78 ' \
+            -e 's block/bootdevice/by-name/userdata sda79 ' \
+            -e 's block/bootdevice/by-name/tz_a sda8 ' \
+            -e 's block/bootdevice/by-name/rddata sda80 ' \
+            -e 's block/bootdevice/by-name/tz_b sda9 ' \
+            -e 's block/bootdevice/by-name/xbl_a sdb1 ' \
+            -e 's block/bootdevice/by-name/xbl_config_a sdb2 ' \
+            -e 's block/bootdevice/by-name/xbl_b sdc1 ' \
+            -e 's block/bootdevice/by-name/xbl_config_b sdc2 ' \
+            "$@"
+        ;;
+
     "pdx201")
         sed -i \
             -e 's block/bootdevice/by-name/LTALabel mmcblk0p3 ' \

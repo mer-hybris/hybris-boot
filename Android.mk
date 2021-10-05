@@ -275,8 +275,15 @@ HYBRIS_INIT_TARGETS := init
 
 ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 10 && echo true),true)
 # init is split of into early and second stage init starting with android 10
-HYBRIS_INIT_TARGETS := init_second_stage com.android.runtime.release init.rc
+HYBRIS_INIT_TARGETS := init_second_stage init.rc
+ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -eq 10 && echo true),true)
+HYBRIS_INIT_TARGETS += com.android.runtime.release
+else
+HYBRIS_INIT_TARGETS += com.android.runtime
 endif
+endif
+
+HYBRIS_INIT_TARGETS += $(filter ueventd% fstab.%,$(PRODUCT_PACKAGES))
 
 HYBRIS_COMMON_TARGETS := bootimage hybris-updater-unpack hybris-recovery hybris-boot servicemanager logcat updater adb adbd linker libc libEGL libGLESv1_CM libGLESv2 $(HYBRIS_INIT_TARGETS)
 

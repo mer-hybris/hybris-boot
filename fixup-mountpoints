@@ -103,6 +103,106 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "pdx203"|"pdx206")
+        sed -i \
+            -e 's block/bootdevice/by-name/LTALabel sda2 ' \
+            -e 's block/bootdevice/by-name/TA sda1 ' \
+            -e 's block/bootdevice/by-name/abl_a sda14 ' \
+            -e 's block/bootdevice/by-name/abl_b sda28 ' \
+            -e 's block/bootdevice/by-name/aop_a sda11 ' \
+            -e 's block/bootdevice/by-name/aop_b sda25 ' \
+            -e 's block/bootdevice/by-name/apdp sda43 ' \
+            -e 's block/bootdevice/by-name/appslog sda55 ' \
+            -e 's block/bootdevice/by-name/bluetooth sda62 ' \
+            -e 's block/bootdevice/by-name/bluetooth_b sda76 ' \
+            -e 's block/bootdevice/by-name/boot_a sda64 ' \
+            -e 's block/bootdevice/by-name/boot_b sda78 ' \
+            -e 's block/bootdevice/by-name/cdt sda51 ' \
+            -e 's block/bootdevice/by-name/cmnlib64_a sda17 ' \
+            -e 's block/bootdevice/by-name/cmnlib64_b sda31 ' \
+            -e 's block/bootdevice/by-name/cmnlib_a sda16 ' \
+            -e 's block/bootdevice/by-name/cmnlib_b sda30 ' \
+            -e 's block/bootdevice/by-name/ddr sda41 ' \
+            -e 's block/bootdevice/by-name/devcfg_a sda18 ' \
+            -e 's block/bootdevice/by-name/devcfg_b sda32 ' \
+            -e 's block/bootdevice/by-name/devinfo sda40 ' \
+            -e 's block/bootdevice/by-name/diag sda56 ' \
+            -e 's block/bootdevice/by-name/dsp sda63 ' \
+            -e 's block/bootdevice/by-name/dsp_b sda77 ' \
+            -e 's block/bootdevice/by-name/dtbo_a sda69 ' \
+            -e 's block/bootdevice/by-name/dtbo_b sda83 ' \
+            -e 's block/bootdevice/by-name/frp sda6 ' \
+            -e 's block/bootdevice/by-name/hyp_a sda13 ' \
+            -e 's block/bootdevice/by-name/hyp_b sda27 ' \
+            -e 's block/bootdevice/by-name/imagefv_a sda20 ' \
+            -e 's block/bootdevice/by-name/imagefv_b sda34 ' \
+            -e 's block/bootdevice/by-name/keymaster_a sda15 ' \
+            -e 's block/bootdevice/by-name/keymaster_b sda29 ' \
+            -e 's block/bootdevice/by-name/keystore sda53 ' \
+            -e 's block/bootdevice/by-name/limits sda46 ' \
+            -e 's block/bootdevice/by-name/limits-cdsp sda47 ' \
+            -e 's block/bootdevice/by-name/logdump sda49 ' \
+            -e 's block/bootdevice/by-name/logfs sda48 ' \
+            -e 's block/bootdevice/by-name/mdm1m9kefs1 sda8 ' \
+            -e 's block/bootdevice/by-name/mdm1m9kefs2 sda9 ' \
+            -e 's block/bootdevice/by-name/mdm1m9kefs3 sda7 ' \
+            -e 's block/bootdevice/by-name/mdm1m9kefsc sda10 ' \
+            -e 's block/bootdevice/by-name/mdmddr sda42 ' \
+            -e 's block/by-name/metadata sda54 ' \
+            -e 's block/bootdevice/by-name/misc sda52 ' \
+            -e 's block/bootdevice/by-name/modem sda61 ' \
+            -e 's block/bootdevice/by-name/modem_b sda75 ' \
+            -e 's block/bootdevice/by-name/msadp sda44 ' \
+            -e 's block/bootdevice/by-name/multiimgoem_a sda71 ' \
+            -e 's block/bootdevice/by-name/multiimgoem_b sda85 ' \
+            -e 's block/bootdevice/by-name/multiimgqti_a sda72 ' \
+            -e 's block/bootdevice/by-name/multiimgqti_b sda86 ' \
+            -e 's block/by-name/oem_a sda70 ' \
+            -e 's block/bootdevice/by-name/oem_b sda84 ' \
+            -e 's block/bootdevice/by-name/persist sda3 ' \
+            -e 's block/bootdevice/by-name/qupfw_a sda19 ' \
+            -e 's block/bootdevice/by-name/qupfw_b sda33 ' \
+            -e 's block/bootdevice/by-name/rddata sda91 ' \
+            -e 's block/bootdevice/by-name/rdimage_a sda66 ' \
+            -e 's block/bootdevice/by-name/rdimage_b sda80 ' \
+            -e 's block/bootdevice/by-name/recovery_a sda65 ' \
+            -e 's block/bootdevice/by-name/recovery_b sda79 ' \
+            -e 's block/bootdevice/by-name/secdata sda57 ' \
+            -e 's block/bootdevice/by-name/spunvm sda45 ' \
+            -e 's block/bootdevice/by-name/ssd sda39 ' \
+            -e 's block/bootdevice/by-name/storsec sda50 ' \
+            -e 's block/bootdevice/by-name/super sda89 ' \
+            -e 's block/bootdevice/by-name/tz_a sda12 ' \
+            -e 's block/bootdevice/by-name/tz_b sda26 ' \
+            -e 's block/bootdevice/by-name/tzxfl_a sda23 ' \
+            -e 's block/bootdevice/by-name/tzxfl_b sda37 ' \
+            -e 's block/bootdevice/by-name/tzxflattest_a sda22 ' \
+            -e 's block/bootdevice/by-name/tzxflattest_b sda36 ' \
+            -e 's block/bootdevice/by-name/uefisecapp_a sda24 ' \
+            -e 's block/bootdevice/by-name/uefisecapp_b sda38 ' \
+            -e 's block/bootdevice/by-name/uefivarstore sda58 ' \
+            -e 's block/bootdevice/by-name/userdata sda90 ' \
+            -e 's block/bootdevice/by-name/vbmeta_a sda67 ' \
+            -e 's block/bootdevice/by-name/vbmeta_b sda81 ' \
+            -e 's block/bootdevice/by-name/vbmeta_system_a sda68 ' \
+            -e 's block/bootdevice/by-name/vbmeta_system_b sda82 ' \
+            -e 's block/bootdevice/by-name/vm-data sda60 ' \
+            -e 's block/bootdevice/by-name/vm-keystore sda59 ' \
+            -e 's block/bootdevice/by-name/vm-linux_a sda74 ' \
+            -e 's block/bootdevice/by-name/vm-linux_b sda88 ' \
+            -e 's block/bootdevice/by-name/vm-system_a sda73 ' \
+            -e 's block/bootdevice/by-name/vm-system_b sda87 ' \
+            -e 's block/bootdevice/by-name/xbl_a sdb1 ' \
+            -e 's block/bootdevice/by-name/xbl_b sdc1 ' \
+            -e 's block/bootdevice/by-name/xbl_config_a sdb2 ' \
+            -e 's block/bootdevice/by-name/xbl_config_b sdc2 ' \
+            -e 's block/bootdevice/by-name/xfl_a sda21 ' \
+            -e 's block/bootdevice/by-name/xfl_b sda35 ' \
+            -e 's block/bootdevice/by-name/xflkeystore sda4 ' \
+            -e 's block/bootdevice/by-name/xflkeystorebak sda5 ' \
+            "$@"
+        ;;
+
     "pdx201")
         sed -i \
             -e 's block/bootdevice/by-name/LTALabel mmcblk0p3 ' \

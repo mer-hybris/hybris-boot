@@ -1913,19 +1913,19 @@ case "$DEVICE" in
 
     "dipper")
         sed -i \
-	        -e 's block/bootdevice/by-name/ImageFv sdf4 ' \
-	        -e 's block/bootdevice/by-name/abl_a sde32 ' \
-	        -e 's block/bootdevice/by-name/abl_b sde33 ' \
-	        -e 's block/bootdevice/by-name/aop_a sde14 ' \
-	        -e 's block/bootdevice/by-name/aop_b sde15 ' \
-	        -e 's block/bootdevice/by-name/apdp sde6 ' \
-	        -e 's block/bootdevice/by-name/bk01 sda3 ' \
-	        -e 's block/bootdevice/by-name/bk02 sda4 ' \
-	        -e 's block/bootdevice/by-name/bk03 sda5 ' \
-	        -e 's block/bootdevice/by-name/bk04 sda8 ' \
-	        -e 's block/bootdevice/by-name/bk05 sda13 ' \
-	        -e 's block/bootdevice/by-name/bk31 sdd1 ' \
-	        -e 's block/bootdevice/by-name/bk32 sdd3 ' \
+	    -e 's block/bootdevice/by-name/ImageFv sdf4 ' \
+	    -e 's block/bootdevice/by-name/abl_a sde32 ' \
+	    -e 's block/bootdevice/by-name/abl_b sde33 ' \
+	    -e 's block/bootdevice/by-name/aop_a sde14 ' \
+	    -e 's block/bootdevice/by-name/aop_b sde15 ' \
+	    -e 's block/bootdevice/by-name/apdp sde6 ' \
+	    -e 's block/bootdevice/by-name/bk01 sda3 ' \
+	    -e 's block/bootdevice/by-name/bk02 sda4 ' \
+	    -e 's block/bootdevice/by-name/bk03 sda5 ' \
+	    -e 's block/bootdevice/by-name/bk04 sda8 ' \
+	    -e 's block/bootdevice/by-name/bk05 sda13 ' \
+	    -e 's block/bootdevice/by-name/bk31 sdd1 ' \
+	    -e 's block/bootdevice/by-name/bk32 sdd3 ' \
             -e 's block/bootdevice/by-name/bk33 sdd5 ' \
             -e 's block/bootdevice/by-name/bk41 sde3 ' \
             -e 's block/bootdevice/by-name/bk42 sde9 ' \
@@ -1999,7 +1999,7 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/xbl_config_a sdb1 ' \
             -e 's block/bootdevice/by-name/xbl_config_b sdc1 ' \ 
             "$@"
-	    ;;
+	;;
     *)
         cat <<EOF
 

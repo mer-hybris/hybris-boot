@@ -1997,8 +1997,7 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/xbl_a sdb2 ' \
             -e 's block/bootdevice/by-name/xbl_b sdc2 ' \
             -e 's block/bootdevice/by-name/xbl_config_a sdb1 ' \
-            -e 's block/bootdevice/by-name/xbl_config_b sdc1 ' \ 
-            "$@"
+            -e 's block/bootdevice/by-name/xbl_config_b sdc1 ' "$@"
 	;;
     *)
         cat <<EOF

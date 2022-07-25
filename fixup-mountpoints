@@ -1910,6 +1910,43 @@ case "$DEVICE" in
             -e 's block/platform/soc/1da4000.ufshc/by-name/xbl_b sdc1 ' \
             "$@"
         ;;
+        
+"beyond2lte")
+        sed -i \
+            -e 's block/platform/13d60000.ufs/by-name/boot sda14 ' \
+            -e 's block/platform/13d60000.ufs/by-name/bota0 sda1 ' \
+            -e 's block/platform/13d60000.ufs/by-name/bota1 sda2 ' \
+            -e 's block/platform/13d60000.ufs/by-name/bota2 sda8 ' \
+            -e 's block/platform/13d60000.ufs/by-name/bota3 sda24 ' \
+            -e 's block/platform/13d60000.ufs/by-name/cache sda28 ' \
+            -e 's block/platform/13d60000.ufs/by-name/cp_debug sda30 ' \
+            -e 's block/platform/13d60000.ufs/by-name/cpefs sdd1 ' \
+            -e 's block/platform/13d60000.ufs/by-name/dqmdbg sda22 ' \
+            -e 's block/platform/13d60000.ufs/by-name/dtb sda12 ' \
+            -e 's block/platform/13d60000.ufs/by-name/dtbo sda13 ' \
+            -e 's block/platform/13d60000.ufs/by-name/efs sda3 ' \
+            -e 's block/platform/13d60000.ufs/by-name/keydata sda21 ' \
+            -e 's block/platform/13d60000.ufs/by-name/keyrefuge sda20 ' \
+            -e 's block/platform/13d60000.ufs/by-name/keystorage sda6 ' \
+            -e 's block/platform/13d60000.ufs/by-name/misc sda19 ' \
+            -e 's block/platform/13d60000.ufs/by-name/nad_refer sda17 ' \
+            -e 's block/platform/13d60000.ufs/by-name/omr sda29 ' \
+            -e 's block/platform/13d60000.ufs/by-name/param sda4 ' \
+            -e 's block/platform/13d60000.ufs/by-name/persistent sda18 ' \
+            -e 's block/platform/13d60000.ufs/by-name/product sda27 ' \
+            -e 's block/platform/13d60000.ufs/by-name/radio sda16 ' \
+            -e 's block/platform/13d60000.ufs/by-name/recovery sda15 ' \
+            -e 's block/platform/13d60000.ufs/by-name/sec_efs sda7 ' \
+            -e 's block/platform/13d60000.ufs/by-name/steady sda9 ' \
+            -e 's block/platform/13d60000.ufs/by-name/system sda25 ' \
+            -e 's block/platform/13d60000.ufs/by-name/uh sda10 ' \
+            -e 's block/platform/13d60000.ufs/by-name/uhcfg sda11 ' \
+            -e 's block/platform/13d60000.ufs/by-name/up_param sda5 ' \
+            -e 's block/platform/13d60000.ufs/by-name/userdata sda31 ' \
+            -e 's block/platform/13d60000.ufs/by-name/vbmeta sda23 ' \
+            -e 's block/platform/13d60000.ufs/by-name/vendor sda26 ' \
+            "$@"
+        ;;
     *)
         cat <<EOF
 

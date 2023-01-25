@@ -1910,6 +1910,30 @@ case "$DEVICE" in
             -e 's block/platform/soc/1da4000.ufshc/by-name/xbl_b sdc1 ' \
             "$@"
         ;;
+
+    "Z00A")
+        sed -i \
+            -e 's block/by-name/ADF mmcblk0p17 ' \
+            -e 's block/by-name/APD mmcblk0p16 ' \
+            -e 's block/by-name/boot mmcblk0p1 ' \
+            -e 's block/by-name/boot-one-shot mmcblk0p5 ' \
+            -e 's block/by-name/cache mmcblk0p15 ' \
+            -e 's block/by-name/config mmcblk0p14 ' \
+            -e 's block/by-name/data mmcblk0p19 ' \
+            -e 's block/by-name/factory mmcblk0p12 ' \
+            -e 's block/by-name/fastboot mmcblk0p3 ' \
+            -e 's block/by-name/misc mmcblk0p13 ' \
+            -e 's block/by-name/panic mmcblk0p11 ' \
+            -e 's block/by-name/persistent mmcblk0p9 ' \
+            -e 's block/by-name/ramdump mmcblk0p6 ' \
+            -e 's block/by-name/recovery mmcblk0p2 ' \
+            -e 's block/by-name/reserved mmcblk0p10 ' \
+            -e 's block/by-name/silentlake mmcblk0p7 ' \
+            -e 's block/by-name/splashscreen mmcblk0p4 ' \
+            -e 's block/by-name/system mmcblk0p18 ' \
+            -e 's block/by-name/userkeystore mmcblk0p8 ' \
+            "$@"
+        ;;
     *)
         cat <<EOF
 

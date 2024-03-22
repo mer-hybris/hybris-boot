@@ -152,7 +152,7 @@ $(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK) $(MKBOOTIMG) $
 	@echo "Making hybris-boot.img in $(dir $@) using $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK)"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
-	$(hide)$(MKBOOTIMG) --ramdisk $(BOOT_RAMDISK) $(HYBRIS_BOOTIMAGE_ARGS) $(BOARD_MKBOOTIMG_ARGS) --output $@
+	$(hide)$(MKBOOTIMG) --ramdisk $(BOOT_RAMDISK) $(HYBRIS_BOOTIMAGE_ARGS) $(BOARD_MKBOOTIMG_ARGS) $(INTERNAL_MKBOOTIMG_VERSION_ARGS) --output $@
 
 $(BOOT_RAMDISK): $(BOOT_RAMDISK_FILES) $(BB_STATIC)
 	@echo "Making initramfs : $@"
@@ -163,7 +163,9 @@ $(BOOT_RAMDISK): $(BOOT_RAMDISK_FILES) $(BB_STATIC)
 # really hard to depend on things which may affect init.
 	@mv $(BOOT_RAMDISK_INIT) $(BOOT_INTERMEDIATE)/initramfs/init
 	@cp $(BB_STATIC) $(BOOT_INTERMEDIATE)/initramfs/bin/
-	@(cd $(BOOT_INTERMEDIATE)/initramfs && find . | cpio -H newc -o ) | gzip -9 > $@
+	$(if $(filter true,$(BOARD_RAMDISK_USE_LZ4)), \
+		@(cd $(BOOT_INTERMEDIATE)/initramfs && find . -printf '%P\n' | cpio -H newc -o ) | $(LZ4) -l -12 --favor-decSpeed > $@,\
+		@(cd $(BOOT_INTERMEDIATE)/initramfs && find . -printf '%P\n' | cpio -H newc -o ) | gzip -9 > $@)
 
 $(BOOT_RAMDISK_INIT): $(BOOT_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
 	@mkdir -p $(dir $@)
@@ -195,7 +197,7 @@ $(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(RECOVERY_RAMDISK) $(MKBOOTIM
 	@echo "Making hybris-recovery.img in $(dir $@) using $(INSTALLED_KERNEL_TARGET) $(RECOVERY_RAMDISK)"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
-	$(hide)$(MKBOOTIMG) --ramdisk $(RECOVERY_RAMDISK) $(HYBRIS_RECOVERYIMAGE_ARGS) $(BOARD_MKRECOVERYIMG_ARGS) --output $@
+	$(hide)$(MKBOOTIMG) --ramdisk $(RECOVERY_RAMDISK) $(HYBRIS_RECOVERYIMAGE_ARGS) $(BOARD_MKRECOVERYIMG_ARGS) $(INTERNAL_MKBOOTIMG_VERSION_ARGS) --output $@
 
 $(RECOVERY_RAMDISK): $(RECOVERY_RAMDISK_FILES) $(BB_STATIC)
 	@echo "Making initramfs : $@"
@@ -204,7 +206,9 @@ $(RECOVERY_RAMDISK): $(RECOVERY_RAMDISK_FILES) $(BB_STATIC)
 	@cp -a $(RECOVERY_RAMDISK_SRC)/*  $(RECOVERY_INTERMEDIATE)/initramfs
 	@mv $(RECOVERY_RAMDISK_INIT) $(RECOVERY_INTERMEDIATE)/initramfs/init
 	@cp $(BB_STATIC) $(RECOVERY_INTERMEDIATE)/initramfs/bin/
-	@(cd $(RECOVERY_INTERMEDIATE)/initramfs && find . | cpio -H newc -o ) | gzip -9 > $@
+	$(if $(filter true,$(BOARD_RAMDISK_USE_LZ4)), \
+		@(cd $(RECOVERY_INTERMEDIATE)/initramfs && find . -printf '%P\n' | cpio -H newc -o ) | $(LZ4) -l -12 --favor-decSpeed > $@,\
+		@(cd $(RECOVERY_INTERMEDIATE)/initramfs && find . -printf '%P\n' | cpio -H newc -o ) | gzip -9 > $@)
 
 $(RECOVERY_RAMDISK_INIT): $(RECOVERY_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
 	@mkdir -p $(dir $@)
@@ -289,6 +293,8 @@ HYBRIS_INIT_TARGETS := init
 ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 10 && echo true),true)
 # init is split of into early and second stage init starting with android 10
 HYBRIS_INIT_TARGETS := init_second_stage init.rc
+# Devices without gralloc hardware module need libui_compat_layer
+HYBRIS_INIT_TARGETS += libui_compat_layer
 ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -eq 10 && echo true),true)
 HYBRIS_INIT_TARGETS += com.android.runtime.release
 else
@@ -306,7 +312,15 @@ else
 $(warning Skipping build of hybris-updater-script since HYBRIS_BOOT_PART is not specified)
 endif
 
-HYBRIS_COMMON_ANDROID8_TARGETS := verity_signer boot_signer e2fsdroid vendorimage ramdisk libsurfaceflinger libhwc2_compat_layer bootctl fec
+HYBRIS_COMMON_ANDROID8_TARGETS := verity_signer boot_signer e2fsdroid vendorimage ramdisk libhwc2_compat_layer bootctl fec
+
+ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -le 12 && echo true),true)
+HYBRIS_COMMON_ANDROID8_TARGETS += libsurfaceflinger
+endif
+
+ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 12 && echo true),true)
+HYBRIS_COMMON_ANDROID8_TARGETS += apexd init.environ.rc
+endif
 
 ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 8 && echo true),true)
 HYBRIS_COMMON_TARGETS += $(HYBRIS_COMMON_ANDROID8_TARGETS)

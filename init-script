@@ -139,6 +139,22 @@ bootsplash() {
     fi
 }
 
+load_kernel_modules() {
+    CFG_FILE=/lib/modules/modules.load.recovery
+
+    if [ ! -f $CFG_FILE ]; then
+        return
+    fi
+
+    ln -s /lib/modules "/lib/modules/$(uname -r)"
+
+    cat $CFG_FILE | while read line; do
+        set -- $line
+        # Skip commented entries
+        [ "$1" = "#" ] && continue
+        modprobe $(basename "$1" .ko)
+    done
+}
 
 mount_stowaways() {
     echo "########################## mounting stowaways"
@@ -347,6 +363,8 @@ if [ "$DONE_SWITCH" = "no" ]; then
     date
 
     do_mount_devprocsys
+
+    load_kernel_modules
 
     do_hotplug_scan
 

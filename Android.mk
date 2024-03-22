@@ -312,6 +312,10 @@ else
 $(warning Skipping build of hybris-updater-script since HYBRIS_BOOT_PART is not specified)
 endif
 
+ifeq ($(BUILDING_VENDOR_BOOT_IMAGE),true)
+HYBRIS_COMMON_TARGETS += vendorbootimage
+endif
+
 HYBRIS_COMMON_ANDROID8_TARGETS := verity_signer boot_signer e2fsdroid vendorimage ramdisk libhwc2_compat_layer bootctl fec
 
 ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -le 12 && echo true),true)

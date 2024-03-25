@@ -2279,6 +2279,60 @@ case "$DEVICE" in
             -e 's block/bootdevice/by-name/xblbak sdc2 ' \
             "$@"
         ;;
+
+   "raven")
+        sed -i \
+            -e 's block/platform/14700000.ufs/by-name/abl_a sdb5 ' \
+            -e 's block/platform/14700000.ufs/by-name/abl_b sdc5 ' \
+            -e 's block/platform/14700000.ufs/by-name/bl1_a sdb1 ' \
+            -e 's block/platform/14700000.ufs/by-name/bl1_b sdc1 ' \
+            -e 's block/platform/14700000.ufs/by-name/bl2_a sdb3 ' \
+            -e 's block/platform/14700000.ufs/by-name/bl2_b sdc3 ' \
+            -e 's block/platform/14700000.ufs/by-name/bl31_a sdb6 ' \
+            -e 's block/platform/14700000.ufs/by-name/bl31_b sdc6 ' \
+            -e 's block/platform/14700000.ufs/by-name/boot_a sda13 ' \
+            -e 's block/platform/14700000.ufs/by-name/boot_b sda21 ' \
+            -e 's block/platform/14700000.ufs/by-name/devinfo sdd1 ' \
+            -e 's block/platform/14700000.ufs/by-name/dpm_a sdb10 ' \
+            -e 's block/platform/14700000.ufs/by-name/dpm_b sdc10 ' \
+            -e 's block/platform/14700000.ufs/by-name/dram_train_a sdb4 ' \
+            -e 's block/platform/14700000.ufs/by-name/dram_train_b sdc4 ' \
+            -e 's block/platform/14700000.ufs/by-name/dtbo_a sda10 ' \
+            -e 's block/platform/14700000.ufs/by-name/dtbo_b sda18 ' \
+            -e 's block/platform/14700000.ufs/by-name/efs sda5 ' \
+            -e 's block/platform/14700000.ufs/by-name/efs_backup sda6 ' \
+            -e 's block/platform/14700000.ufs/by-name/fips sda9 ' \
+            -e 's block/platform/14700000.ufs/by-name/frp sda4 ' \
+            -e 's block/platform/14700000.ufs/by-name/gsa_a sdb8 ' \
+            -e 's block/platform/14700000.ufs/by-name/gsa_b sdc8 ' \
+            -e 's block/platform/14700000.ufs/by-name/klog sda2 ' \
+            -e 's block/platform/14700000.ufs/by-name/ldfw_a sdb9 ' \
+            -e 's block/platform/14700000.ufs/by-name/ldfw_b sdc9 ' \
+            -e 's block/platform/14700000.ufs/by-name/metadata sda8 ' \
+            -e 's block/platform/14700000.ufs/by-name/mfg_data sdd2 ' \
+            -e 's block/platform/14700000.ufs/by-name/misc sda3 ' \
+            -e 's block/platform/14700000.ufs/by-name/modem_a sda12 ' \
+            -e 's block/platform/14700000.ufs/by-name/modem_b sda20 ' \
+            -e 's block/platform/14700000.ufs/by-name/modem_userdata sda7 ' \
+            -e 's block/platform/14700000.ufs/by-name/pbl_a sdb2 ' \
+            -e 's block/platform/14700000.ufs/by-name/pbl_b sdc2 ' \
+            -e 's block/platform/14700000.ufs/by-name/persist sda1 ' \
+            -e 's block/platform/14700000.ufs/by-name/pvmfw_a sda17 ' \
+            -e 's block/platform/14700000.ufs/by-name/pvmfw_b sda25 ' \
+            -e 's block/platform/14700000.ufs/by-name/super sda26 ' \
+            -e 's block/platform/14700000.ufs/by-name/tzsw_a sdb7 ' \
+            -e 's block/platform/14700000.ufs/by-name/tzsw_b sdc7 ' \
+            -e 's block/platform/14700000.ufs/by-name/userdata sda27 ' \
+            -e 's block/platform/14700000.ufs/by-name/vbmeta_a sda14 ' \
+            -e 's block/platform/14700000.ufs/by-name/vbmeta_b sda22 ' \
+            -e 's block/platform/14700000.ufs/by-name/vbmeta_system_a sda15 ' \
+            -e 's block/platform/14700000.ufs/by-name/vbmeta_system_b sda23 ' \
+            -e 's block/platform/14700000.ufs/by-name/vbmeta_vendor_a sda16 ' \
+            -e 's block/platform/14700000.ufs/by-name/vbmeta_vendor_b sda24 ' \
+            -e 's block/platform/14700000.ufs/by-name/vendor_boot_a sda11 ' \
+            -e 's block/platform/14700000.ufs/by-name/vendor_boot_b sda19 ' \
+            "$@"
+        ;;
     *)
         cat <<EOF
 

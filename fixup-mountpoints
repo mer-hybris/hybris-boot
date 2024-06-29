@@ -696,7 +696,7 @@ case "$DEVICE" in
             "$@"
         ;;
 
-    "akari")
+    "akari"|"apollo"|"akatsuki")
         sed -i \
             -e 's block/bootdevice/by-name/LTALabel sda2 ' \
             -e 's block/bootdevice/by-name/Qnovo sda70 ' \

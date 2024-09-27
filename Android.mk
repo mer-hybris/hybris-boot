@@ -37,7 +37,8 @@ HYBRIS_R_ALWAYSDEBUG := 1
 
 # Force deferred assignment
 
-HYBRIS_FIXUP_MOUNTS := $(shell ls -1 $(LOCAL_PATH)/../fixup-mountpoints $(LOCAL_PATH)/fixup-mountpoints 2> /dev/null | head -n1)
+HYBRIS_FIXUP_MOUNTS := $(shell ls -1 $(LOCAL_PATH)/../fixup-mountpoints $(LOCAL_PATH)/../droid-configs/fixup-mountpoints-$(TARGET_DEVICE) $(LOCAL_PATH)/fixup-mountpoints 2> /dev/null | head -n1)
+$(info Found fixup mountpoint at $(HYBRIS_FIXUP_MOUNTS))
 
 
 # Find any fstab files for required partition information.

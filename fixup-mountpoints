@@ -1305,6 +1305,108 @@ case "$DEVICE" in
             "$@"
         ;;
 
+    "FP5")
+        sed -i \
+            -e 's block/bootdevice/by-name/ALIGN_TO_128K_1 sdd1 '\
+            -e 's block/bootdevice/by-name/ALIGN_TO_128K_2 sdf1 '\
+            -e 's block/bootdevice/by-name/abl_a sde8 '\
+            -e 's block/bootdevice/by-name/abl_b sde33 '\
+            -e 's block/bootdevice/by-name/aop_a sde1 '\
+            -e 's block/bootdevice/by-name/aop_b sde26 '\
+            -e 's block/bootdevice/by-name/apdp sde52 '\
+            -e 's block/bootdevice/by-name/bluetooth sde5 '\
+            -e 's block/bootdevice/by-name/bluetooth_b sde30 '\
+            -e 's block/bootdevice/by-name/boot_a sde11 '\
+            -e 's block/bootdevice/by-name/boot_b sde36 '\
+            -e 's block/bootdevice/by-name/catecontentfv sde64 '\
+            -e 's block/bootdevice/by-name/catefv sde63 '\
+            -e 's block/bootdevice/by-name/cdt sdd2 '\
+            -e 's block/bootdevice/by-name/connsec sde67 '\
+            -e 's block/bootdevice/by-name/cpucp_a sde20 '\
+            -e 's block/bootdevice/by-name/cpucp_b sde45 '\
+            -e 's block/bootdevice/by-name/ddr sdd3 '\
+            -e 's block/bootdevice/by-name/devcfg_a sde12 '\
+            -e 's block/bootdevice/by-name/devcfg_b sde37 '\
+            -e 's block/bootdevice/by-name/devinfo sde50 '\
+            -e 's block/bootdevice/by-name/dip sde51 '\
+            -e 's block/bootdevice/by-name/dsp sde9 '\
+            -e 's block/bootdevice/by-name/dsp_b sde34 '\
+            -e 's block/bootdevice/by-name/dtbo_a sde15 '\
+            -e 's block/bootdevice/by-name/dtbo_b sde40 '\
+            -e 's block/bootdevice/by-name/featenabler_a sde21 '\
+            -e 's block/bootdevice/by-name/featenabler_b sde46 '\
+            -e 's block/bootdevice/by-name/fpconfig sda3 '\
+            -e 's block/bootdevice/by-name/fpconfig_persist sda2 '\
+            -e 's block/bootdevice/by-name/frp sda9 '\
+            -e 's block/bootdevice/by-name/fsc sdf5 '\
+            -e 's block/bootdevice/by-name/fsg sdf2 '\
+            -e 's block/bootdevice/by-name/hyp_a sde3 '\
+            -e 's block/bootdevice/by-name/hyp_b sde28 '\
+            -e 's block/bootdevice/by-name/imagefv_a sde17 '\
+            -e 's block/bootdevice/by-name/imagefv_b sde42 '\
+            -e 's block/bootdevice/by-name/keymaster_a sde10 '\
+            -e 's block/bootdevice/by-name/keymaster_b sde35 '\
+            -e 's block/bootdevice/by-name/keystore sda8 '\
+            -e 's block/bootdevice/by-name/limits sde54 '\
+            -e 's block/bootdevice/by-name/limits-cdsp sde55 '\
+            -e 's block/bootdevice/by-name/logdump sde59 '\
+            -e 's block/bootdevice/by-name/logfs sde57 '\
+            -e 's block/bootdevice/by-name/mdcompress sde66 '\
+            -e 's block/bootdevice/by-name/mdtp_a sde7 '\
+            -e 's block/bootdevice/by-name/mdtp_b sde32 '\
+            -e 's block/bootdevice/by-name/mdtpsecapp_a sde6 '\
+            -e 's block/bootdevice/by-name/mdtpsecapp_b sde31 '\
+            -e 's block/by-name/metadata sda15 '\
+            -e 's block/bootdevice/by-name/misc sda7 '\
+            -e 's block/bootdevice/by-name/modem sde4 '\
+            -e 's block/bootdevice/by-name/modem_b sde29 '\
+            -e 's block/bootdevice/by-name/modemst1 sdf3 '\
+            -e 's block/bootdevice/by-name/modemst2 sdf4 '\
+            -e 's block/bootdevice/by-name/multiimgoem_a sde19 '\
+            -e 's block/bootdevice/by-name/multiimgoem_b sde44 '\
+            -e 's block/bootdevice/by-name/oembin sda4 '\
+            -e 's block/bootdevice/by-name/persist sda6 '\
+            -e 's block/bootdevice/by-name/qmcs sde23 '\
+            -e 's block/bootdevice/by-name/quantumsdk sde58 '\
+            -e 's block/bootdevice/by-name/qupfw_a sde13 '\
+            -e 's block/bootdevice/by-name/qupfw_b sde38 '\
+            -e 's block/bootdevice/by-name/qweslicstore_a sde24 '\
+            -e 's block/bootdevice/by-name/qweslicstore_b sde48 '\
+            -e 's block/bootdevice/by-name/rawdump sda16 '\
+            -e 's block/bootdevice/by-name/rtice sde69 '\
+            -e 's block/bootdevice/by-name/secdata sde62 '\
+            -e 's block/bootdevice/by-name/shrm_a sde18 '\
+            -e 's block/bootdevice/by-name/shrm_b sde43 '\
+            -e 's block/bootdevice/by-name/splash sde53 '\
+            -e 's block/bootdevice/by-name/ssd sda5 '\
+            -e 's block/bootdevice/by-name/storsec sde60 '\
+            -e 's block/bootdevice/by-name/study sda10 '\
+            -e 's block/bootdevice/by-name/studybk_a sde25 '\
+            -e 's block/bootdevice/by-name/studybk_b sde49 '\
+            -e 's block/bootdevice/by-name/super sda12 '\
+            -e 's block/bootdevice/by-name/swversion sda11 '\
+            -e 's block/bootdevice/by-name/toolsfv sde56 '\
+            -e 's block/bootdevice/by-name/traceability sda1 '\
+            -e 's block/bootdevice/by-name/tz_a sde2 '\
+            -e 's block/bootdevice/by-name/tz_b sde27 '\
+            -e 's block/bootdevice/by-name/tzsc sde68 '\
+            -e 's block/bootdevice/by-name/uefisecapp_a sde16 '\
+            -e 's block/bootdevice/by-name/uefisecapp_b sde41 '\
+            -e 's block/bootdevice/by-name/uefivarstore sde61 '\
+            -e 's block/bootdevice/by-name/userdata sda17 '\
+            -e 's block/bootdevice/by-name/vbmeta_a sde14 '\
+            -e 's block/bootdevice/by-name/vbmeta_b sde39 '\
+            -e 's block/bootdevice/by-name/vbmeta_system_a sda13 '\
+            -e 's block/bootdevice/by-name/vbmeta_system_b sda14 '\
+            -e 's block/bootdevice/by-name/vendor_boot_a sde22 '\
+            -e 's block/bootdevice/by-name/vendor_boot_b sde47 '\
+            -e 's block/bootdevice/by-name/vm-data sde65 '\
+            -e 's block/bootdevice/by-name/xbl_a sdb1 '\
+            -e 's block/bootdevice/by-name/xbl_b sdc1 '\
+            -e 's block/bootdevice/by-name/xbl_config_a sdb2 '\
+            -e 's block/bootdevice/by-name/xbl_config_b sdc2 '\
+            "$@"
+        ;;
 
     "onyx")
         sed -i \

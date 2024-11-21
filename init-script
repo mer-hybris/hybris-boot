@@ -129,8 +129,12 @@ do_hotplug_scan()
 {
     echo /sbin/mdev > /proc/sys/kernel/hotplug
     mdev -s
-    # There is no way to know when all hotplug events have been processed :(
-    sleep 2
+}
+
+wait_for_data_partition() {
+    while [ ! -e $DATA_PARTITION ]; do
+        sleep 1
+    done
 }
 
 bootsplash() {
@@ -367,6 +371,10 @@ if [ "$DONE_SWITCH" = "no" ]; then
     load_kernel_modules
 
     do_hotplug_scan
+
+    if [ ! -z $DATA_PARTITION ]; then
+        wait_for_data_partition
+    fi
 
     # Support /dev/block/mmcXXX only in initrd phase
     ln -s . /dev/block

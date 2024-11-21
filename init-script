@@ -234,12 +234,17 @@ usb_setup_configfs() {
     fi
     echo $USB_FUNCTIONS | grep -q "mass_storage" && ln -s $GADGET_DIR/g1/functions/storage.0 $GADGET_DIR/g1/configs/c.1
 
-    for udc in /sys/class/udc/* ; do
-        case "$udc" in
-            *dummy) true ;;
-            *) echo "${udc##*/}" > $GADGET_DIR/g1/UDC ; break ;;
-        esac
-    done
+    udc="$(get_opt androidboot.usbcontroller | head -1)"
+    if [ -z "$udc" ]; then
+        for udc_path in /sys/class/udc/* ; do
+            case "$udc_path" in
+                *dummy) true ;;
+                *) udc="${udc_path##*/}" ; break ;;
+            esac
+        done
+    fi
+    write /sys/class/udc/"$udc"/device/../mode peripheral
+    echo "$udc" > $GADGET_DIR/g1/UDC
 }
 
 # This sets up the USB with whatever USB_FUNCTIONS are set to via android_usb

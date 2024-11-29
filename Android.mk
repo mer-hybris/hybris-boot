@@ -164,8 +164,8 @@ $(BOOT_RAMDISK): $(BOOT_RAMDISK_FILES) $(BB_STATIC)
 	@mv $(BOOT_RAMDISK_INIT) $(BOOT_INTERMEDIATE)/initramfs/init
 	@cp $(BB_STATIC) $(BOOT_INTERMEDIATE)/initramfs/bin/
 	$(if $(filter true,$(BOARD_RAMDISK_USE_LZ4)), \
-		@(cd $(BOOT_INTERMEDIATE)/initramfs && find . -printf '%P\n' | cpio -H newc -o ) | $(LZ4) -l -12 --favor-decSpeed > $@,\
-		@(cd $(BOOT_INTERMEDIATE)/initramfs && find . -printf '%P\n' | cpio -H newc -o ) | gzip -9 > $@)
+		@($(MKBOOTFS) $(BOOT_INTERMEDIATE)/initramfs) | $(LZ4) -l -12 --favor-decSpeed > $@,\
+		@($(MKBOOTFS) $(BOOT_INTERMEDIATE)/initramfs) | gzip -9 > $@)
 
 $(BOOT_RAMDISK_INIT): $(BOOT_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
 	@mkdir -p $(dir $@)
@@ -207,8 +207,8 @@ $(RECOVERY_RAMDISK): $(RECOVERY_RAMDISK_FILES) $(BB_STATIC)
 	@mv $(RECOVERY_RAMDISK_INIT) $(RECOVERY_INTERMEDIATE)/initramfs/init
 	@cp $(BB_STATIC) $(RECOVERY_INTERMEDIATE)/initramfs/bin/
 	$(if $(filter true,$(BOARD_RAMDISK_USE_LZ4)), \
-		@(cd $(RECOVERY_INTERMEDIATE)/initramfs && find . -printf '%P\n' | cpio -H newc -o ) | $(LZ4) -l -12 --favor-decSpeed > $@,\
-		@(cd $(RECOVERY_INTERMEDIATE)/initramfs && find . -printf '%P\n' | cpio -H newc -o ) | gzip -9 > $@)
+		@($(MKBOOTFS) $(RECOVERY_INTERMEDIATE)/initramfs) | $(LZ4) -l -12 --favor-decSpeed > $@,\
+		@($(MKBOOTFS) $(RECOVERY_INTERMEDIATE)/initramfs) | gzip -9 > $@)
 
 $(RECOVERY_RAMDISK_INIT): $(RECOVERY_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
 	@mkdir -p $(dir $@)

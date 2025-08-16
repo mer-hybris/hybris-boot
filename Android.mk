@@ -114,6 +114,15 @@ ifdef BOARD_KERNEL_PAGESIZE
   HYBRIS_BOOTIMAGE_ARGS += --pagesize $(BOARD_KERNEL_PAGESIZE)
 endif
 
+ifeq ($(BUILDING_INIT_BOOT_IMAGE),true)
+  HYBRIS_INIT_BOOT_IMAGE_ARGS :=
+
+ifdef BOARD_KERNEL_PAGESIZE
+  HYBRIS_INIT_BOOT_IMAGE_ARGS += --pagesize $(BOARD_KERNEL_PAGESIZE)
+endif
+
+endif
+
 # Specify the BOOT/RECOVERY vars here as they're not impacted by
 # CLEAR_VARS and it makes it easier to keep them consistent.
 
@@ -148,11 +157,11 @@ BOOT_RAMDISK_INIT_SRC := $(LOCAL_PATH)/init-script
 BOOT_RAMDISK_INIT := $(BOOT_INTERMEDIATE)/init
 BOOT_RAMDISK_FILES := $(shell find $(BOOT_RAMDISK_SRC) -type f) $(BOOT_RAMDISK_INIT)
 
-$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK) $(MKBOOTIMG) $(BOOTIMAGE_EXTRA_DEPS)
-	@echo "Making hybris-boot.img in $(dir $@) using $(INSTALLED_KERNEL_TARGET) $(BOOT_RAMDISK)"
+$(LOCAL_BUILT_MODULE): $(INSTALLED_KERNEL_TARGET) $(if $(filter true,$(BUILDING_INIT_BOOT_IMAGE)),,$(BOOT_RAMDISK)) $(MKBOOTIMG) $(BOOTIMAGE_EXTRA_DEPS)
+	@echo "Making hybris-boot.img in $(dir $@) using $(INSTALLED_KERNEL_TARGET) $(filter true,$(BUILDING_INIT_BOOT_IMAGE)),,$(BOOT_RAMDISK))"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
-	$(hide)$(MKBOOTIMG) --ramdisk $(BOOT_RAMDISK) $(HYBRIS_BOOTIMAGE_ARGS) $(BOARD_MKBOOTIMG_ARGS) $(INTERNAL_MKBOOTIMG_VERSION_ARGS) --output $@
+	$(hide)$(MKBOOTIMG) $(if $(filter true,$(BUILDING_INIT_BOOT_IMAGE)),,--ramdisk $(BOOT_RAMDISK)) $(HYBRIS_BOOTIMAGE_ARGS) $(BOARD_MKBOOTIMG_ARGS) $(INTERNAL_MKBOOTIMG_VERSION_ARGS) --output $@
 
 $(BOOT_RAMDISK): $(BOOT_RAMDISK_FILES) $(BB_STATIC)
 	@echo "Making initramfs : $@"
@@ -175,6 +184,53 @@ $(BOOT_RAMDISK_INIT): $(BOOT_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
 	  -e 's %ALWAYSDEBUG% $(HYBRIS_B_ALWAYSDEBUG) g' $(BOOT_RAMDISK_INIT_SRC) > $@
 	$(HYBRIS_FIXUP_MOUNTS) "$(TARGET_DEVICE)" "$@"
 	@chmod +x $@
+
+
+include $(CLEAR_VARS)
+LOCAL_MODULE:= hybris-init_boot
+# Here we'd normally include $(BUILD_SHARED_LIBRARY) or something
+# but nothing seems suitable for making an img like this
+LOCAL_MODULE_CLASS := ROOT
+LOCAL_MODULE_SUFFIX := .img
+LOCAL_MODULE_PATH := $(PRODUCT_OUT)
+
+include $(BUILD_SYSTEM)/base_rules.mk
+INIT_BOOT_INTERMEDIATE := $(call intermediates-dir-for,ROOT,$(LOCAL_MODULE),)
+
+INIT_BOOT_RAMDISK := $(INIT_BOOT_INTERMEDIATE)/boot-initramfs.gz
+INIT_BOOT_RAMDISK_SRC := $(LOCAL_PATH)/initramfs
+INIT_BOOT_RAMDISK_INIT_SRC := $(LOCAL_PATH)/init-script
+INIT_BOOT_RAMDISK_INIT := $(INIT_BOOT_INTERMEDIATE)/init
+INIT_BOOT_RAMDISK_FILES := $(shell find $(INIT_BOOT_RAMDISK_SRC) -type f) $(INIT_BOOT_RAMDISK_INIT)
+
+$(LOCAL_BUILT_MODULE): $(INIT_BOOT_RAMDISK) $(MKBOOTIMG)
+	@echo "Making hybris-init_boot.img in $(dir $@) using $(INIT_BOOT_RAMDISK)"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	$(hide)$(MKBOOTIMG) --ramdisk $(INIT_BOOT_RAMDISK) $(HYBRIS_INIT_BOOT_IMAGE_ARGS) $(BOARD_MKBOOTIMG_INIT_ARGS) $(INTERNAL_MKBOOTIMG_VERSION_ARGS) --output $@
+
+$(INIT_BOOT_RAMDISK): $(INIT_BOOT_RAMDISK_FILES) $(BB_STATIC)
+	@echo "Making initramfs : $@"
+	@rm -rf $(INIT_BOOT_INTERMEDIATE)/initramfs
+	@mkdir -p $(INIT_BOOT_INTERMEDIATE)/initramfs
+	@cp -a $(INIT_BOOT_RAMDISK_SRC)/*  $(INIT_BOOT_INTERMEDIATE)/initramfs
+# Deliberately do an mv to force rebuild of init every time since it's
+# really hard to depend on things which may affect init.
+	@mv $(INIT_BOOT_RAMDISK_INIT) $(INIT_BOOT_INTERMEDIATE)/initramfs/init
+	@cp $(BB_STATIC) $(INIT_BOOT_INTERMEDIATE)/initramfs/bin/
+	$(if $(filter true,$(BOARD_RAMDISK_USE_LZ4)), \
+		@(cd $(INIT_BOOT_INTERMEDIATE)/initramfs && find . -printf '%P\n' | cpio -H newc -o ) | $(LZ4) -l -12 --favor-decSpeed > $@,\
+		@(cd $(INIT_BOOT_INTERMEDIATE)/initramfs && find . -printf '%P\n' | cpio -H newc -o ) | gzip -9 > $@)
+
+$(INIT_BOOT_RAMDISK_INIT): $(INIT_BOOT_RAMDISK_INIT_SRC) $(ALL_PREBUILT)
+	@mkdir -p $(dir $@)
+	@sed -e 's %DATA_PART% $(HYBRIS_DATA_PART) g' \
+	  -e 's %BOOTLOGO% $(HYBRIS_BOOTLOGO) g' \
+	  -e 's %DEFAULT_OS% $(HYBRIS_B_DEFAULT_OS) g' \
+	  -e 's %ALWAYSDEBUG% $(HYBRIS_B_ALWAYSDEBUG) g' $(INIT_BOOT_RAMDISK_INIT_SRC) > $@
+	$(HYBRIS_FIXUP_MOUNTS) "$(TARGET_DEVICE)" "$@"
+	@chmod +x $@
+
 
 ################################################################
 
@@ -314,6 +370,10 @@ endif
 
 ifeq ($(BUILDING_VENDOR_BOOT_IMAGE),true)
 HYBRIS_COMMON_TARGETS += vendorbootimage
+endif
+
+ifeq ($(BUILDING_INIT_BOOT_IMAGE),true)
+HYBRIS_COMMON_TARGETS += hybris-init_boot
 endif
 
 HYBRIS_COMMON_ANDROID8_TARGETS := verity_signer boot_signer e2fsdroid vendorimage ramdisk libhwc2_compat_layer bootctl fec

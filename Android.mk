@@ -95,7 +95,7 @@ ifeq ($(BOARD_KERNEL_SEPARATED_DT),true)
   BOOTIMAGE_EXTRA_DEPS += $(INSTALLED_DTIMAGE_TARGET)
 endif
 
-ifeq ($(BOARD_KERNEL_SEPARATED_DTBO),true)
+ifeq (true,$(filter true, $(TARGET_NEEDS_DTBOIMAGE) $(BOARD_KERNEL_SEPARATED_DTBO)))
   INSTALLED_DTBIMAGE_TARGET := $(PRODUCT_OUT)/dtbo.img
   BOOTIMAGE_EXTRA_DEPS += $(INSTALLED_DTBIMAGE_TARGET)
 endif
@@ -386,6 +386,10 @@ ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 12 && echo true),true)
 HYBRIS_COMMON_ANDROID8_TARGETS += apexd init.environ.rc
 endif
 
+ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 15 && echo true),true)
+HYBRIS_COMMON_ANDROID8_TARGETS += init.zygote32.rc init.zygote64.rc
+endif
+
 ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 8 && echo true),true)
 HYBRIS_COMMON_TARGETS += $(HYBRIS_COMMON_ANDROID8_TARGETS)
 ifeq ($(shell test -d */selinux_stubs && echo true),true)
@@ -393,7 +397,10 @@ ifeq ($(shell test -d */selinux_stubs && echo true),true)
 HYBRIS_COMMON_TARGETS += libselinux_stubs
 endif
 # for 64 bit Android, also include the 32 bit variants that we need.
-HYBRIS_COMMON_64_BIT_EXTRA_TARGETS = linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32 libhwc2_compat_layer_32
+HYBRIS_COMMON_64_BIT_EXTRA_TARGETS =
+ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -le 14 && echo true),true)
+HYBRIS_COMMON_64_BIT_EXTRA_TARGETS += libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32 libhwc2_compat_layer_32
+endif
 else
 # for 64 bit Android, also include the 32 bit variants that we need.
 HYBRIS_COMMON_64_BIT_EXTRA_TARGETS = linker_32 libc_32 libEGL_32 libGLESv1_CM_32 libGLESv2_32

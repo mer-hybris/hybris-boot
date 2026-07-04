@@ -322,8 +322,12 @@ ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -le 12 && echo true),true)
 HYBRIS_COMMON_ANDROID8_TARGETS += libsurfaceflinger
 endif
 
+ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 10 && echo true),true)
+HYBRIS_COMMON_ANDROID8_TARGETS += apexd
+endif
+
 ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 12 && echo true),true)
-HYBRIS_COMMON_ANDROID8_TARGETS += apexd init.environ.rc
+HYBRIS_COMMON_ANDROID8_TARGETS += init.environ.rc
 endif
 
 ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 8 && echo true),true)

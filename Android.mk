@@ -386,6 +386,10 @@ ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 11 && echo true),true)
 HYBRIS_COMMON_ANDROID8_TARGETS += apexd init.environ.rc
 endif
 
+ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 14 && echo true),true)
+HYBRIS_COMMON_ANDROID8_TARGETS += android.system.suspend-service
+endif
+
 ifeq ($(shell test $(ANDROID_VERSION_MAJOR) -ge 15 && echo true),true)
 HYBRIS_COMMON_ANDROID8_TARGETS += init.zygote32.rc init.zygote64.rc
 endif
